@@ -7,82 +7,56 @@
 
 import SwiftUI
 import CoreData
+import Combine
+
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
+    @State var selectedTab: Tab = .home
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+        
+        ZStack(alignment: .bottom){
+            switch selectedTab {
+            case .home:
+                HomeView()
+            case .search:
+                SearchView()
+            case .profile:
+                ProfileView()
+            }
+            HStack{
+                Spacer()
+                ForEach(tabItems) { item in
+                    Button {
+                        self.selectedTab = item.tab
                     } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+                        if selectedTab == item.tab{
+                            VStack(spacing:0){
+                                Image(systemName: item.menuImage).foregroundColor(Color.white).symbolVariant(.fill).font(.body.bold()).frame(width: 44, height: 29)
+                                Text(item.menuTitle).foregroundColor(Color.white).font(.caption2).lineLimit(1)
+                            }
+                            .background(alignment: .center, content: {
+                                Circle().fill(.ultraThinMaterial).frame(width: 60, height: 60)
+                            })
+                        }else{
+                            VStack(spacing:0){
+                                Image(systemName: item.menuImage).foregroundColor(Color.white).symbolVariant(.fill).font(.body.bold()).frame(width: 44, height: 29)
+                                Text(item.menuTitle).foregroundColor(Color.white).font(.caption2).lineLimit(1)
+                            }
+                        }
                     }
+                    Spacer()
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            }.padding(.bottom,20).padding(.top,20)
+                
+                .background(LinearGradient(colors: [.blue, .purple], startPoint: .leading, endPoint: .trailing).opacity(0.6)).background(.ultraThinMaterial).cornerRadius(36).overlay(RoundedRectangle(cornerRadius: 34).stroke(Color.white, lineWidth: 0.5)).frame(maxHeight: .infinity,alignment: .bottom).ignoresSafeArea()
         }
     }
 }
 
-private let itemFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateStyle = .short
-    formatter.timeStyle = .medium
-    return formatter
-}()
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        ContentView()
+            .previewInterfaceOrientation(.portrait)
     }
 }
