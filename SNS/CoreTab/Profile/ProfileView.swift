@@ -6,21 +6,24 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct ProfileView: View {
-    
     @State private var firstName = ""
+    @EnvironmentObject var appState:AppState
     private let screenWidth = UIScreen.main.bounds.width
-    private var settings = [ Setting(settingName: "会員情報", settingImage: "person"), Setting(settingName: "パスワード変更", settingImage: "lock"), Setting(settingName: "メールアドレス変更", settingImage: "mail"), Setting(settingName: "マイリスト", settingImage: "list.bullet")]
+    private var settings = [ Setting(settingName: "会員情報", settingImage: "person", handler: {}), Setting(settingName: "パスワード変更", settingImage: "lock", handler:{}), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: {}), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: {})]
     
     var body: some View {
         ZStack{
-            ZStack{
-                VStack(alignment:.leading ,spacing: 20){
-                    BackgroundView(startColor: .green, endColor: .purple).frame(width: 300, height: 300)
-                    BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
+            Color.black.opacity(0.03).background(.ultraThinMaterial)
+            VStack(alignment:.leading ,spacing: 20){
+                Circle().size(width: 200, height: 200).blur(radius: 80).foregroundColor(.yellow)
+                HStack{
+                    Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.blue).padding(.top,-120)
+                    Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.orange).padding(.top,30)
                 }
-                Color.init(uiColor:UIColor(displayP3Red: 40/255, green: 42/255, blue: 51/255, alpha: 1)).opacity(0.3).background(.ultraThinMaterial)
+                Circle().size(width: 200, height: 200).blur(radius: 100).foregroundColor(.pink)
             }
             VStack{
                 Form{
@@ -30,40 +33,60 @@ struct ProfileView: View {
                     } header: {
                         HStack{
                             Image(systemName: "heart.fill").foregroundColor(Color.red)
-                            Text("お気に入りサブスク").foregroundColor(Color.white)
+                            Text("お気に入りなひとこま。").foregroundColor(Color.white)
                         }
                     }
                     Section {
                         List(self.settings){ setting in
-                            SettingCellView(setting: setting)
+                            NavigationLink {
+                                InquiryView()
+                            } label: {
+                                SettingCellView(setting: setting)
+                            }
                         }
                     } header: {
                         Text("お客様情報").foregroundColor(Color.white)
                     }
                     Section {
                         List{
-                            SettingCellView(setting: Setting(settingName: "通知設定", settingImage: "bell.badge"))
+                            SettingCellView(setting: Setting(settingName: "通知設定", settingImage: "bell.badge", handler:{
+                                
+                            }))
                         }
                     } header: {
                         Text("アプリ設定").foregroundColor(Color.white)
                     }
                     Section {
                         List{
-                            SettingCellView(setting: Setting(settingName: "ヘルプ", settingImage: "questionmark.circle")).onTapGesture {
+                            SettingCellView(setting: Setting(settingName: "ヘルプ", settingImage: "questionmark.circle", handler: {
+                                
+                            })).onTapGesture {
                                 print("aaaa")
                             }
-                            SettingCellView(setting: Setting(settingName: "お問い合わせ", settingImage: "envelope"))
+                            SettingCellView(setting: Setting(settingName: "お問い合わせ", settingImage: "envelope", handler: {
+                                
+                            }))
                         }
                     } header: {
                         Text("サポート").foregroundColor(Color.white)
                     }
                     Section {
                         List{
-                            SettingCellView(setting: Setting(settingName: "サービス内容", settingImage: "questionmark.circle"))
-                            SettingCellView(setting: Setting(settingName: "利用規約", settingImage: "doc.text"))
-                            SettingCellView(setting: Setting(settingName: "プライバシーポリシー", settingImage: "lock.shield"))
-                            SettingCellView(setting: Setting(settingName: "著作権情報", settingImage: "lock.square.stack"))
-                            SettingCellView(setting: Setting(settingName: "アカウント削除", settingImage: "person.fill.badge.minus"))
+                            SettingCellView(setting: Setting(settingName: "サービス内容", settingImage: "questionmark.circle", handler: {
+                                
+                            }))
+                            SettingCellView(setting: Setting(settingName: "利用規約", settingImage: "doc.text", handler: {
+                                
+                            }))
+                            SettingCellView(setting: Setting(settingName: "プライバシーポリシー", settingImage: "lock.shield", handler: {
+                                
+                            }))
+                            SettingCellView(setting: Setting(settingName: "著作権情報", settingImage: "lock.square.stack", handler: {
+                                
+                            }))
+                            SettingCellView(setting: Setting(settingName: "アカウント削除", settingImage: "person.fill.badge.minus", handler: {
+                                
+                            }))
                             
                         }
                     } header: {
@@ -71,7 +94,8 @@ struct ProfileView: View {
                     }
                     
                     Button {
-                        print("aaa")
+                        try? Auth.auth().signOut()
+                        appState.isLogin = false
                     } label: {
                         Text("ログアウト").foregroundColor(.red).padding(.leading, 115)
                     }
@@ -79,7 +103,7 @@ struct ProfileView: View {
                     UITableView.appearance().backgroundColor = .clear
                 }
             }.padding(.top,20).padding(.bottom, 55)
-        }.ignoresSafeArea()
+        }.ignoresSafeArea().navigationBarHidden(true)
     }
 }
 

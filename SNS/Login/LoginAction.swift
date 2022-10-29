@@ -10,6 +10,8 @@ import Foundation
 internal enum LoginAction{
     case enterEmailText(String)
     case enterPasswordText(String)
+    case enterUsernameText(String)
     case loginButtonTapped(String, String)
-    case loginresponse(Result<String,LoginApiError>)
+    case registerButtonTapped(String,String)
+    case loginResponse(Result<String,LoginApiError>)
 }

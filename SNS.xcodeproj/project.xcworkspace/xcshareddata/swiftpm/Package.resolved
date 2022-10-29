@@ -100,12 +100,30 @@
       }
     },
     {
+      "identity" : "partialsheet",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AndreaMiotto/PartialSheet",
+      "state" : {
+        "revision" : "318f18bfabd2b2ddf785babd2e53bd593c00a254",
+        "version" : "3.1.0"
+      }
+    },
+    {
       "identity" : "promises",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/promises.git",
       "state" : {
         "revision" : "3e4e743631e86c8c70dbc6efdc7beaa6e90fd3bb",
         "version" : "2.1.1"
+      }
+    },
+    {
+      "identity" : "stripe-ios-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stripe/stripe-ios-spm",
+      "state" : {
+        "revision" : "023bf5968b6604d2030827ed96c2b0cbe613c95a",
+        "version" : "23.0.0"
       }
     },
     {

@@ -10,5 +10,5 @@ import ComposableArchitecture
 
 struct LoginEnvironment{
     var mainQueue: AnySchedulerOf<DispatchQueue>
-    var loginFact:(String, String) -> Effect<String, LoginApiError>
+    // var loginFact:(String, String) -> Effect<String, LoginApiError>
 }

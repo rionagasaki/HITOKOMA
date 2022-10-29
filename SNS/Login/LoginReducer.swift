@@ -25,18 +25,18 @@ struct LoginReducer {
             }
             return .none
         case .loginButtonTapped(let email, let password):
-            return environment.loginFact(email, password).receive(on: environment.mainQueue).catchToEffect().map(LoginAction.loginresponse)
-        case .loginresponse(.failure):
+            return .none
+        case .loginResponse(.failure):
             state.isLoginSuccess = false
             return .none
-        case .loginresponse(.success):
+        case .loginResponse(.success):
             state.isLoginSuccess = true
+            return .none
+        case .registerButtonTapped(let email, let password):
+            return .none
+        case .enterUsernameText(let username):
+            state.usernameText = username
             return .none
         }
     }
-}
-
-extension LoginReducer {
-    // var request = URLRequest(url: URL(string: "http://localhost:8080/user")!)
-    
 }

@@ -10,60 +10,120 @@ import SwiftUI
 struct HomeView:View{
     @State private var contentOffSet = CGFloat(0)
     let screenSize = UIScreen.main.bounds.width
-    init(){
-        UINavigationBar.appearance().barTintColor = UIColor.black
-    }
+    
     var body: some View{
-        ZStack{
-            VStack(alignment:.leading ,spacing: 50){
-                BackgroundView(startColor: .green, endColor: .red).frame(width: 300, height: 300)
-                BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
-            }
-            Color.init(uiColor: UIColor(displayP3Red: 40/255, green: 42/255, blue: 51/255, alpha: 1)).opacity(0.3).background(.ultraThinMaterial).ignoresSafeArea(edges: .vertical)
+        
+        ZStack {
+           
             ScrollView {
                 VStack(alignment: .center){
-                    VStack{
-                        RichButton().shadow(color: Color(.displayP3, red: 194/255,  green: 207/255, blue: 231/255, opacity: 1), radius: 10, x: 10, y: 10).padding(.leading,100).padding(.top,100)
-                    }.frame(width: UIScreen.main.bounds.width-40, height: 250).background(LinearGradient(colors: [.red, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)).cornerRadius(20)
-                    HStack{
-                        Text("ジャンル").foregroundColor(.white).bold().font(.system(size: 20)).padding()
-                        Spacer()
-                        Button {
-                            print("aaa")
-                        } label: {
-                            Image(systemName: "ellipsis.rectangle").foregroundColor(.orange).padding(.all,10).background().cornerRadius(35).padding()
-                        }
-                    }
-                    Genre().padding(.leading,10)
+                    GeometryReader{ geometry in
+                        Image("header").resizable().foregroundColor(.red).frame(height: geometry.frame(in: .global).minY > 0 ? 270+geometry.frame(in: .global).minY:270).overlay(LinearGradient(colors: [.white.opacity(0), .white.opacity(0.5)], startPoint: .top, endPoint: .bottom)).offset(y: geometry.frame(in: .global).minY > 0 ? -geometry.frame(in: .global).minY:0).padding(.top,25)
+                    }.frame(height:270)
                     
                     HStack{
-                        Text("ショッピング").foregroundColor(.white).bold().font(.system(size: 20)).padding()
+                        Text("カテゴリー").foregroundColor(.black).bold().font(.system(size: 18)).padding()
                         Spacer()
-                        Button {
-                            print("aaa")
+                    }
+                    HStack{
+                        NavigationLink {
+                            CategorizationView()
                         } label: {
-                            Text("もっと見る").foregroundColor(.orange).padding().background().cornerRadius(35).padding()
+                            Category(categoryText: "IT", categoryImage: "computer").padding(.leading,10)
                         }
+                        Category(categoryText: "投資", categoryImage: "money").padding(.leading,10)
+                        Category(categoryText: "学ぶ", categoryImage: "study").padding(.leading,10)
+                        Category(categoryText: "コーヒー", categoryImage: "coffee").padding(.leading,10)
                     }
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        
+                    Group{
                         HStack{
-                            CardView().padding()
-                            CardView().padding()
-                            CardView().padding()
-                            CardView().padding()
+                            Text("話題のひとこま").foregroundColor(.black).bold().font(.system(size: 18)).padding(.leading,16)
+                            Spacer()
                         }
-                    }
-                    RichButton().shadow(color: Color(.displayP3, red: 194/255,  green: 207/255, blue: 231/255, opacity: 1), radius: 20, x: 20, y: 20)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            Section{
+                                HStack{
+                                    Spacer()
+                                    NavigationLink {
+                                        OneClassDetailView()
+                                    } label: {
+                                        OneClassView()
+                                    }
+                                    Spacer()
+                                    OneClassView()
+                                    Spacer()
+                                    OneClassView()
+                                }
+                            }
+                        }
+                        HStack{
+                            Text("リクエスト").foregroundColor(.black).bold().font(.system(size: 18)).padding(.leading,16)
+                            Spacer()
+                        }
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack{
+                                Spacer()
+                                NavigationLink {
+                                    RequestDetailView()
+                                } label: {
+                                    OneRequestView()
+                                }
+                                Spacer()
+                                OneRequestView()
+                                Spacer()
+                                OneRequestView()
+                                Spacer()
+                                OneRequestView()
+                            }
+                        }
+                        HStack{
+                            Text("評価が高いひとこま").foregroundColor(.black).bold().font(.system(size: 18)).padding(.leading,16)
+                            Spacer()
+                        }
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack{
+                                Spacer()
+                                OneClassView()
+                                Spacer()
+                                OneClassView()
+                                Spacer()
+                                OneClassView()
+                            }
+                        }
+                        HStack{
+                            Text("評価が高いひとこま").foregroundColor(.black).bold().font(.system(size: 18)).padding(.leading,16)
+                            Spacer()
+                        }
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack{
+                                Spacer()
+                                OneClassView()
+                                Spacer()
+                                OneClassView()
+                                Spacer()
+                                OneClassView()
+                            }
+                        }
+                    }.padding(.top,10)
+                    
                 }.padding(.bottom,150)
-            }
+            }.ignoresSafeArea()
         }
     }
 }
-    
-    
-    struct HomeView_Preview: PreviewProvider {
-        static var previews: some View {
-            HomeView()
-        }
+
+struct HomeHeaderView: View {
+    var body: some View{
+        ZStack{
+            Image("header").resizable().frame(width: UIScreen.main.bounds.width-20, height: 200).overlay(LinearGradient(colors: [.white.opacity(0), .white.opacity(0.5)], startPoint: .top, endPoint: .bottom).offset(y:30))
+            
+        }.padding(.top,50)
     }
+}
+
+
+struct HomeView_Preview: PreviewProvider {
+    static var previews: some View {
+        HomeView()
+    }
+}
