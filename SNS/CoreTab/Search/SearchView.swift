@@ -33,7 +33,6 @@ struct SearchView:View {
                     Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.blue).padding(.top,-120)
                     Circle().size(width: 200, height: 200).blur(radius: 50).foregroundColor(.orange).padding(.top,30)
                 }
-                
             }
             ScrollView{
                 VStack {

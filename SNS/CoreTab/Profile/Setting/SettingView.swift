@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingView: View {
-    private var settings = [ Setting(settingName: "名前変更", settingImage: "person", handler: {}), Setting(settingName: "パスワード変更", settingImage: "lock", handler: {}), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: {}), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: {})]
+    private var settings = [Setting(settingName: "名前変更", settingImage: "person", handler: AnyView(InquiryView())), Setting(settingName: "パスワード変更", settingImage: "lock", handler: AnyView(InquiryView())), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: AnyView(InquiryView())), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: AnyView(InquiryView()))]
     var body: some View {
         NavigationView{
             VStack{

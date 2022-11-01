@@ -47,15 +47,9 @@ struct OneClassDetailView: View {
             }.ignoresSafeArea()
             ZStack{
                 VStack{
-                    Button {
-                        self.openCharge = true
-                    } label: {
-                        RichButton(buttonText: "注文する", buttonImage: "pc").shadow(color: .blue.opacity(0.3), radius: 10, x: 10, y: 10).shadow(color: .white, radius: 20, x: -5, y: -5)
-                    }
-                }.frame(maxWidth:.infinity, maxHeight: 100).background(LinearGradient(colors: [.red.opacity(0.3),.blue.opacity(0.3)], startPoint: .leading, endPoint: .trailing))
+                    CheckoutView()
+                }.frame(maxWidth:.infinity, maxHeight: 100).background(.ultraThinMaterial)
             }
-        }.sheet(isPresented: $openCharge) {
-            CheckoutView()
         }
     }
 }

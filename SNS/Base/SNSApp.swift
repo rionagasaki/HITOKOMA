@@ -13,7 +13,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
     FirebaseApp.configure()
-      StripeAPI.defaultPublishableKey = "pk_live_51LvcnMIMOIL9adjNh3OIuKk0MmuwweiIhZHigNYZzW2OhqPJ6WYRdHI3AwMHOmOYeO9OETa1l8kMDOhhVA3xnJaE0002hJn7m7"
+      StripeAPI.defaultPublishableKey = "pk_test_51LvcnMIMOIL9adjNYRI6Tr2V1KOmdpf1l2xpG5dlSyo6Ek146iRPhwgVmNDwYmDhmtAV785Lc5qe2s9gTkxMO7Oc00UVvNaqQF"
     return true
   }
 }

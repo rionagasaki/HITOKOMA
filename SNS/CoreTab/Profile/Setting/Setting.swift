@@ -12,5 +12,5 @@ struct Setting:Identifiable {
     var id = UUID()
     var settingName: String
     var settingImage: String
-    var handler:() -> Void
+    var handler: AnyView
 }

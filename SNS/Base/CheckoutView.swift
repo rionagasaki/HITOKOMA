@@ -7,34 +7,40 @@
 
 import SwiftUI
 import StripePaymentSheet
+import Lottie
 
 struct CheckoutView: View {
-  @ObservedObject var model = MyBackendModel()
-
-  var body: some View {
-    VStack {
-      if let paymentSheet = model.paymentSheet {
-        PaymentSheet.PaymentButton(
-          paymentSheet: paymentSheet,
-          onCompletion: model.onPaymentCompletion
-        ) {
-          Text("Buy")
+    @ObservedObject var model = MyBackendModel()
+    
+    var body: some View {
+        VStack(alignment: .center){
+            if let paymentSheet = model.paymentSheet {
+                PaymentSheet.PaymentButton(paymentSheet: paymentSheet, onCompletion:model.onPaymentCompletion) {
+                    RichButton(buttonText: "注文する", buttonImage: "pc").shadow(color: .blue.opacity(0.1), radius: 10, x: 10, y: 10).shadow(color: .white, radius: 20, x: -5, y: -5)
+                }
+            } else {
+                ProgressView()
+            }
+            if let result = model.paymentResult {
+                switch result {
+                case .completed:
+                    HStack{
+                        Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                        Text("購入済み")
+                    }
+                case .canceled:
+                    HStack{
+                        Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
+                        Text("Payment Canceled")
+                    }
+                case .failed(let error):
+                    Text("Payment failed: \(error.localizedDescription)")
+                }
+            }
+        }.onAppear{
+            model.preparePaymentSheet()
         }
-      } else {
-        Text("Loading…")
-      }
-      if let result = model.paymentResult {
-        switch result {
-        case .completed:
-          Text("Payment complete")
-        case .failed(let error):
-          Text("Payment failed: \(error.localizedDescription)")
-        case .canceled:
-          Text("Payment canceled.")
-        }
-      }
-    }.onAppear { model.preparePaymentSheet() }
-  }
+    }
 }
 
 

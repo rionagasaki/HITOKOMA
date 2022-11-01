@@ -5,48 +5,23 @@
 //  Created by Rio Nagasaki on 2022/10/27.
 //
 
-//import UIKit
-//import Stripe
-//
-//class StripeViewController: UIViewController, STPPaymentContextDelegate {
-//    func paymentContext(_ paymentContext: STPPaymentContext, didFailToLoadWithError error: Error) {
-//        <#code#>
-//    }
-//    
-//    func paymentContextDidChange(_ paymentContext: STPPaymentContext) {
-//        <#code#>
-//    }
-//    
-//    func paymentContext(_ paymentContext: STPPaymentContext, didCreatePaymentResult paymentResult: STPPaymentResult, completion: @escaping STPPaymentStatusBlock) {
-//        <#code#>
-//    }
-//    
-//    func paymentContext(_ paymentContext: STPPaymentContext, didFinishWith status: STPPaymentStatus, error: Error?) {
-//        <#code#>
-//    }
-//    
-//    private var paymentContext
-//
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        let customerContext = STPCustomerContext(keyProvider: MyAPIClient())
-//        STPPaymentContext(customerContext: customerContext)
-//    }
-//}
-
 import UIKit
 import StripePaymentsUI
+import StripePaymentSheet
 import SwiftUI
+import FirebaseFunctions
 
 class CheckoutViewController: UIViewController {
-
-
+    
+    var paymentSheet: PaymentSheet?
+    
     lazy var cardView: STPCardFormView = {
         let cardView = STPCardFormView()
         return cardView
     }()
     lazy var cardTextField: STPPaymentCardTextField = {
         let cardTextField = STPPaymentCardTextField()
+        cardTextField.cvcPlaceholder = "セキュリティコード"
         return cardTextField
     }()
     lazy var payButton: UIButton = {
@@ -58,7 +33,9 @@ class CheckoutViewController: UIViewController {
         button.addTarget(self, action: #selector(pay), for: .touchUpInside)
         return button
     }()
-
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -73,7 +50,7 @@ class CheckoutViewController: UIViewController {
             stackView.topAnchor.constraint(equalToSystemSpacingBelow: view.topAnchor, multiplier: 2),
         ])
     }
-
+    
     @objc
     func pay() {
         // ...
@@ -89,46 +66,61 @@ struct CheckoutViewControllerWrapper: UIViewControllerRepresentable{
     }
 }
 
-import StripePaymentSheet
-import SwiftUI
-
 class MyBackendModel: ObservableObject {
-  let backendCheckoutUrl = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createAccount")! // Your backend endpoint
-  @Published var paymentSheet: PaymentSheet?
-  @Published var paymentResult: PaymentSheetResult?
+    // MARK: EndPoint
+//    let customHandlers = PaymentSheet.ApplePayConfiguration.Handlers(
+//        authorizationResultHandler: { result, completion in
+//            // Fetch the order details from your service
+//            MyAPIClient.shared.fetchOrderDetails(orderID:) { myOrderDetails
+//                result.orderDetails = PKPaymentOrderDetails(
+//                    orderTypeIdentifier: myOrderDetails.orderTypeIdentifier, // "com.myapp.order"
+//                    orderIdentifier: myOrderDetails.orderIdentifier, // "ABC123-AAAA-1111"
+//                    webServiceURL: myOrderDetails.webServiceURL, // "https://my-backend.example.com/apple-order-tracking-backend"
+//                    authenticationToken: myOrderDetails.authenticationToken) // "abc123"
+//                // Call the completion block on the main queue with your modified PKPaymentAuthorizationResult
+//                completion(result)
+//            }
+//        }
+//    )
+    let backendCheckoutUrl = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntent")!
+    lazy var functions = Functions.functions()
+    
+    @Published var paymentSheet: PaymentSheet?
+    @Published var paymentResult: PaymentSheetResult?
 
-  func preparePaymentSheet() {
-    // MARK: Fetch the PaymentIntent and Customer information from the backend
-      var request = URLRequest(url:backendCheckoutUrl)
-    request.httpMethod = "POST"
-    let task = URLSession.shared.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
-      guard let data = data,
-            let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any],
-            let customerId = json["customer"] as? String,
-            let customerEphemeralKeySecret = json["ephemeralKey"] as? String,
-            let paymentIntentClientSecret = json["paymentIntent"] as? String,
-            let self = self else {
-        // Handle error
-        return
-      }
-
-      // MARK: Create a PaymentSheet instance
-      var configuration = PaymentSheet.Configuration()
-      configuration.merchantDisplayName = "Example, Inc."
-      configuration.customer = .init(id: customerId, ephemeralKeySecret: customerEphemeralKeySecret)
-      // Set `allowsDelayedPaymentMethods` to true if your business can handle payment methods
-      // that complete payment after a delay, like SEPA Debit and Sofort.
-      configuration.allowsDelayedPaymentMethods = true
-
-      DispatchQueue.main.async {
-        self.paymentSheet = PaymentSheet(paymentIntentClientSecret: paymentIntentClientSecret, configuration: configuration)
-      }
-    })
-    task.resume()
-  }
-
-  func onPaymentCompletion(result: PaymentSheetResult) {
-    self.paymentResult = result
-  }
+    func preparePaymentSheet() {
+        // MARK: Fetch the PaymentIntent and Customer information from the backend
+        functions.httpsCallable(URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntent")!).call{ result, error in
+            if let error = error {
+                print(error.localizedDescription)
+                return
+            }
+            guard let data = result?.data as? [String: Any] ,
+                  let customerId = data["customer"] as? String,
+                  let customerEphemeralKeySecret = data["ephemeralKey"] as? String,
+                  let paymentIntent = data["paymentIntent"] as? String,
+                  let publishableKey = data["publishableKey"] as? String else {
+                return
+            }
+            STPAPIClient.shared.publishableKey = publishableKey
+            var configuration = PaymentSheet.Configuration()
+            var appearance = PaymentSheet.Appearance()
+            appearance.cornerRadius = 12
+            configuration.applePay = .init(merchantId: "merchant.com.HITOKOMA",
+                                           merchantCountryCode: "JP")
+            configuration.appearance = appearance
+            configuration.merchantDisplayName = "Example, Inc."
+            configuration.customer = .init(id:customerId, ephemeralKeySecret: customerEphemeralKeySecret)
+            configuration.allowsDelayedPaymentMethods = true
+            
+            DispatchQueue.main.async {
+                self.paymentSheet = PaymentSheet(paymentIntentClientSecret: paymentIntent, configuration: configuration)
+            }
+        }
+    }
+    
+    func onPaymentCompletion(result: PaymentSheetResult) {
+        self.paymentResult = result
+    }
 }
 

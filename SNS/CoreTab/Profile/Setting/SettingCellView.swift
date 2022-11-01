@@ -19,6 +19,6 @@ struct SettingCellView: View {
 
 struct SettingCellView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingCellView(setting: Setting(settingName: "名前変更", settingImage: "person", handler: {}))
+        SettingCellView(setting: Setting(settingName: "名前変更", settingImage: "person", handler: AnyView(InquiryView())))
     }
 }

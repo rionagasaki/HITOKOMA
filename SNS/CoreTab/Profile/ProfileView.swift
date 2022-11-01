@@ -12,7 +12,9 @@ struct ProfileView: View {
     @State private var firstName = ""
     @EnvironmentObject var appState:AppState
     private let screenWidth = UIScreen.main.bounds.width
-    private var settings = [ Setting(settingName: "会員情報", settingImage: "person", handler: {}), Setting(settingName: "パスワード変更", settingImage: "lock", handler:{}), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: {}), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: {})]
+    private var settings = [ Setting(settingName: "会員情報", settingImage: "person", handler: AnyView(MemberInfoView())), Setting(settingName: "パスワード変更", settingImage: "lock", handler:AnyView(InquiryView())), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: AnyView(InquiryView())), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: AnyView(DashBoardView())),
+        Setting(settingName: "ひとこまを販売する", settingImage: "checkmark.seal", handler: AnyView(ConnectAccountView()))
+    ]
     
     var body: some View {
         ZStack{
@@ -39,7 +41,7 @@ struct ProfileView: View {
                     Section {
                         List(self.settings){ setting in
                             NavigationLink {
-                                InquiryView()
+                                setting.handler
                             } label: {
                                 SettingCellView(setting: setting)
                             }
@@ -49,50 +51,30 @@ struct ProfileView: View {
                     }
                     Section {
                         List{
-                            SettingCellView(setting: Setting(settingName: "通知設定", settingImage: "bell.badge", handler:{
-                                
-                            }))
+                            SettingCellView(setting: Setting(settingName: "通知設定", settingImage: "bell.badge", handler: AnyView(InquiryView())))
                         }
                     } header: {
                         Text("アプリ設定").foregroundColor(Color.white)
                     }
                     Section {
                         List{
-                            SettingCellView(setting: Setting(settingName: "ヘルプ", settingImage: "questionmark.circle", handler: {
-                                
-                            })).onTapGesture {
-                                print("aaaa")
-                            }
-                            SettingCellView(setting: Setting(settingName: "お問い合わせ", settingImage: "envelope", handler: {
-                                
-                            }))
+                            SettingCellView(setting: Setting(settingName: "ヘルプ", settingImage: "questionmark.circle", handler: AnyView(InquiryView())))
+                            SettingCellView(setting: Setting(settingName: "お問い合わせ", settingImage: "envelope", handler:AnyView(InquiryView())))
                         }
                     } header: {
                         Text("サポート").foregroundColor(Color.white)
                     }
                     Section {
                         List{
-                            SettingCellView(setting: Setting(settingName: "サービス内容", settingImage: "questionmark.circle", handler: {
-                                
-                            }))
-                            SettingCellView(setting: Setting(settingName: "利用規約", settingImage: "doc.text", handler: {
-                                
-                            }))
-                            SettingCellView(setting: Setting(settingName: "プライバシーポリシー", settingImage: "lock.shield", handler: {
-                                
-                            }))
-                            SettingCellView(setting: Setting(settingName: "著作権情報", settingImage: "lock.square.stack", handler: {
-                                
-                            }))
-                            SettingCellView(setting: Setting(settingName: "アカウント削除", settingImage: "person.fill.badge.minus", handler: {
-                                
-                            }))
-                            
+                            SettingCellView(setting: Setting(settingName: "サービス内容", settingImage: "questionmark.circle", handler: AnyView(InquiryView())))
+                            SettingCellView(setting: Setting(settingName: "利用規約", settingImage: "doc.text", handler: AnyView(InquiryView())))
+                            SettingCellView(setting: Setting(settingName: "プライバシーポリシー", settingImage: "lock.shield", handler: AnyView(InquiryView())))
+                            SettingCellView(setting: Setting(settingName: "オープンソースライセンス", settingImage: "lock.square.stack", handler: AnyView(InquiryView())))
+                            SettingCellView(setting: Setting(settingName: "アカウント削除", settingImage: "person.fill.badge.minus", handler:AnyView(InquiryView())))
                         }
                     } header: {
                         Text("このサービスについて").foregroundColor(Color.white)
                     }
-                    
                     Button {
                         try? Auth.auth().signOut()
                         appState.isLogin = false

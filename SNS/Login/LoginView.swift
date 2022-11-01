@@ -75,17 +75,12 @@ struct LoginView: View {
                                         self.appState.isLogin = true
                                     }
                                 }else{
+                                    // 後ほど責務を分離させる。
                                     Auth.auth().createUser(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText) { authResult, error in
                                         if error != nil { return }
                                         guard let authResult = authResult else { return }
                                         self.registerFirestore(username: viewStore.state.usernameText , email: authResult.user.email!, uid: authResult.user.uid) {
-                                            registerFunctions().createCustomerId(email: authResult.user.email!) { result, error in
-                                                if error != nil {
-                                                    print("functionError\(error)")
-                                                    return }
-                                                print(result)
-                                                self.appState.isLogin = true
-                                            }
+                                            
                                         }
                                     }
                                 }
@@ -99,7 +94,7 @@ struct LoginView: View {
                                 }
                             }.frame(height:50)
                             Button {
-                                registerFunctions().createCheckout()
+                                registerFunctions().createCustomerId()
                             } label: {
                                 Text("テストボタン")
                             }
@@ -125,7 +120,6 @@ struct LoginView: View {
                             Button {
                                 if isLogin{
                                     signInWithAppleObject.signInWithApple()
-                                    
                                 }
                             } label: {
                                 if isLogin{
@@ -177,18 +171,14 @@ extension View {
 
 class registerFunctions{
     lazy var functions = Functions.functions()
-    func createCustomerId(email:String, completion:@escaping (String?, Error?) -> Void){
-        let data:[String: Any] = [
-            "email": email
-        ]
-        functions.httpsCallable("createAccount").call(data){ result, error in
+    
+    func createCustomerId(){
+        functions.httpsCallable("stripeCreateAccount").call{ result, error in
             if let error = error {
-                print("errorがあります",error.localizedDescription)
-                completion(nil, error)
-            }else if let data = result?.data as? [String: Any],
-                     let customerId = data["customerId"] as? String {
-                completion(customerId, nil)
+                print(error)
+                return
             }
+            print("data", result)
         }
     }
     
@@ -197,7 +187,8 @@ class registerFunctions{
             if let error = error {
                 print("errorがあります\(error)")
             }else{
-              print(result)
+                let data = result?.data as? [String: Any]
+                print(data)
             }
         }
     }
