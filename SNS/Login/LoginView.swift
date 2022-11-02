@@ -78,10 +78,8 @@ struct LoginView: View {
                                     // 後ほど責務を分離させる。
                                     Auth.auth().createUser(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText) { authResult, error in
                                         if error != nil { return }
-                                        guard let authResult = authResult else { return }
-                                        self.registerFirestore(username: viewStore.state.usernameText , email: authResult.user.email!, uid: authResult.user.uid) {
-                                            
-                                        }
+                                        guard authResult != nil else { return }
+                                        self.appState.isLogin = true
                                     }
                                 }
                             } label: {
@@ -93,12 +91,7 @@ struct LoginView: View {
                                     }
                                 }
                             }.frame(height:50)
-                            Button {
-                                registerFunctions().createCustomerId()
-                            } label: {
-                                Text("テストボタン")
-                            }
-
+                            
                             HStack{
                                 Text(isLogin ? "新規登録は" : "すでにアカウントをお持ちの方").tint(Color.white).font(.footnote)
                                 Button{
@@ -116,7 +109,7 @@ struct LoginView: View {
                                 Divider()
                                 Text("or")
                             }
-                           
+                            
                             Button {
                                 if isLogin{
                                     signInWithAppleObject.signInWithApple()
@@ -138,20 +131,6 @@ struct LoginView: View {
                 }.shadow(radius: 20, x: 0, y: 20)
             }.ignoresSafeArea().sheet(isPresented: $halfModal) {
                 LoginState.initial2
-            }
-        }
-    }
-    
-    func registerFirestore(username:String, email:String, uid:String, completionHandler:@escaping ()-> Void){
-        let db = Firestore.firestore()
-        db.collection("User").document(uid).setData([
-            "username": username,
-            "email":email
-        ]){ error in
-            if let error = error {
-                print(error.localizedDescription)
-            }else {
-                completionHandler()
             }
         }
     }

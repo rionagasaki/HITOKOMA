@@ -46,7 +46,8 @@
 		536B1EC129119347007058CC /* PasswordChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536B1EC029119347007058CC /* PasswordChangeView.swift */; };
 		536B1EC42911971D007058CC /* PKHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 536B1EC32911971D007058CC /* PKHUD */; };
 		536B1EC62911A371007058CC /* DashBoardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536B1EC52911A371007058CC /* DashBoardView.swift */; };
-		536B1EC82911A4E4007058CC /* DashBoardCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536B1EC72911A4E4007058CC /* DashBoardCall.swift */; };
+		536B1EC82911A4E4007058CC /* DashBoardCallViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536B1EC72911A4E4007058CC /* DashBoardCallViewController.swift */; };
+		536B1ECB291221E8007058CC /* EmailChangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 536B1ECA291221E8007058CC /* EmailChangeView.swift */; };
 		5371D53D28F97B2B00EF229B /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5371D53C28F97B2B00EF229B /* BackgroundView.swift */; };
 		538D059028F9D39A00C937B3 /* MemberInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 538D058F28F9D39A00C937B3 /* MemberInfoView.swift */; };
 		538D059228FA8E9D00C937B3 /* RichButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 538D059128FA8E9D00C937B3 /* RichButton.swift */; };
@@ -163,7 +164,8 @@
 		536B1EBD2911730C007058CC /* Extension+UIColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Extension+UIColor.swift"; sourceTree = "<group>"; };
 		536B1EC029119347007058CC /* PasswordChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordChangeView.swift; sourceTree = "<group>"; };
 		536B1EC52911A371007058CC /* DashBoardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashBoardView.swift; sourceTree = "<group>"; };
-		536B1EC72911A4E4007058CC /* DashBoardCall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashBoardCall.swift; sourceTree = "<group>"; };
+		536B1EC72911A4E4007058CC /* DashBoardCallViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashBoardCallViewController.swift; sourceTree = "<group>"; };
+		536B1ECA291221E8007058CC /* EmailChangeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailChangeView.swift; sourceTree = "<group>"; };
 		5371D53C28F97B2B00EF229B /* BackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		538D058F28F9D39A00C937B3 /* MemberInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberInfoView.swift; sourceTree = "<group>"; };
 		538D059128FA8E9D00C937B3 /* RichButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichButton.swift; sourceTree = "<group>"; };
@@ -281,7 +283,7 @@
 				53B68D1229046C110078DDD2 /* SignInWithAppleButton.swift */,
 				53B68D15290490E20078DDD2 /* SignInWithEmail.swift */,
 				536B1EC52911A371007058CC /* DashBoardView.swift */,
-				536B1EC72911A4E4007058CC /* DashBoardCall.swift */,
+				536B1EC72911A4E4007058CC /* DashBoardCallViewController.swift */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -412,6 +414,14 @@
 			path = PasswordChange;
 			sourceTree = "<group>";
 		};
+		536B1EC9291221D5007058CC /* EmailChange */ = {
+			isa = PBXGroup;
+			children = (
+				536B1ECA291221E8007058CC /* EmailChangeView.swift */,
+			);
+			path = EmailChange;
+			sourceTree = "<group>";
+		};
 		538D058E28F9D38100C937B3 /* MemberInfo */ = {
 			isa = PBXGroup;
 			children = (
@@ -525,6 +535,7 @@
 		53CD16C928EE8202009CF670 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				536B1EC9291221D5007058CC /* EmailChange */,
 				536B1EBF2911932E007058CC /* PasswordChange */,
 				538D058E28F9D38100C937B3 /* MemberInfo */,
 				5306B7C328D6DA5000BEE750 /* Setting */,
@@ -667,7 +678,7 @@
 				535B00C928C4972F000B5DCD /* SearchView.swift in Sources */,
 				5306B7F228DCC25900BEE750 /* LoginView.swift in Sources */,
 				5306B7CC28D6E1D500BEE750 /* Setting.swift in Sources */,
-				536B1EC82911A4E4007058CC /* DashBoardCall.swift in Sources */,
+				536B1EC82911A4E4007058CC /* DashBoardCallViewController.swift in Sources */,
 				53B68D2129060C570078DDD2 /* SearchState.swift in Sources */,
 				5306B7CE28D9F82A00BEE750 /* HeaderView.swift in Sources */,
 				534DF2B72903D5C0006E9558 /* MessageView.swift in Sources */,
@@ -718,6 +729,7 @@
 				53B68D44290BC9540078DDD2 /* CheckoutView.swift in Sources */,
 				53B68D182905412F0078DDD2 /* OneClassView.swift in Sources */,
 				53CD16CD28EE8235009CF670 /* ProfileReducer.swift in Sources */,
+				536B1ECB291221E8007058CC /* EmailChangeView.swift in Sources */,
 				53B68D252907F79F0078DDD2 /* CustomTabView.swift in Sources */,
 				5306B7C028D648A700BEE750 /* HTTPClient.swift in Sources */,
 				53B68D03290454EB0078DDD2 /* MessageAction.swift in Sources */,

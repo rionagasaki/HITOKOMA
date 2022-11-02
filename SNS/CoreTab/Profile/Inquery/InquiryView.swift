@@ -11,13 +11,15 @@ struct InquiryView: View {
     @State var nameFields:String = ""
     var body: some View {
         ZStack{
-            ZStack{
-                VStack(alignment:.leading ,spacing: 20){
-                    BackgroundView(startColor: .green, endColor: .purple).frame(width: 300, height: 300)
-                    BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
+            Color.black.opacity(0.03).background(.ultraThinMaterial)
+            VStack(alignment:.leading ,spacing: 20){
+                Circle().size(width: 200, height: 200).blur(radius: 80).foregroundColor(.yellow)
+                HStack{
+                    Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.blue).padding(.top,-120)
+                    Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.orange).padding(.top,30)
                 }
-                Color.init(uiColor:UIColor(displayP3Red: 40/255, green: 42/255, blue: 51/255, alpha: 1)).opacity(0.3).background(.ultraThinMaterial)
-            }.ignoresSafeArea()
+                Circle().size(width: 200, height: 200).blur(radius: 100).foregroundColor(.pink)
+            }
             Form{
                 InquiryHeaderView().padding(.top,10)
                 Section {
