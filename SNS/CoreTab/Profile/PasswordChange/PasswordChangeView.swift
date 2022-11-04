@@ -23,12 +23,29 @@ struct PasswordChangeView: View {
                 }
                 Circle().size(width: 200, height: 200).blur(radius: 100).foregroundColor(.pink)
             }
-            VStack{
-                TextField("古いパスワード", text: $oldPasswordField).padding(.all, 7).background(.white).overlay(RoundedRectangle(cornerRadius: 5).stroke()).padding(.horizontal,16).padding(.top,16)
-                TextField("新しいパスワード", text: $newPasswordField).padding(.all, 7).background(.white).overlay(RoundedRectangle(cornerRadius: 5).stroke()).padding(.horizontal,16)
-                TextField("新しいパスワード(確認)", text: $newConfirmationPasswordTextFIeld).padding(.all, 7).background(.white).overlay(RoundedRectangle(cornerRadius: 5).stroke()).padding(.horizontal,16)
-                Spacer()
-            }.navigationTitle("パスワードを変更").navigationBarTitleDisplayMode(.inline)
+            ScrollView {
+                VStack{
+                    VStack{
+                        Image(systemName: "person.badge.key.fill").resizable().scaledToFit().frame(width:100, height: 50).foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
+                        Text("確認メールが送られます。")
+                    }.frame(width: UIScreen.main.bounds.width-100, height: 300).background(.white.opacity(0.1)).background(.ultraThinMaterial).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray.opacity(0.6), lineWidth: 0.5)).shadow(radius: 1)
+                    
+                    VStack(alignment: .leading){
+                        Text("古いパスワード").font(.system(size: 14)).fontWeight(.regular).padding(.leading, 20)
+                        TextField("", text: $oldPasswordField).padding(.all, 7).background(.white).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke()).padding(.horizontal,16)
+                        Text("新しいパスワード").font(.system(size: 14)).fontWeight(.regular).padding(.leading, 20)
+                        TextField("", text: $newPasswordField).padding(.all, 7).background(.white).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke()).padding(.horizontal,16)
+                        Text("古いメールアドレス").font(.system(size: 14)).fontWeight(.regular).padding(.leading, 20)
+                        TextField("", text: $newConfirmationPasswordTextFIeld).padding(.all, 7).background(.white).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke()).padding(.horizontal,16)
+                        Button {
+                            print("aaaa")
+                        } label: {
+                            Text("パスワードを変更する").bold().foregroundColor(.white)
+                        }.frame(width:UIScreen.main.bounds.width-40, height: 40).background(.blue).cornerRadius(10).padding(.horizontal,20).padding(.top, 16)
+                        Spacer()
+                    }
+                }.navigationTitle("パスワードを変更").navigationBarTitleDisplayMode(.inline)
+            }
         }
     }
 }

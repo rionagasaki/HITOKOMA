@@ -12,24 +12,24 @@ struct FavoriteView: View {
         ScrollView(.horizontal, showsIndicators: false){
             HStack{
                 VStack{
-                    Image("rootImage").resizable().frame(width: 80, height: 80).cornerRadius(20)
-                    Text("武蔵家").foregroundColor(Color(uiColor: .lightGray)).font(.system(size: 13))
+                    Image("rootImage").resizable().frame(width: 80, height: 80).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray, lineWidth: 0.5))
+                    Text("英語").foregroundColor(Color(uiColor: .darkGray)).font(.system(size: 13))
                 }
                 VStack{
-                    Image("ramen").resizable().frame(width: 80, height: 80).cornerRadius(20)
-                    Text("武蔵家").foregroundColor(Color(uiColor: .lightGray)).font(.system(size: 13))
+                    Image("study").resizable().frame(width: 80, height: 80).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray, lineWidth: 0.5))
+                    Text("ネットワーク").foregroundColor(Color(uiColor: .darkGray)).font(.system(size: 13))
                 }
                 VStack{
-                    Image("ramen").resizable().frame(width: 80, height: 80).cornerRadius(20)
-                    Text("武蔵家").foregroundColor(Color(uiColor: .lightGray)).font(.system(size: 13))
+                    Image("suit").resizable().frame(width: 80, height: 80).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray, lineWidth: 0.5))
+                    Text("数学").foregroundColor(Color(uiColor: .darkGray)).font(.system(size: 13))
                 }
                 VStack{
-                    Image("ramen").resizable().frame(width: 80, height: 80).cornerRadius(20)
-                    Text("武蔵家").foregroundColor(Color(uiColor: .lightGray)).font(.system(size: 13))
+                    Image("computer").resizable().frame(width: 80, height: 80).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray, lineWidth: 0.5))
+                    Text("化学").foregroundColor(Color(uiColor: .darkGray)).font(.system(size: 13))
                 }
                 VStack{
-                    Image("ramen").resizable().frame(width: 80, height: 80).cornerRadius(20)
-                    Text("武蔵家").foregroundColor(Color(uiColor: .lightGray)).font(.system(size: 13))
+                    Image("ramen").resizable().frame(width: 80, height: 80).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray, lineWidth: 0.5))
+                    Text("物理").foregroundColor(Color(uiColor: .darkGray)).font(.system(size: 13))
                 }
             }
         }

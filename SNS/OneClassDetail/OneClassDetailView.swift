@@ -18,7 +18,7 @@ struct OneClassDetailView: View {
                     GeometryReader{ geometry in
                         Image("suit").resizable().frame(width: UIScreen.main.bounds.width, height: geometry.frame(in: .global).minY > 0 ? 300+geometry.frame(in: .global).minY :300).offset(y: geometry.frame(in: .global).minY > 0 ? -geometry.frame(in: .global).minY: 0)
                     }.frame(height: 300)
-                    Text("ものづくり助成金に加点！経営革新計画を作成します").font(.system(size: 25)).fontWeight(.bold)
+                    Text("TOEICの点数860点です！なんでも教えます！").font(.system(size: 25)).fontWeight(.bold)
                     
                     Button {
                         print("プロフィールがタップされた。")

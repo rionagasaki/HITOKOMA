@@ -88,9 +88,9 @@ class MyBackendModel: ObservableObject {
     @Published var paymentSheet: PaymentSheet?
     @Published var paymentResult: PaymentSheetResult?
 
-    func preparePaymentSheet() {
+    func preparePaymentSheet(customerId: String) {
         // MARK: Fetch the PaymentIntent and Customer information from the backend
-        functions.httpsCallable(URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntent")!).call{ result, error in
+        functions.httpsCallable(URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntent")!).call(["customerId": customerId]){ result, error in
             if let error = error {
                 print(error.localizedDescription)
                 return

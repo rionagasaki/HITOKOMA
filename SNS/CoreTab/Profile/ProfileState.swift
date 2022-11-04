@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+struct ProfileState {
+    var username: String
+    var email: String
+    var profileImage: String
+    
+}

@@ -38,7 +38,10 @@ struct CheckoutView: View {
                 }
             }
         }.onAppear{
-            model.preparePaymentSheet()
+            FetchFromFirestore().fetchUserInfoFromFirestore { result in
+                model.preparePaymentSheet(customerId: result.customerId)
+            }
+            
         }
     }
 }

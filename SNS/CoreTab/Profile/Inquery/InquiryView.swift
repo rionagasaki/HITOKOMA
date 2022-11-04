@@ -41,7 +41,7 @@ struct InquiryView: View {
                     print("aaaa")
                 } label: {
                     Text("送信する").bold().foregroundColor(Color.white)
-                }.padding(.leading,120).listRowBackground(Color.blue)
+                }.padding(.horizontal,120).listRowBackground(Color.blue)
             }
         }.navigationTitle("お問い合わせ").navigationBarTitleDisplayMode(.inline)
     }

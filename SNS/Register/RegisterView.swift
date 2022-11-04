@@ -8,10 +8,12 @@
 import SwiftUI
 import ComposableArchitecture
 import FirebaseAuth
+import FirebaseFunctions
 
 struct RegisterView: View {
     @State var email:String = ""
     let store:Store<LoginState,LoginAction>
+    lazy var functions = Functions.functions()
     var body: some View{
         WithViewStore(self.store) { viewStore in
             ZStack{
@@ -58,7 +60,12 @@ struct RegisterView: View {
                             
                             Button {
                                 Auth.auth().createUser(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText) { authResult, error in
-                                    print(authResult)
+                                    let url = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createCustomer")
+                                    callCloudFunctions().setFunctions(email: authResult?.user.email ?? "") { customerId in
+                                        SetToFirestore().registerUserInfoFirestore(uid: authResult!.user.uid, username: "", email: "", customerId: customerId) {
+                                            
+                                        }
+                                    }
                                 }
                             } label: {
                                 GeometryReader { geometry in

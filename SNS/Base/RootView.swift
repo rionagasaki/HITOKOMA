@@ -24,6 +24,8 @@ struct RootView: View {
                 IntroView(shouldOpenPage: false)
             }
         }.onAppear {
+        //MARK: からのユーザーを登録してしまったとき。
+           //  try? Auth.auth().signOut()
             if Auth.auth().currentUser == nil {
                 appState.isLogin = false
             }else{

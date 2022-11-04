@@ -12,9 +12,7 @@ struct HomeView:View{
     let screenSize = UIScreen.main.bounds.width
     
     var body: some View{
-        
         ZStack {
-           
             ScrollView {
                 VStack(alignment: .center){
                     GeometryReader{ geometry in
@@ -105,7 +103,6 @@ struct HomeView:View{
                             }
                         }
                     }.padding(.top,10)
-                    
                 }.padding(.bottom,150)
             }.ignoresSafeArea()
         }

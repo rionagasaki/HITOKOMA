@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct HeaderView: View {
+    let username: String
     var body: some View {
         
         VStack{
             HStack{
                 Image("rootImage").resizable().background(Color.orange).frame(width: 100, height: 100).cornerRadius(100)
-                VStack{
-                    Text("長崎りお").bold().font(.system(size: 24)).padding(.trailing,100)
+                VStack(alignment: .leading){
+                    Text(username).bold().font(.system(size: 24)).padding(.trailing,100)
                     NavigationLink {
                         ConnectAccountView()
                     } label: {
@@ -28,6 +29,6 @@ struct HeaderView: View {
 
 struct HeaderView_Previews: PreviewProvider {
     static var previews: some View {
-        HeaderView()
+        HeaderView(username: "長崎りお")
     }
 }

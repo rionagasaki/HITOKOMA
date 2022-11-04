@@ -13,6 +13,9 @@ import Combine
 struct ContentView: View {
     @State var selectedTab: Tab = .home
     @State var navigationTitle:String = ""
+    @State var username: String = ""
+    @State var email: String = ""
+    @State var profileImage: String = ""
     
     init(){
         UITabBar.appearance().isHidden = true
@@ -41,10 +44,16 @@ struct ContentView: View {
                 }.tag(Tab.message)
                 NavigationView{
                     ZStack(alignment:.bottom){
-                    ProfileView()
+                        ProfileView(username: username, email: email, profileImage: profileImage)
                     CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
                     }.ignoresSafeArea()
                 }.tag(Tab.profile)
+            }
+        }.onAppear{
+            FetchFromFirestore().fetchUserInfoFromFirestore { doc in
+                self.username = doc.username
+                self.email = doc.email
+                self.profileImage = doc.profileImage
             }
         }
     }

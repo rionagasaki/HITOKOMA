@@ -79,7 +79,11 @@ struct LoginView: View {
                                     Auth.auth().createUser(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText) { authResult, error in
                                         if error != nil { return }
                                         guard authResult != nil else { return }
-                                        self.appState.isLogin = true
+                                        callCloudFunctions().setFunctions(email: authResult?.user.email ?? "") { customerId in
+                                            SetToFirestore().registerUserInfoFirestore(uid: authResult!.user.uid, username:viewStore.state.usernameText, email: authResult!.user.email ?? "", customerId: customerId) {
+                                                self.appState.isLogin = true
+                                            }
+                                        }
                                     }
                                 }
                             } label: {
