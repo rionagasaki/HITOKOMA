@@ -59,7 +59,7 @@ struct OneClassDetailView: View {
             }.ignoresSafeArea()
             ZStack{
                 VStack{
-                    CheckoutView()
+                    CheckoutView(amount: budgets)
                 }.frame(maxWidth:.infinity, maxHeight: 100).background(.ultraThinMaterial)
             }
         }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import FirebaseFirestore
+import SDWebImageSwiftUI
 
 struct MemberInfoView: View {
     @EnvironmentObject var user: User
@@ -38,11 +39,7 @@ struct MemberInfoView: View {
                                     if user.profileImage == ""{
                                         Image(uiImage: profileImage ?? UIImage(named: "bird")!).resizable().frame(width:100, height: 100).clipShape(Circle())
                                     }else{
-                                        AsyncImage(url: URL(string: user.profileImage)) { image in
-                                            image.resizable().frame(width:100, height:100).clipShape(Circle())
-                                        } placeholder: {
-                                            ProgressView().frame(width:100, height: 100).background(.gray).clipShape(Circle())
-                                        }
+                                        WebImage(url: URL(string: user.profileImage)).resizable().frame(width:100, height: 100).clipShape(Circle())
                                     }
                                 }.clipShape(Circle()).overlay(Circle().stroke(.gray.opacity(0.6), lineWidth: 0.5)).shadow(radius: 1)
                             }.buttonStyle(BorderlessButtonStyle())

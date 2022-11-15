@@ -13,6 +13,18 @@ enum BuyOrSell: String, CaseIterable{
     case sell = "リクエスト"
 }
 
+let englishDetails = [DetailCategory(categoryName: "TOEIC", categoryImage: "TOEIC"),DetailCategory(categoryName: "TOEFL", categoryImage: "TOEFL"),DetailCategory(categoryName: "英検", categoryImage: "EnglishTest")]
+
+let computerDetails = [DetailCategory(categoryName: "基本/応用情報", categoryImage: "basicInformation"), DetailCategory(categoryName: "プログラミング", categoryImage: "programming"), DetailCategory(categoryName: "G/E資格", categoryImage: "AI")
+]
+
+let lawDetails = [DetailCategory(categoryName: "宅建", categoryImage: "law")]
+
+let financeDetails = [DetailCategory(categoryName: "会計士", categoryImage: "accountant"), DetailCategory(categoryName: "簿記", categoryImage: "bookKeeping")]
+
+let investmentDetails = [DetailCategory(categoryName: "株式取引", categoryImage: ""), DetailCategory(categoryName: "為替取引", categoryImage: ""), DetailCategory(categoryName: "資産運用", categoryImage: "")]
+
+
 struct HomeView:View{
     @State private var contentOffSet = CGFloat(0)
     @State var selectPicker: BuyOrSell = .buy
@@ -29,7 +41,12 @@ struct HomeView:View{
     let lessonFinanceData: [LessonData]
     let lessonInvestmentData: [LessonData]
     
-    let categories = [CategoryData(categoryName: "英会話", categoryImage: "English", handler: AnyView(EnglishView())), CategoryData(categoryName: "IT", categoryImage: "computer", handler: AnyView(InquiryView())), CategoryData(categoryName: "法律", categoryImage: "study", handler: AnyView(InquiryView())), CategoryData(categoryName: "ファイナンス", categoryImage: "coffee", handler: AnyView(InquiryView())), CategoryData(categoryName: "投資", categoryImage: "invest", handler: AnyView(InquiryView()))]
+    let categories = [
+        CategoryData(categoryName: "英会話", categoryImage: "English", category: .english),
+        CategoryData(categoryName: "IT", categoryImage: "computer", category: .computer),
+        CategoryData(categoryName: "法律", categoryImage: "study", category: .law),
+        CategoryData(categoryName: "ファイナンス", categoryImage: "coffee", category: .finance),
+        CategoryData(categoryName: "投資", categoryImage: "invest", category: .investment)]
     let screenSize = UIScreen.main.bounds.width
     var body: some View {
         ZStack {
@@ -47,7 +64,13 @@ struct HomeView:View{
                     HStack {
                         ForEach(categories) { category in
                             NavigationLink {
-                                category.handler
+                                switch category.category{
+                                case .english: SearchCategoryDetailView(detailCategories: englishDetails, lessonsData: lessonEnglishData, mainCategory: .english)
+                                case .computer: SearchCategoryDetailView(detailCategories: computerDetails, lessonsData: lessonComputerData, mainCategory: .computer)
+                                case .law: SearchCategoryDetailView(detailCategories: lawDetails, lessonsData: lessonLawData, mainCategory: .law)
+                                case .finance: SearchCategoryDetailView(detailCategories: financeDetails, lessonsData: lessonFinanceData, mainCategory: .finance)
+                                case .investment: SearchCategoryDetailView(detailCategories: investmentDetails, lessonsData: lessonInvestmentData, mainCategory: .investment)
+                                }
                             } label: {
                                 Category(category: category)
                             }
@@ -58,7 +81,7 @@ struct HomeView:View{
                             want in
                             Text(want.rawValue).tag(want)
                         }
-                    }.pickerStyle(SegmentedPickerStyle()).padding(.horizontal, 16).padding(.top,10)
+                    }.pickerStyle(SegmentedPickerStyle()).padding(.horizontal, 16).padding(.vertical,10)
                     
                     if selectPicker == .buy {
                         VStack{
@@ -79,11 +102,11 @@ struct HomeView:View{
                                     }
                                 }.padding(.horizontal, 16).padding(.vertical, 7)
                             }
-                            lessonList(bigCategory: "英語", categoryLessonData: lessonEnglishData)
-                            lessonList(bigCategory: "IT", categoryLessonData: lessonComputerData)
-                            lessonList(bigCategory: "法律", categoryLessonData: lessonLawData)
-                            lessonList(bigCategory: "ファイナンス", categoryLessonData: lessonFinanceData)
-                            lessonList(bigCategory: "投資", categoryLessonData: lessonInvestmentData)
+                            lessonList(bigCategory: "英語", categoryLessonData: lessonEnglishData, deatilCategories: englishDetails, categoryDetail: .english)
+                            lessonList(bigCategory: "IT", categoryLessonData: lessonComputerData, deatilCategories: computerDetails, categoryDetail: .computer)
+                            lessonList(bigCategory: "法律", categoryLessonData: lessonLawData, deatilCategories: lawDetails, categoryDetail: .law)
+                            lessonList(bigCategory: "ファイナンス", categoryLessonData: lessonFinanceData, deatilCategories: financeDetails, categoryDetail: .finance)
+                            lessonList(bigCategory: "投資", categoryLessonData: lessonInvestmentData, deatilCategories: investmentDetails, categoryDetail: .investment)
                         }.padding(.top,13)
                     }else if selectPicker == .sell{
                         VStack{
@@ -98,30 +121,32 @@ struct HomeView:View{
                 }.padding(.bottom, 150)
             }.ignoresSafeArea()
         }.onAppear{
-            let font = UIFont(name: "AvenirNext-Medium", size: 16)!
             let foregroundColor = UIColor.systemPurple.withAlphaComponent(0.6)
             let backgroundColor = UIColor.white
                    UISegmentedControl.appearance().selectedSegmentTintColor = foregroundColor
                    UISegmentedControl.appearance().backgroundColor = backgroundColor
                    UISegmentedControl.appearance().setTitleTextAttributes([
-                       .font: font,
                        .foregroundColor: foregroundColor,
                    ], for: .normal)
                    
                    UISegmentedControl.appearance().setTitleTextAttributes([
-                       .font: font,
                        .foregroundColor: UIColor.white,
                    ], for: .selected)
         }
     }
     
-    func lessonList(bigCategory: String, categoryLessonData: [LessonData]) -> some View {
+    func lessonList(bigCategory: String, categoryLessonData: [LessonData], deatilCategories:[DetailCategory], categoryDetail: CategoryDetail) -> some View {
         VStack{
-            HStack{
-                Text(bigCategory).foregroundColor(.black).bold().font(.system(size: 18)).padding(.leading,16)
-                Image(systemName: "chevron.right").resizable().frame(width:10, height:13).foregroundColor(.gray).font(.largeTitle.weight(.bold))
-                Spacer()
+            NavigationLink {
+                SearchCategoryDetailView(detailCategories: deatilCategories, lessonsData: categoryLessonData, mainCategory: categoryDetail)
+            } label: {
+                HStack{
+                    Text(bigCategory).foregroundColor(.black).bold().font(.system(size: 18)).padding(.leading,16)
+                    Image(systemName: "chevron.right").resizable().frame(width:10, height:13).foregroundColor(.gray).font(.largeTitle.weight(.bold))
+                    Spacer()
+                }
             }
+
             ScrollView(.horizontal, showsIndicators: false){
                 HStack{
                     ForEach(categoryLessonData) { lesson in

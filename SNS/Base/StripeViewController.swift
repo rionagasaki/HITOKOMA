@@ -82,15 +82,15 @@ class MyBackendModel: ObservableObject {
 //            }
 //        }
 //    )
-    let backendCheckoutUrl = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntent")!
+    let backendCheckoutUrl = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntents")!
     lazy var functions = Functions.functions()
     
     @Published var paymentSheet: PaymentSheet?
     @Published var paymentResult: PaymentSheetResult?
 
-    func preparePaymentSheet(customerId: String) {
+    func preparePaymentSheet(customerId: String, amount: Int) {
         // MARK: Fetch the PaymentIntent and Customer information from the backend
-        functions.httpsCallable(URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntent")!).call(["customerId": customerId]){ result, error in
+        functions.httpsCallable(URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntents")!).call(["customerId": customerId, "amount": amount]){ result, error in
             if let error = error {
                 print(error.localizedDescription)
                 return

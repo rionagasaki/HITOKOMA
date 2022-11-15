@@ -11,6 +11,7 @@ import Lottie
 
 struct CheckoutView: View {
     @ObservedObject var model = MyBackendModel()
+    let amount: Int
     
     var body: some View {
         VStack(alignment: .center){
@@ -39,9 +40,8 @@ struct CheckoutView: View {
             }
         }.onAppear{
             FetchFromFirestore().fetchUserInfoFromFirestore { result in
-                model.preparePaymentSheet(customerId: result.customerId)
+                model.preparePaymentSheet(customerId: result.customerId, amount: amount)
             }
-            
         }
     }
 }
@@ -49,6 +49,6 @@ struct CheckoutView: View {
 
 struct CheckoutView_Previews: PreviewProvider {
     static var previews: some View {
-        CheckoutView()
+        CheckoutView(amount: 0)
     }
 }

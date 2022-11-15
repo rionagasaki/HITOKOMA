@@ -1,0 +1,14 @@
+{
+    "functions": {
+    "source": "/",
+    "predeploy": [
+        "npm --prefix \"\" run lint",
+        "npm --prefix \"\" run build"
+      ]
+    },
+    "emulators": {
+      "firestore": {
+        "port": "8080"
+      }
+    }
+  }

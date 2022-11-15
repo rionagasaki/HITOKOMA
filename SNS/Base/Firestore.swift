@@ -149,6 +149,21 @@ class SetToFirestore{
 
 class UpdateFirestore{
     let uid = Auth.auth().currentUser?.uid
+    
+    func updatePaymentIntent(lessonId: String, completion: @escaping ()->Void){
+        guard let uid = uid else { return }
+        db.collection("User").document(uid).updateData([
+            "purchasedLessons": FieldValue.arrayUnion([lessonId])
+        ]){ error in
+            if let error = error {
+                print("Error=>updatePaymentIntent\(error)")
+            }else{
+                completion()
+            }
+        }
+    }
+    
+    
     func updateUserInfoFirestore(profileImageURL: String, completion: @escaping () -> Void){
         
         guard let uid = uid else { return }

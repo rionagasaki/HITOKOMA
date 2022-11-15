@@ -7,33 +7,37 @@
 
 import SwiftUI
 
-struct EnglishView: View {
+struct SearchCategoryDetailView: View {
     
     @State private var searchText = ""
+    let detailCategories:[DetailCategory]
+    let lessonsData: [LessonData]
+    let mainCategory:CategoryDetail
     
     var body: some View {
         ScrollView {
             VStack(alignment:.leading){
                 VStack(alignment: .leading){
                     Text("詳細なカテゴリー").bold().padding(.leading,16)
-                    DetailCategoryView(detailCategory: [DetailCategory(categoryName: "TOEIC", categoryImage: "TOEIC"),DetailCategory(categoryName: "TOEFL", categoryImage: "TOEFL"),DetailCategory(categoryName: "英検", categoryImage: "EnglishTest")])
+                    DetailCategoryView(detailCategory: detailCategories)
                 }
                 Text("検索結果").bold().padding(.leading,16).padding(.top, 10)
                 ScrollView(.horizontal, showsIndicators: false){
                     HStack{
-                        SearchResultClassView()
-                        SearchResultClassView()
-                        SearchResultClassView()
+                        ForEach(lessonsData) { lesson in
+                            OneClassView(lessonImageURLString: lesson.lessonImageURLString, lessonName: lesson.lessonName, userIconURLString: lesson.userImageIconURLString, lessonBudgets: lesson.budget)
+                        }
                     }.padding(.horizontal, 16)
                 }
                 Spacer()
             }
-        }.searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always)).navigationTitle("英語")
+        }.searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always)).navigationTitle(mainCategory.rawValue)
     }
 }
 
 struct EnglishView_Previews: PreviewProvider {
     static var previews: some View {
-        EnglishView()
+        SearchCategoryDetailView(detailCategories: [], lessonsData: [], mainCategory: .english)
     }
 }
+

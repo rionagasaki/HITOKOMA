@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct OneRequestView: View {
     @State var requestImage: String
@@ -13,12 +14,8 @@ struct OneRequestView: View {
     var body: some View {
         VStack{
             ZStack(alignment: .topTrailing){
-                AsyncImage(url: URL(string: requestImage)) { image in
-                    image.resizable().frame(width: 80, height: 80).clipShape(Circle()).shadow(radius: 10, x:10, y:10)
-                } placeholder: {
-                    ProgressView().frame(width: 80, height: 80).background(.gray.opacity(0.4)).clipShape(Circle())
-                }
-                Image(systemName: "questionmark.circle.fill").resizable().frame(width: 30, height: 30).foregroundColor(.black).background(.white).cornerRadius(60)
+                WebImage(url: URL(string: requestImage)).resizable().frame(width: 80, height: 80).clipShape(Circle()).shadow(radius: 10, x:10, y:10)
+                Image(systemName: "questionmark.circle.fill").resizable().frame(width: 30, height: 30).foregroundColor(.black).background(.white).cornerRadius(60).overlay(Circle().stroke(.white, lineWidth: 3))
             }
             Text(requestTitle).foregroundColor(.black).frame(width: 110).font(.system(size: 13))
         }

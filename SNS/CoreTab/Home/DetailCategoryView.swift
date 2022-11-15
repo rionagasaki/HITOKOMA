@@ -9,10 +9,7 @@ import SwiftUI
 
 struct DetailCategoryView: View {
     
-    let englishDetails = [DetailCategory(categoryName: "TOEIC", categoryImage: "TOEIC"),DetailCategory(categoryName: "TOEFL", categoryImage: "TOEFL"),DetailCategory(categoryName: "英検", categoryImage: "EnglishTest")]
-    
-    let computerDetails = [DetailCategory(categoryName: "基本/応用情報", categoryImage: "basicInformation"), DetailCategory(categoryName: "プログラミング", categoryImage: "programming"), DetailCategory(categoryName: "G/E資格", categoryImage: "AI")
-    ]
+   
     
     @State var detailCategory: [DetailCategory]
     

@@ -10,13 +10,13 @@ const stripe = new Stripe(functions.config().stripe.apikey, {
 });
 
 // PayIntentの作成
-exports.createPaymentIntent = baseFunctions.https.onCall(async (data)=> {
+exports.createPaymentIntents = baseFunctions.https.onCall(async (data)=> {
   const ephemeralKey = await stripe.ephemeralKeys.create(
       {customer: data.customerId},
       {apiVersion: "2022-08-01"},
   );
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 1800,
+    amount: data.amount,
     currency: "jpy",
     customer: data.customerId,
     automatic_payment_methods: {

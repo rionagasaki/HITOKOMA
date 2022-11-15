@@ -12,6 +12,6 @@ struct CategoryData: Identifiable {
     let id = UUID()
     let categoryName: String
     let categoryImage: String
-    let handler: AnyView
+    let category: CategoryDetail
 }
 
