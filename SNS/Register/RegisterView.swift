@@ -61,7 +61,7 @@ struct RegisterView: View {
                             Button {
                                 Auth.auth().createUser(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText) { authResult, error in
                                     let url = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createCustomer")
-                                    callCloudFunctions().setFunctions(email: authResult?.user.email ?? "") { customerId in
+                                    CallCloudFunctions().setFunctions(email: authResult?.user.email ?? "") { customerId in
                                         SetToFirestore().registerUserInfoFirestore(uid: authResult!.user.uid, username: "", email: "", customerId: customerId) {
                                             
                                         }

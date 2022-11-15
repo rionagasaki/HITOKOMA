@@ -25,7 +25,7 @@ struct SNSApp: App {
 
     var body: some Scene {
         WindowGroup {
-          RootView().environmentObject(AppState())
+            RootView().environmentObject(AppState()).environmentObject(User())
         }
     }
 }

@@ -24,14 +24,14 @@ struct LoginView: View {
         WithViewStore(self.store) { viewStore in
             ZStack{
                 Color.white
-                VStack(alignment:.leading ,spacing: 20){
-                    Circle().size(width: 200, height: 200).foregroundColor(.yellow)
-                    HStack{
-                        Circle().size(width: 200, height: 200).foregroundColor(.blue).padding(.top,-120)
-                        Circle().size(width: 200, height: 200).foregroundColor(.orange).padding(.top,30)
-                    }
-                    BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).blur(radius: 40).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
-                }.blur(radius: 40)
+//                VStack(alignment:.leading ,spacing: 20){
+//                    Circle().size(width: 200, height: 200).foregroundColor(.yellow)
+//                    HStack{
+//                        Circle().size(width: 200, height: 200).foregroundColor(.blue).padding(.top,-120)
+//                        Circle().size(width: 200, height: 200).foregroundColor(.orange).padding(.top,30)
+//                    }
+////                    BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).blur(radius: 40).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
+//                }.blur(radius: 100)
                 VStack{
                     VStack{
                         VStack(alignment: .leading, spacing: 16) {
@@ -52,7 +52,7 @@ struct LoginView: View {
                             }
                             HStack {
                                 Spacer()
-                                Image(systemName: "envelope.open.fill").foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .trailing, endPoint: .leading)).padding(.all,5).background(Color.black.opacity(0.7)).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth:0.5))
+                                Image(systemName: "envelope.open.fill").foregroundStyle(LinearGradient(colors: [.white, .white], startPoint: .trailing, endPoint: .leading)).padding(.all,5).background(Color.black.opacity(0.7)).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth:0.5))
                                 TextField("Email", text: viewStore.binding(get: {
                                     $0.emailText
                                 }, send: {
@@ -61,7 +61,7 @@ struct LoginView: View {
                             }.frame(height:52).overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white, lineWidth: 1)).background(Color.purple.opacity(0.2)).cornerRadius(16)
                             HStack {
                                 Spacer()
-                                Image(systemName: "key.fill").foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .trailing, endPoint: .leading)).padding(.vertical,5).padding(.horizontal,9).background(Color.black.opacity(0.7)).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth:0.5))
+                                Image(systemName: "key.fill").foregroundStyle(LinearGradient(colors: [.white, .white], startPoint: .trailing, endPoint: .leading)).padding(.vertical,5).padding(.horizontal,9).background(Color.black.opacity(0.7)).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth:0.5))
                                 SecureField("Password",text:viewStore.binding(get: {
                                     $0.passwordText
                                 }, send: {
@@ -79,7 +79,7 @@ struct LoginView: View {
                                     Auth.auth().createUser(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText) { authResult, error in
                                         if error != nil { return }
                                         guard authResult != nil else { return }
-                                        callCloudFunctions().setFunctions(email: authResult?.user.email ?? "") { customerId in
+                                        CallCloudFunctions().setFunctions(email: authResult?.user.email ?? "") { customerId in
                                             SetToFirestore().registerUserInfoFirestore(uid: authResult!.user.uid, username:viewStore.state.usernameText, email: authResult!.user.email ?? "", customerId: customerId) {
                                                 self.appState.isLogin = true
                                             }
@@ -140,15 +140,9 @@ struct LoginView: View {
     }
 }
 
-struct LoginCardView_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginState.initial
-    }
-}
-
 extension View {
     public func gradientForegroundColor() -> some View {
-        self.overlay(.linearGradient(Gradient(colors: [.purple, .blue]), startPoint: .topLeading, endPoint: .bottomTrailing)).mask(self)
+        self.overlay(.linearGradient(Gradient(colors: [.white, .white]), startPoint: .topLeading, endPoint: .bottomTrailing)).mask(self)
     }
 }
 

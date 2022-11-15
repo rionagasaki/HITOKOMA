@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFunctions
 
-class callCloudFunctions{
+class CallCloudFunctions{
     lazy var functions = Functions.functions()
     private let createCustomerRequest = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createCustomer")
     func setFunctions(email: String ,completion: @escaping (String) -> Void){

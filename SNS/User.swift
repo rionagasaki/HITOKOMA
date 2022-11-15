@@ -7,7 +7,10 @@
 
 import Foundation
 
-struct User:Codable {
-    var email:String
-    var password:String
+class User: ObservableObject{
+    @Published var username: String = ""
+    @Published var email: String = ""
+    @Published var profileImage: String = ""
+    @Published var selfIntroduce: String = ""
+    @Published var schedule: String = ""
 }

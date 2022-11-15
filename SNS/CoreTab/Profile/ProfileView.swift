@@ -13,16 +13,18 @@ struct ProfileView: View {
     let username:String
     let email: String
     let profileImage: String
-    
     @EnvironmentObject var appState:AppState
+    @EnvironmentObject var user: User
     private let screenWidth = UIScreen.main.bounds.width
     
-    private let baseSettings = [ Setting(settingName: "会員情報", settingImage: "person", handler: AnyView(MemberInfoView(displayName: "", displayGender: "", displayAge: "", displaySNSAccount: ""))), Setting(settingName: "パスワード変更", settingImage: "lock", handler:AnyView(PasswordChangeView(oldPasswordField: "", newPasswordField: "", newConfirmationPasswordTextFIeld: ""))), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: AnyView(EmailChangeView(oldEmailField: "", newEmailField: "", newConfirmationEmailTextFIeld: ""))), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: AnyView(WrappaerDashBoardCall()))
+    private let baseSettings = [ Setting(settingName: "会員情報", settingImage: "person", handler: AnyView(MemberInfoView(displayName: "", displayGender: "", displayAge: ""))), Setting(settingName: "パスワード変更", settingImage: "lock", handler:AnyView(PasswordChangeView(oldPasswordField: "", newPasswordField: "", newConfirmationPasswordTextFIeld: ""))), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: AnyView(EmailChangeView(oldEmailField: "", newEmailField: "", newConfirmationEmailTextFIeld: ""))), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: AnyView(MyListView()))
     ]
     
-    private let sellerSettings = [  Setting(settingName: "売上管理", settingImage: "personalhotspot.circle", handler:AnyView(WrappaerDashBoardCall())),
-                                    Setting(settingName: "ひとこまを販売する", settingImage: "checkmark.seal", handler: AnyView(ConnectAccountView()))
+    private let sellerSettings = [Setting(settingName: "売上管理", settingImage: "personalhotspot.circle", handler:AnyView(WrappaerDashBoardCall())),
+                                    Setting(settingName: "ひとこまを販売する", settingImage: "checkmark.seal", handler: AnyView(MakeLessonView()))
     ]
+    
+    private let buyerSettings = [Setting(settingName: "リクエスト", settingImage: "hand.raised", handler: AnyView(MakeRequestView( requestTitle: "", requestContents: "", selectedDate: Date(), numberPicker: 0, period: "", bigCategory: "", selectedCategory: "", dropDownList:[])))]
     
     private let applicationSetting = [Setting(settingName: "通知設定", settingImage: "bell.badge", handler: AnyView(SettingNotificationView()))]
     
@@ -34,8 +36,8 @@ struct ProfileView: View {
     
     var body: some View {
         ZStack{
-            Form{
-                HeaderView(username: username)
+            Form {
+                HeaderView(username: user.username, userProfileImage: user.profileImage)
                 Section {
                     FavoriteView()
                 } header: {
@@ -66,6 +68,19 @@ struct ProfileView: View {
                 } header: {
                     Text("出品者").foregroundColor(Color.black)
                 }
+                
+                Section {
+                    List(self.buyerSettings){ setting in
+                        NavigationLink {
+                            setting.handler
+                        } label: {
+                            SettingCellView(setting: setting)
+                        }
+                    }
+                } header: {
+                    Text("購入者").foregroundColor(Color.black)
+                }
+                
                 Section {
                     List(self.applicationSetting){ setting in
                         NavigationLink {
@@ -73,7 +88,6 @@ struct ProfileView: View {
                         } label: {
                             SettingCellView(setting: setting)
                         }
-
                     }
                 } header: {
                     Text("アプリ設定").foregroundColor(Color.black)
