@@ -15,6 +15,7 @@ class UserData {
     var email: String
     var profileImage: String
     var customerId: String
+    var purchasedLessons: [String]
     
     init(document: QueryDocumentSnapshot){
         self.uid = document.documentID
@@ -23,15 +24,17 @@ class UserData {
         self.email = userDic["email"] as? String ?? ""
         self.profileImage = userDic["profileImageURL"] as? String ?? ""
         self.customerId = userDic["customerId"] as? String ?? ""
+        self.purchasedLessons = userDic["purchasedLessons"] as? [String] ?? []
     }
     
     init(document: DocumentSnapshot){
         self.uid = document.documentID
-        let userDic = document.data()!
-        self.username = userDic["username"] as? String ?? ""
-        self.email = userDic["email"] as? String ?? ""
-        self.profileImage = userDic["profileImageURL"] as? String ?? ""
-        self.customerId = userDic["customerId"] as? String ?? ""
+        let userDic = document.data()
+        self.username = userDic?["username"] as? String ?? ""
+        self.email = userDic?["email"] as? String ?? ""
+        self.profileImage = userDic?["profileImageURL"] as? String ?? ""
+        self.customerId = userDic?["customerId"] as? String ?? ""
+        self.purchasedLessons = userDic?["purchasedLessons"] as? [String] ?? []
     }
 }
 

@@ -80,7 +80,7 @@ class FetchFromFirestore{
 class SetToFirestore{
     
     let uid = Auth.auth().currentUser?.uid
-    
+    @EnvironmentObject var user: User
     func registerUserInfoFirestore(uid: String, username: String, email: String, customerId: String, completion: @escaping ()-> Void){
         db.collection("User").document(uid).setData([
             "username": username,
@@ -95,9 +95,10 @@ class SetToFirestore{
         }
     }
     
-    func registerLessonInfoFirestore(lessonName: String, lessonContents: String,lessonImageURLString:String , bigCategory: String ,lessonCategory:String, budget: Int,period: String, completion: @escaping ()-> Void){
+    func registerLessonInfoFirestore(lessonName: String, lessonContents: String,lessonImageURLString:String , bigCategory: String ,lessonCategory:String, budget: Int,period: String, completion: @escaping (String)-> Void){
         guard let uid = uid else { return }
-        db.collection("Lesson").addDocument(data: [
+        var ref: DocumentReference? = nil
+        ref = db.collection("Lesson").addDocument(data: [
             "mentorUid": uid,
             "lessonName": lessonName,
             "lessonImageURLString": lessonImageURLString,
@@ -110,7 +111,7 @@ class SetToFirestore{
             if let err = err {
                 print("Error=>registerLessonInfoFirestore:\(String(describing: err))")
             }else{
-                completion()
+                completion(ref!.documentID)
             }
         }
     }
@@ -149,6 +150,7 @@ class SetToFirestore{
 
 class UpdateFirestore{
     let uid = Auth.auth().currentUser?.uid
+    @EnvironmentObject var user: User
     
     func updatePaymentIntent(lessonId: String, completion: @escaping ()->Void){
         guard let uid = uid else { return }
@@ -156,13 +158,25 @@ class UpdateFirestore{
             "purchasedLessons": FieldValue.arrayUnion([lessonId])
         ]){ error in
             if let error = error {
-                print("Error=>updatePaymentIntent\(error)")
+                print("Error=>updatePaymentIntent:\(error)")
             }else{
                 completion()
             }
         }
     }
     
+    func updateUsersMakeLesson(lessonId: String, completion: @escaping()->Void){
+        guard let uid = uid else { return }
+        db.collection("User").document(uid).updateData([
+            "openingLesson": FieldValue.arrayUnion([lessonId])
+        ]){ error in
+            if let error = error {
+                print("Error=>updateUsersMakeLesson:\(error)")
+            }else{
+                completion()
+            }
+        }
+    }
     
     func updateUserInfoFirestore(profileImageURL: String, completion: @escaping () -> Void){
         
@@ -178,6 +192,10 @@ class UpdateFirestore{
             }
         }
     }
+}
+
+class RemoveFirestore{
+    
 }
 
 class RegisterStorage{

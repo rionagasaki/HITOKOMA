@@ -7,11 +7,14 @@
 
 import SwiftUI
 import FirebaseFunctions
+import SDWebImageSwiftUI
 
 struct OneClassDetailView: View {
     @State private var openCharge: Bool = false
     let lessonImageURLString: String
     let mentorIconImageURLString: String
+    let alreadyBuy: Bool
+    let lessonId: String
     let mentorName: String
     let lessonTitle: String
     let lessonContent: String
@@ -21,22 +24,14 @@ struct OneClassDetailView: View {
             ScrollView {
                 VStack{
                     GeometryReader{ geometry in
-                        AsyncImage(url: URL(string: lessonImageURLString)) { image in
-                            image.resizable().frame(width: UIScreen.main.bounds.width, height: geometry.frame(in: .global).minY > 0 ? 300+geometry.frame(in: .global).minY :300).offset(y: geometry.frame(in: .global).minY > 0 ? -geometry.frame(in: .global).minY: 0)
-                        } placeholder: {
-                            ProgressView().frame(width: UIScreen.main.bounds.width, height:300).background(.gray.opacity(0.2))
-                        }
+                        WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: UIScreen.main.bounds.width, height: geometry.frame(in: .global).minY > 0 ? 300+geometry.frame(in: .global).minY :300).offset(y: geometry.frame(in: .global).minY > 0 ? -geometry.frame(in: .global).minY: 0)
                     }.frame(height: 300)
                     Text(lessonTitle).font(.system(size: 25)).fontWeight(.bold)
                     NavigationLink {
                         UserProfileView()
                     } label: {
                         HStack{
-                            AsyncImage(url: URL(string: mentorIconImageURLString)) { image in
-                                image.resizable().frame(width: 40, height: 40).clipShape(Circle())
-                            } placeholder: {
-                                ProgressView().frame(width: 40, height: 40).background(.gray.opacity(0.2)).clipShape(Circle())
-                            }
+                            WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: 40, height: 40).clipShape(Circle())
                             Text(mentorName).bold().foregroundColor(.black)
                             Spacer()
                         }
@@ -57,9 +52,24 @@ struct OneClassDetailView: View {
                     Spacer()
                 }
             }.ignoresSafeArea()
-            ZStack{
+            
+            if alreadyBuy {
                 VStack{
-                    CheckoutView(amount: budgets)
+                    Divider()
+                    HStack{
+                        Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                        Text("購入済み")
+                    }
+                    NavigationLink {
+                        ChatView()
+                    } label: {
+                        RichButton(buttonText: "やり取りをする", buttonImage: "bird.fill")
+                    }
+                }.background(.ultraThinMaterial)
+            }else{
+                VStack{
+                    Divider()
+                    CheckoutView(model: MyBackendModel(), amount: budgets, lessonId: lessonId)
                 }.frame(maxWidth:.infinity, maxHeight: 100).background(.ultraThinMaterial)
             }
         }
@@ -68,6 +78,6 @@ struct OneClassDetailView: View {
 
 struct OneClassDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        OneClassDetailView(lessonImageURLString: "", mentorIconImageURLString: "", mentorName: "Rio", lessonTitle: "", lessonContent: "", budgets: 0)
+        OneClassDetailView(lessonImageURLString: "", mentorIconImageURLString: "", alreadyBuy: false, lessonId: "", mentorName: "Rio", lessonTitle: "", lessonContent: "", budgets: 0)
     }
 }

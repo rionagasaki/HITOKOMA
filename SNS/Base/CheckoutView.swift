@@ -10,9 +10,10 @@ import StripePaymentSheet
 import Lottie
 
 struct CheckoutView: View {
-    @ObservedObject var model = MyBackendModel()
+    @ObservedObject var model:MyBackendModel
+    @EnvironmentObject var user: User
     let amount: Int
-    
+    let lessonId: String
     var body: some View {
         VStack(alignment: .center){
             if let paymentSheet = model.paymentSheet {
@@ -25,17 +26,19 @@ struct CheckoutView: View {
             if let result = model.paymentResult {
                 switch result {
                 case .completed:
-                    HStack{
-                        Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-                        Text("購入済み")
+                    ProgressView().onAppear{
+                        UpdateFirestore().updatePaymentIntent(lessonId: lessonId) {
+                            self.user.appendPurchaseLessons(lessonid: self.lessonId)
+                        }
                     }
                 case .canceled:
                     HStack{
                         Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.yellow)
                         Text("Payment Canceled")
                     }
-                case .failed(let error):
-                    Text("Payment failed: \(error.localizedDescription)")
+                case .failed:
+                    Image(systemName: "exclamationmark.triangle.fill").foregroundColor(.red)
+                    Text("Payment failed")
                 }
             }
         }.onAppear{
@@ -49,6 +52,6 @@ struct CheckoutView: View {
 
 struct CheckoutView_Previews: PreviewProvider {
     static var previews: some View {
-        CheckoutView(amount: 0)
+        CheckoutView(model: MyBackendModel(), amount: 0, lessonId: "")
     }
 }

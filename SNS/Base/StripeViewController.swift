@@ -15,6 +15,7 @@ class CheckoutViewController: UIViewController {
     
     var paymentSheet: PaymentSheet?
     
+    
     lazy var cardView: STPCardFormView = {
         let cardView = STPCardFormView()
         return cardView
@@ -67,27 +68,29 @@ struct CheckoutViewControllerWrapper: UIViewControllerRepresentable{
 }
 
 class MyBackendModel: ObservableObject {
+    @EnvironmentObject var user: User
     // MARK: EndPoint
-//    let customHandlers = PaymentSheet.ApplePayConfiguration.Handlers(
-//        authorizationResultHandler: { result, completion in
-//            // Fetch the order details from your service
-//            MyAPIClient.shared.fetchOrderDetails(orderID:) { myOrderDetails
-//                result.orderDetails = PKPaymentOrderDetails(
-//                    orderTypeIdentifier: myOrderDetails.orderTypeIdentifier, // "com.myapp.order"
-//                    orderIdentifier: myOrderDetails.orderIdentifier, // "ABC123-AAAA-1111"
-//                    webServiceURL: myOrderDetails.webServiceURL, // "https://my-backend.example.com/apple-order-tracking-backend"
-//                    authenticationToken: myOrderDetails.authenticationToken) // "abc123"
-//                // Call the completion block on the main queue with your modified PKPaymentAuthorizationResult
-//                completion(result)
-//            }
-//        }
-//    )
+    //    let customHandlers = PaymentSheet.ApplePayConfiguration.Handlers(
+    //        authorizationResultHandler: { result, completion in
+    //            // Fetch the order details from your service
+    //            MyAPIClient.shared.fetchOrderDetails(orderID:) { myOrderDetails
+    //                result.orderDetails = PKPaymentOrderDetails(
+    //                    orderTypeIdentifier: myOrderDetails.orderTypeIdentifier, // "com.myapp.order"
+    //                    orderIdentifier: myOrderDetails.orderIdentifier, // "ABC123-AAAA-1111"
+    //                    webServiceURL: myOrderDetails.webServiceURL, // "https://my-backend.example.com/apple-order-tracking-backend"
+    //                    authenticationToken: myOrderDetails.authenticationToken) // "abc123"
+    //                // Call the completion block on the main queue with your modified PKPaymentAuthorizationResult
+    //                completion(result)
+    //            }
+    //        }
+    //    )
     let backendCheckoutUrl = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntents")!
+
     lazy var functions = Functions.functions()
     
     @Published var paymentSheet: PaymentSheet?
     @Published var paymentResult: PaymentSheetResult?
-
+    
     func preparePaymentSheet(customerId: String, amount: Int) {
         // MARK: Fetch the PaymentIntent and Customer information from the backend
         functions.httpsCallable(URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createPaymentIntents")!).call(["customerId": customerId, "amount": amount]){ result, error in

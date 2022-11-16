@@ -26,6 +26,7 @@ let investmentDetails = [DetailCategory(categoryName: "株式取引", categoryIm
 
 
 struct HomeView:View{
+    @EnvironmentObject var user: User
     @State private var contentOffSet = CGFloat(0)
     @State var selectPicker: BuyOrSell = .buy
     let requestData: [RequestData]
@@ -49,7 +50,8 @@ struct HomeView:View{
         CategoryData(categoryName: "投資", categoryImage: "invest", category: .investment)]
     let screenSize = UIScreen.main.bounds.width
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topLeading){
+            Image(systemName: "")
             ScrollView {
                 VStack(alignment: .center){
                     GeometryReader{ geometry in
@@ -60,6 +62,11 @@ struct HomeView:View{
                     HStack{
                         Text("カテゴリー").foregroundColor(.black).bold().font(.system(size: 18)).padding()
                         Spacer()
+                        Button {
+                            print("aaaa")
+                        } label: {
+                            Text("もっと見る").font(.subheadline).foregroundColor(.purple)
+                        }.padding(.trailing,20)
                     }
                     HStack {
                         ForEach(categories) { category in
@@ -81,20 +88,21 @@ struct HomeView:View{
                             want in
                             Text(want.rawValue).tag(want)
                         }
-                    }.pickerStyle(SegmentedPickerStyle()).padding(.horizontal, 16).padding(.vertical,10)
+                    }.pickerStyle(SegmentedPickerStyle()).padding(.horizontal, 16).padding(.vertical,7)
                     
                     if selectPicker == .buy {
                         VStack{
                             VStack{
                                 HStack{
                                     Text("話題のひとこま").foregroundColor(.black).bold().font(.system(size: 18)).padding(.leading,16)
+                                    Image(systemName: "questionmark.bubble.fill").foregroundColor(.gray)
                                     Spacer()
                                 }
                                 ScrollView(.horizontal, showsIndicators: false){
                                     HStack{
                                         ForEach(lessonData) { lesson in
                                             NavigationLink {
-                                                OneClassDetailView(lessonImageURLString: lesson.lessonImageURLString, mentorIconImageURLString: lesson.userImageIconURLString, mentorName: lesson.username, lessonTitle: lesson.lessonName, lessonContent: lesson.lessonContent, budgets: lesson.budget)
+                                                OneClassDetailView(lessonImageURLString: lesson.lessonImageURLString, mentorIconImageURLString: lesson.userImageIconURLString, alreadyBuy: self.user.purchasedLesson.contains(lesson.lessonId), lessonId: lesson.lessonId, mentorName: lesson.username, lessonTitle: lesson.lessonName, lessonContent: lesson.lessonContent, budgets: lesson.budget)
                                             } label: {
                                                 OneClassView(lessonImageURLString: lesson.lessonImageURLString, lessonName: lesson.lessonName, userIconURLString: lesson.userImageIconURLString, lessonBudgets: lesson.budget)
                                             }
@@ -151,7 +159,7 @@ struct HomeView:View{
                 HStack{
                     ForEach(categoryLessonData) { lesson in
                         NavigationLink {
-                            OneClassDetailView(lessonImageURLString: lesson.lessonImageURLString, mentorIconImageURLString: lesson.userImageIconURLString, mentorName: lesson.username, lessonTitle: lesson.lessonName, lessonContent: lesson.lessonContent, budgets: lesson.budget)
+                            OneClassDetailView(lessonImageURLString: lesson.lessonImageURLString, mentorIconImageURLString: lesson.userImageIconURLString, alreadyBuy: self.user.purchasedLesson.contains(lesson.lessonId), lessonId: lesson.lessonId, mentorName: lesson.username, lessonTitle: lesson.lessonName, lessonContent: lesson.lessonContent, budgets: lesson.budget)
                         } label: {
                             OneClassView(lessonImageURLString: lesson.lessonImageURLString, lessonName: lesson.lessonName, userIconURLString: lesson.userImageIconURLString, lessonBudgets: lesson.budget)
                         }

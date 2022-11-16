@@ -26,8 +26,10 @@ struct ContentView: View {
     @State var financeLessonData: [LessonData] = []
     @State var investmentLessonData: [LessonData] = []
     @EnvironmentObject var user: User
+
     var loginUserIconURLString: String = ""
     var loginUsername: String = ""
+    
     init(){
         UITabBar.appearance().isHidden = true
     }
@@ -88,6 +90,7 @@ struct ContentView: View {
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: lesson.mentorUid) { userInfo in
                     lesson.userImageIconURLString = userInfo.profileImage
                     lesson.username = userInfo.username
+                    self.user.purchasedLesson = userInfo.purchasedLessons
                     lessonData.append(lesson)
                     let bigCategory = CategoryDetail(rawValue: lesson.bigCategory)
                     switch bigCategory {
