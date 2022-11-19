@@ -11,6 +11,5 @@ struct Chat:Identifiable, Equatable{
     var id = UUID()
     var messageText:String
     var sender:Bool
-    var messageDate:Date
-    var iconImage:String
+    var messageDate: String
 }

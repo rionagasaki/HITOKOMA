@@ -117,3 +117,50 @@ class UserInfo: ObservableObject{
     @Published var username: String = ""
     @Published var userIconUrlString: String = ""
 }
+
+class ChatRoomData: Identifiable{
+    var id = UUID()
+    var chatroomId: String
+    var chatMember: [String]
+    var lastMessageText: String
+    var lastMessageDate: String
+    
+    init(document: QueryDocumentSnapshot){
+        self.chatroomId = document.documentID
+        let messageDic = document.data()
+        self.chatMember = messageDic["chatMember"] as? [String] ?? []
+        self.lastMessageText = messageDic["lastMessageText"] as? String ?? ""
+        self.lastMessageDate = messageDic["lastMessageDate"] as? String ?? ""
+    }
+    
+    init(document: DocumentSnapshot){
+        self.chatroomId = document.documentID
+        let messageDic = document.data()
+        self.chatMember = messageDic?["chatMember"] as? [String] ?? []
+        self.lastMessageText = messageDic?["lastMessageText"] as? String ?? ""
+        self.lastMessageDate = messageDic?["lastMessageDate"] as? String ?? ""
+    }
+}
+
+class ChatData: Identifiable{
+    var id = UUID()
+    var chatId: String
+    var messageText: String
+    var messageDate: String
+    var senderUId: String
+    
+    init(document: QueryDocumentSnapshot){
+        self.chatId = document.documentID
+        let chatDic = document.data()
+        self.messageText = chatDic["messageText"] as? String ?? ""
+        self.messageDate = chatDic["messageDate"] as? String ?? ""
+        self.senderUId = chatDic["senderUid"] as? String ?? ""
+    }
+    init(document: DocumentSnapshot){
+        self.chatId = document.documentID
+        let chatDic = document.data()
+        self.messageText = chatDic?["messageText"] as? String ?? ""
+        self.messageDate = chatDic?["messageDate"] as? String ?? ""
+        self.senderUId = chatDic?["senderUid"] as? String ?? ""
+    }
+}

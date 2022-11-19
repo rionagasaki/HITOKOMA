@@ -10,12 +10,15 @@ import FirebaseFunctions
 import SDWebImageSwiftUI
 
 struct OneClassDetailView: View {
+    @EnvironmentObject var user:User
     @State private var openCharge: Bool = false
+    @State var alreadyChat: Bool = false
+    @State var chatroomData:ChatRoomData?
     let lessonImageURLString: String
     let mentorIconImageURLString: String
-    let alreadyBuy: Bool
     let lessonId: String
     let mentorName: String
+    let mentorUid: String
     let lessonTitle: String
     let lessonContent: String
     let budgets: Int
@@ -24,60 +27,148 @@ struct OneClassDetailView: View {
             ScrollView {
                 VStack{
                     GeometryReader{ geometry in
-                        WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: UIScreen.main.bounds.width, height: geometry.frame(in: .global).minY > 0 ? 300+geometry.frame(in: .global).minY :300).offset(y: geometry.frame(in: .global).minY > 0 ? -geometry.frame(in: .global).minY: 0)
-                    }.frame(height: 300)
+                        WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: UIScreen.main.bounds.width, height: geometry.frame(in: .global).minY > 0 ? 250+geometry.frame(in: .global).minY :250).offset(y: geometry.frame(in: .global).minY > 0 ? -geometry.frame(in: .global).minY: 0)
+                    }.frame(height: 250)
                     Text(lessonTitle).font(.system(size: 25)).fontWeight(.bold)
+                    Divider()
                     NavigationLink {
                         UserProfileView()
                     } label: {
                         HStack{
-                            WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: 40, height: 40).clipShape(Circle())
-                            Text(mentorName).bold().foregroundColor(.black)
+                            WebImage(url: URL(string: mentorIconImageURLString)).resizable().frame(width: 40, height: 40).clipShape(Circle())
+                            VStack(alignment: .leading){
+                                Text(mentorName).bold().foregroundColor(.black)
+                                Text("男性").font(.caption).foregroundColor(.black)
+                                Text("20代前半").font(.caption).foregroundColor(.black)
+                                HStack{
+                                    Text("機密保持契約(NDA)").foregroundColor(.black)
+                                    Image(systemName: "checkmark").foregroundColor(.green)
+                                }.font(.caption)
+                                
+                            }
                             Spacer()
                         }
                     }.padding(.leading,16)
-                    HStack{
-                        Text("\(budgets)円/h").padding(.all,10).foregroundColor(.white).background(.green).cornerRadius(20).padding(.leading,16)
-                        Spacer()
-                        VStack(alignment: .leading){
-                            Text("評価").font(.caption)
+                    Divider()
+                    VStack{
+                        Text("*この講座は購入前に事前チャットする必要があります。").font(.caption)
+                        Button {
+                            print("aaa")
+                        } label: {
                             HStack{
-                                ForEach(0..<5){ _ in
-                                    Image(systemName: "star.fill").resizable().frame(width: 20, height: 20).foregroundColor(.orange)
-                                }
-                            }.padding(.trailing,16)
+                                Image("mail").resizable().frame(width:30,height: 30)
+                                Text("購入前チャット").font(.callout).foregroundColor(.black)
+                            }.padding(.horizontal,10).background(.ultraThinMaterial).cornerRadius(3).overlay(RoundedRectangle(cornerRadius: 3).stroke(.black.opacity(0.3), lineWidth: 1))
+                        }
+                        
+                    }
+                    LessonQuestionView()
+                    EvaluationView()
+                    VStack(alignment: .leading){
+                        HStack{
+                            Text("レッスン内容").bold()
+                            Spacer()
+                        }.padding(.leading, 16)
+                        HStack{
+                            Text(lessonContent)
+                            Spacer()
+                        }.padding(.leading, 16)
+                    }
+                }
+            }
+            if self.user.purchasedLesson.contains(lessonId) {
+                HStack(alignment: .bottom){
+                    Text("\(budgets)円/h").padding(.all,10).foregroundColor(.white).background(.green).cornerRadius(20).padding(.leading,16)
+                    Spacer()
+                    VStack{
+                        Divider()
+                        HStack{
+                            Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
+                            Text("購入済み")
+                        }
+                        NavigationLink {
+                            ChatView(chatUserName: mentorName, chatUserUid: mentorUid, chatData: self.chatroomData)
+                        } label: {
+                            RichButton(buttonText: "やり取りをする", buttonImage: "bird.fill")
                         }
                     }
-                    Text(lessonContent).padding(.horizontal,16).padding(.top,10)
-                    Spacer()
-                }
-            }.ignoresSafeArea()
-            
-            if alreadyBuy {
-                VStack{
-                    Divider()
-                    HStack{
-                        Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-                        Text("購入済み")
+                }.background(.ultraThinMaterial).onAppear{
+                    FetchFromFirestore().fetchChatRoomInfoFromFirestore(mentorUid: mentorUid) { chatroomData in
+                        self.chatroomData = chatroomData
                     }
-                    NavigationLink {
-                        ChatView()
-                    } label: {
-                        RichButton(buttonText: "やり取りをする", buttonImage: "bird.fill")
+                }
+            }else{
+                HStack {
+                    Text("\(budgets)円/h").padding(.all,10).foregroundColor(.white).background(.green).cornerRadius(20).padding(.leading,16)
+                    Spacer()
+                    VStack{
+                        Divider()
+                        CheckoutView(model: MyBackendModel(), amount: budgets, lessonId: lessonId).frame(height: 100)
                     }
                 }.background(.ultraThinMaterial)
-            }else{
-                VStack{
-                    Divider()
-                    CheckoutView(model: MyBackendModel(), amount: budgets, lessonId: lessonId)
-                }.frame(maxWidth:.infinity, maxHeight: 100).background(.ultraThinMaterial)
             }
         }
     }
 }
 
+
 struct OneClassDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        OneClassDetailView(lessonImageURLString: "", mentorIconImageURLString: "", alreadyBuy: false, lessonId: "", mentorName: "Rio", lessonTitle: "", lessonContent: "", budgets: 0)
+        OneClassDetailView(lessonImageURLString: "", mentorIconImageURLString: "", lessonId: "", mentorName: "Rio", mentorUid: "", lessonTitle: "", lessonContent: "", budgets: 0).environmentObject(User())
+    }
+}
+
+struct EvaluationView:View {
+    var body: some View{
+        Divider()
+        HStack{
+            VStack(alignment: .leading){
+                Text("評価とレビュー").bold()
+                HStack{
+                    Text("総評価").font(.caption)
+                    ForEach(0..<5){ _ in
+                        Image(systemName: "star.fill").resizable().frame(width: 20, height: 20).foregroundColor(.orange)
+                    }
+                    Text("(3)")
+                }.padding(.leading, 16)
+            }.padding(.leading, 16)
+            Spacer()
+        }
+        Divider()
+    }
+}
+
+struct LessonQuestionView: View {
+    var body: some View{
+        VStack{
+            Divider()
+            VStack {
+                VStack(alignment: .leading){
+                    HStack{
+                        Text("講座に関する質問").bold()
+                        Spacer()
+                        Button {
+                            print("aaaa")
+                        } label: {
+                            Text("もっと見る").font(.subheadline).padding(.trailing,16)
+                        }
+                        
+                    }.padding(.leading,16)
+                    ForEach(0..<3) { _ in
+                        Text("この講座はわかりやすいですか??").font(.caption)
+                    }.padding(.leading,16)
+                }
+                VStack{
+                    Button {
+                        print("aaa")
+                    } label: {
+                        HStack{
+                            Image(systemName: "questionmark.app.fill").resizable().frame(width:20,height: 20).foregroundColor(.black)
+                            Text("質問する").font(.callout).foregroundColor(.black)
+                        }.padding(.horizontal,10).padding(.vertical,5).background(.ultraThinMaterial).cornerRadius(3).overlay(RoundedRectangle(cornerRadius: 3).stroke(.black.opacity(0.3), lineWidth: 1))
+                    }
+                }
+            }
+        }
     }
 }

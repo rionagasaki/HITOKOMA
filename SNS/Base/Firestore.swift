@@ -75,6 +75,25 @@ class FetchFromFirestore{
             })
         }
     }
+    
+    func fetchChatRoomInfoFromFirestore(mentorUid: String, completion: @escaping (ChatRoomData) -> Void){
+        guard let studentUid = uid else { return }
+        db.collection("Chat").whereField("chatMember", arrayContains: mentorUid).getDocuments { querySnapshot, error in
+            if error != nil {
+                return
+            }
+            if querySnapshot?.documents.count == 0 {
+                SetToFirestore().registerChatRoomInfo(member: [studentUid, mentorUid]){
+                    completion($0)
+                }
+            }else{
+                querySnapshot?.documents.forEach({ document in
+                    let chatroomData = ChatRoomData(document: document)
+                    completion(chatroomData)
+                })
+            }
+        }
+    }
 }
 
 class SetToFirestore{
@@ -85,6 +104,7 @@ class SetToFirestore{
         db.collection("User").document(uid).setData([
             "username": username,
             "email": email,
+            "profileImageURL": "https://firebasestorage.googleapis.com/v0/b/marketsns.appspot.com/o/UserProfile%2Furban-user-3.png?alt=media&token=94166887-d8d6-4ab6-9a01-457a774ed51c",
             "customerId": customerId
         ]){ err in
             if let err = err {
@@ -138,12 +158,55 @@ class SetToFirestore{
         }
     }
     
-    func registerMessageInfo(members:[String], lastMessage:String, lastMessageDate:String){
-        db.collection("Chat").document().collection("Message").addSnapshotListener { querySnapshot, error in
-            guard let documents = querySnapshot?.documents else {
-                print("Error fetching documents: \(error!)")
+    
+    func registerChatRoomInfo(member: [String], completion: @escaping (ChatRoomData) -> Void){
+        var ref: DocumentReference? = nil
+        ref = db.collection("Chat").addDocument(data: [
+            "chatMember": member
+        ]){ error in
+            if let error = error {
+                print("Error=>registerMessageInfo:\(error)")
+            }else{
+                ref?.getDocument(completion: { document, error in
+                    if let error = error {
+                       print("\(error)")
+                        return
+                    }
+                    guard let document = document else {
+                        print("よきせぬError")
+                        return }
+                    let chatroomData = ChatRoomData(document: document)
+                    completion(chatroomData)
+                })
+            }
+        }
+    }
+    
+    func registerMessage(chatRoomId: String, messageText:String, messageDate: String){
+        guard let uid = uid else { return }
+        db.collection("Chat").document(chatRoomId).collection("Message").addDocument(data: [
+            "messageText": messageText,
+            "messageDate": messageDate,
+            "senderUid": uid
+        ]){ error in
+            if let error = error {
+                print("Error=>registerMessage\(error)")
+            }
+        }
+    }
+    
+    func snapShotMessage(chatRoomId: String,completion: @escaping (ChatData)-> Void){
+        db.collection("Chat").document(chatRoomId).collection("Message").addSnapshotListener { querySnapshot, error in
+            if let error = error {
+                print("Error=>registerMessageInfo:\(error)")
                 return
             }
+            querySnapshot?.documentChanges.forEach({ diff in
+                switch diff.type{
+                case .added: completion(ChatData(document: diff.document))
+                case .modified, .removed: print("nothing to do")
+                }
+            })
         }
     }
 }
@@ -192,6 +255,18 @@ class UpdateFirestore{
             }
         }
     }
+    
+    func updateLastMessage(lastMessageText: String, lastMessageDate: String){
+        db.collection("Chat").document().updateData([
+            "lastMessageText": lastMessageText,
+            "lastMessageDate": lastMessageDate
+        ]){ error in
+            if let error = error {
+                print("Error \(error)")
+                return
+            }
+        }
+    }
 }
 
 class RemoveFirestore{
@@ -203,7 +278,7 @@ class RegisterStorage{
         guard let updateImage = profileImage.jpegData(compressionQuality: 0.3) else { return }
         let fileName = NSUUID().uuidString
         let userProfileRef = storage.reference().child("UserProfile").child(fileName)
-        let updateTask = userProfileRef.putData(updateImage, metadata: nil) { metadata, error in
+        userProfileRef.putData(updateImage, metadata: nil) { metadata, error in
             if error != nil {
                 print(error ?? "")
                 return

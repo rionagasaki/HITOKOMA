@@ -20,7 +20,7 @@ struct HeaderView: View {
                     Rectangle().foregroundColor(.gray.opacity(0.2))
                 }
                 .indicator(.activity)
-                .transition(.fade(duration: 0.5)) .background(Color.orange).frame(width: 100, height: 100).cornerRadius(100)
+                .transition(.fade(duration: 0.5)) .background(Color.gray.opacity(0.2)).frame(width: 100, height: 100).cornerRadius(100)
                 VStack(alignment: .leading){
                     Text(username).bold().font(.system(size: 24)).padding(.trailing,100)
                     NavigationLink {

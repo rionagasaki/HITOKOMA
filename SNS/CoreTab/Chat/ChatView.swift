@@ -6,24 +6,30 @@
 //
 import SwiftUI
 import ComposableArchitecture
+import FirebaseAuth
 
 struct ChatView:View{
-    @State var height:CGFloat = 15
+    
+    let chatUserName: String
+    let chatUserUid: String
+    let chatData: ChatRoomData?
     @FocusState var isClosed:Bool
+    @State var height:CGFloat = 15
     @State var text = ""
     @State var isTextEmpty: Bool = true
-    @State var messages = [Chat(messageText: "aaa", sender: true, messageDate: Date(), iconImage: "rootImage")]
+    @State var messages:[Chat] = []
     @State var showingImageModal: Bool = false
     @State var sendImage: UIImage?
     var body: some View{
         ZStack{
+            Color.black.opacity(0.1).background(.ultraThinMaterial).ignoresSafeArea()
             VStack{
                 Spacer()
                 ScrollViewReader{ reader in
                     ScrollView {
                         VStack{
                             ForEach(messages) { message in
-                                BubbleView(message: message).id(message.id)
+                                BubbleView(chatData: message).id(message.id)
                             }
                         }.padding(.top,20)
                     }.onChange(of: messages) { message in
@@ -35,62 +41,62 @@ struct ChatView:View{
                 Spacer()
                 Divider().background(.white).padding(.bottom,5)
                 InputView()
-            }.navigationTitle("AAAさん")
+            }.navigationTitle(chatUserName)
                 .navigationBarTitleDisplayMode(.inline)
         }.gesture(TapGesture().onEnded({ _ in
             self.isClosed = false
-        }))
+        })).onAppear{
+            SetToFirestore().snapShotMessage(chatRoomId: chatData!.chatroomId) { chat in
+                guard let uid = Auth.auth().currentUser?.uid else { return }
+                let message = Chat(messageText: chat.messageText, sender: chat.senderUId == uid, messageDate: chat.messageDate)
+                messages.append(message)
+                self.text = ""
+            }
+        }
     }
     func InputView() -> some View{
-        HStack(alignment: .bottom){
-            ZStack(alignment:.leading){
-                GeometryReader { geometry in
-                    TextEditor(text: $text).focused($isClosed).frame(width: 270, height:height > 70 ? 100: 30+height).padding(.horizontal,10).background(Color.white).cornerRadius(20).onChange(of: text) { text in
-                        height = calculateTextHeight(geometry: geometry)
-                        if text != ""{
-                            self.isTextEmpty = false
-                        }else{
-                            self.isTextEmpty = true
+        ZStack {
+            HStack(alignment: .bottom){
+                ZStack(alignment:.leading){
+                    GeometryReader { geometry in
+                        TextEditor(text: $text).focused($isClosed).frame(width: 270, height:height > 70 ? 100: 30+height).padding(.horizontal,10).background(Color.white).cornerRadius(20).onChange(of: text) { text in
+                            height = calculateTextHeight(geometry: geometry)
+                            if text != ""{
+                                self.isTextEmpty = false
+                            }else{
+                                self.isTextEmpty = true
+                            }
                         }
+                    }.frame(height:height > 70 ? 100: 30+height)
+                    Image(systemName: isTextEmpty ? "textformat":"").resizable().frame(width: 18, height:13).foregroundColor(.gray).padding(.leading,15)
+                    if sendImage != nil {
+                        Image(uiImage: sendImage!).resizable().frame(width: UIScreen.main.bounds.width-100, height:200).padding(.leading, 10)
                     }
-                }.frame(height:height > 70 ? 100: 30+height)
-                Image(systemName: isTextEmpty ? "textformat":"").resizable().frame(width: 18, height:13).foregroundColor(.gray).padding(.leading,15)
-                if sendImage != nil {
-                    Image(uiImage: sendImage!).resizable().frame(width: UIScreen.main.bounds.width-100, height:200).padding(.leading, 10)
                 }
-            }
-            VStack{
-                Button {
-                    self.showingImageModal = true
-                } label: {
-                    Image(systemName: "photo.artframe")
-                }
-
-                Button {
-                    self.text = self.text.trimmingCharacters(in: .whitespaces)
-                    if !isTextEmpty || (sendImage != nil){
+                VStack{
+                    Button {
+                        self.showingImageModal = true
+                    } label: {
+                        Image(systemName: "photo.artframe")
+                    }
+                    
+                    Button {
+                        self.text = self.text.trimmingCharacters(in: .whitespaces)
                         if !isTextEmpty{
-                            let message = Chat(messageText: text, sender:true, messageDate: Date(), iconImage: "home")
-                            messages.append(message)
-                            self.text = ""
+                            SetToFirestore().registerMessage(chatRoomId: chatData!.chatroomId, messageText:self.text, messageDate: dateFormat(date: Date()))
                         }
-                        if sendImage != nil{
-                            let message = Chat(messageText: "aaa", sender:true, messageDate: Date(), iconImage: "home")
-                            messages.append(message)
-                            self.sendImage = nil
+                    } label: {
+                        if isTextEmpty && (sendImage == nil){
+                            Text("送信").foregroundColor(.gray).padding(.vertical,8).padding(.horizontal,16).background(Color.init(uiColor: .lightGray).opacity(0.5)).cornerRadius(10)
+                        }else{
+                            Text("送信").foregroundColor(.white).padding(.vertical,8).padding(.horizontal,16).background(Color.init(uiColor: .systemBlue).opacity(0.5)).cornerRadius(10)
                         }
-                    }
-                } label: {
-                    if isTextEmpty && (sendImage == nil){
-                        Text("送信").foregroundColor(.gray).padding(.vertical,8).padding(.horizontal,16).background(Color.init(uiColor: .lightGray).opacity(0.5)).cornerRadius(10)
-                    }else{
-                        Text("送信").foregroundColor(.white).padding(.vertical,8).padding(.horizontal,16).background(Color.init(uiColor: .systemBlue).opacity(0.5)).cornerRadius(10)
-                    }
-                }.padding(.trailing,8)
+                    }.padding(.trailing,8)
+                }
+            }.padding(.bottom,5).sheet(isPresented: $showingImageModal) {
+                ImagePicker(sourceType: .photoLibrary,selectedImage: $sendImage)
             }
-        }.padding(.bottom,5).sheet(isPresented: $showingImageModal) {
-            ImagePicker(sourceType: .photoLibrary,selectedImage: $sendImage)
-        }
+        }.ignoresSafeArea()
     }
     private func calculateTextHeight(geometry: GeometryProxy) -> CGFloat {
         let width =  geometry.size.width - 7
@@ -103,10 +109,18 @@ struct ChatView:View{
             context: nil
         ).height
     }
+    
+    func dateFormat(date:Date)->String{
+        let dateformetter = DateFormatter()
+        dateformetter.locale = Locale(identifier: "ja_JP")
+        dateformetter.dateStyle = .medium
+        dateformetter.dateFormat = "hh:mm"
+        return dateformetter.string(from: date)
+    }
 }
 
 struct ChatView_Preview:PreviewProvider{
     static var previews: some View{
-        ChatView(isTextEmpty: true)
+        ChatView(chatUserName: "", chatUserUid: "", chatData: nil, height: 0)
     }
 }

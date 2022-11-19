@@ -8,6 +8,7 @@
 import Foundation
 
 class User: ObservableObject{
+    @Published var userID: String = ""
     @Published var username: String = ""
     @Published var email: String = ""
     @Published var profileImage: String = ""

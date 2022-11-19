@@ -42,9 +42,7 @@ struct MakeLessonView: View {
                             Button {
                                 self.showingImagePicker = true
                             } label: {
-                                GeometryReader{ geometry in
-                                    Image(uiImage: lessonImage!).resizable().frame(width: UIScreen.main.bounds.width, height:geometry.frame(in: .global).minY > 0 ? 300 : abs(300+geometry.frame(in: .global).minY) ).background(.white.opacity(0.1)).background(.ultraThinMaterial).overlay(RoundedRectangle(cornerRadius: 0).stroke(.gray.opacity(0.6), lineWidth: 0.5)).shadow(radius: 1).offset(y: geometry.frame(in: .global).minY > 0 ? 0 :  -abs(geometry.frame(in: .global).minY))
-                                }
+                                    Image(uiImage: lessonImage!).resizable().frame(width: UIScreen.main.bounds.width, height:300 ).background(.white.opacity(0.1)).background(.ultraThinMaterial).overlay(RoundedRectangle(cornerRadius: 0).stroke(.gray.opacity(0.6), lineWidth: 0.5)).shadow(radius: 1)
                             }
                         }
                     }.frame(width: UIScreen.main.bounds.width ,height: 300)
@@ -63,8 +61,8 @@ struct MakeLessonView: View {
                         } label: {
                             VStack(spacing: 5){
                                 HStack{
-                                    Text(self.period != "" ? self.period :"カテゴリー")
-                                        .foregroundColor(.black)
+                                    Text(self.lessonCategory != "" ? self.lessonCategory :"カテゴリー")
+                                        .foregroundColor(self.lessonCategory != "" ? .black: .gray)
                                     Spacer()
                                     Image(systemName: "chevron.down")
                                         .foregroundColor(Color.blue)

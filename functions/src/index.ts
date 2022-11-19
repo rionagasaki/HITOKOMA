@@ -143,3 +143,14 @@ exports.createDashboardLink = functions.https.onCall(async () => {
     return {error: error};
   }
 });
+
+exports.createNotification = functions.firestore.document("Chat/{chatId}/Message/{docId").onWrite((snap, context) => {
+  const roomId = context.params.roomId;
+  const title = "ひとこま";
+  const payload = {
+    notification: {
+      title: title,
+      body: title,
+    },
+  };
+});

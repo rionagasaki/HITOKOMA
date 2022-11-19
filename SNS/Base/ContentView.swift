@@ -65,9 +65,11 @@ struct ContentView: View {
         }.onAppear{
             self.lessonData = []
             FetchFromFirestore().fetchUserInfoFromFirestore { doc in
+                self.user.userID = doc.uid
                 self.user.username = doc.username
                 self.user.email = doc.email
                 self.user.profileImage = doc.profileImage
+                self.user.purchasedLesson =  doc.purchasedLessons
             }
             FetchFromFirestore().fetchRequestInfoFromFirestore { request in
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: request.requestUserUid) { userInfo in
@@ -90,7 +92,6 @@ struct ContentView: View {
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: lesson.mentorUid) { userInfo in
                     lesson.userImageIconURLString = userInfo.profileImage
                     lesson.username = userInfo.username
-                    self.user.purchasedLesson = userInfo.purchasedLessons
                     lessonData.append(lesson)
                     let bigCategory = CategoryDetail(rawValue: lesson.bigCategory)
                     switch bigCategory {

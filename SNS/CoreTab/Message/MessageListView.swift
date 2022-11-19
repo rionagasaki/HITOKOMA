@@ -13,7 +13,7 @@ struct MessageListView: View {
     var body: some View {
         List(messages){ message in
             NavigationLink {
-                 ChatView()
+                ChatView(chatUserName: "", chatUserUid: "", chatData: nil)
             } label: {
                 HStack{
                     Image(message.senderIconImage).resizable().frame(width:60, height: 60).clipShape(Circle())
