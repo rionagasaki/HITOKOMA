@@ -22,6 +22,7 @@ struct OneClassDetailView: View {
     let lessonTitle: String
     let lessonContent: String
     let budgets: Int
+
     var body: some View {
         VStack{
             ScrollView {
@@ -107,6 +108,8 @@ struct OneClassDetailView: View {
                     }
                 }.background(.ultraThinMaterial)
             }
+        }.onAppear{
+            UITabBar.appearance().isHidden = true
         }
     }
 }

@@ -13,6 +13,7 @@ import Combine
 struct ContentView: View {
     @State var selectedTab: Tab = .home
     @State var navigationTitle:String = ""
+    @State var navigationStyle:Bool = true
     @State var requestData: [RequestData] = []
     @State var englishRequestData: [RequestData] = []
     @State var computerRequestData: [RequestData] = []
@@ -26,7 +27,10 @@ struct ContentView: View {
     @State var financeLessonData: [LessonData] = []
     @State var investmentLessonData: [LessonData] = []
     @EnvironmentObject var user: User
-
+    @State var mentorMessages:[MessageListData] = []
+    @State var studentsMessages:[MessageListData] = []
+    @State var searchWord = ""
+    
     var loginUserIconURLString: String = ""
     var loginUsername: String = ""
     
@@ -35,31 +39,37 @@ struct ContentView: View {
     }
     
     var body: some View {
-        ZStack(alignment:.bottom){
-            TabView(selection:$selectedTab){
-                NavigationView{
-                    ZStack(alignment:.bottom){
+        NavigationView {
+            TabView(selection: $selectedTab){
+                NavigationView {
+                    VStack{
                         HomeView(requestData: requestData, requestEnglishData: englishRequestData, requestComputerData: computerRequestData, requestLawData: lawRequestData, requestFinanceData: financeRequestData, requestInvestmentData: investmentRequestData, lessonData: lessonData, lessonEnglishData: englishLessonData, lessonComputerData: computerLessonData, lessonLawData: lawLessonData, lessonFinanceData: financeLessonData, lessonInvestmentData: investmentLessonData)
-                    CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
-                    }.navigationTitle("").ignoresSafeArea()
+                        Divider()
+                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                    }.navigationBarTitleDisplayMode(.inline)
                 }.tag(Tab.home)
-                NavigationView{
-                    ZStack(alignment:.bottom){
-                    SearchView()
-                    CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
-                    }.navigationTitle("見つける").ignoresSafeArea(edges: .bottom)
+                
+                NavigationView {
+                    VStack{
+                        SearchView()
+                        Divider()
+                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                    }
                 }.tag(Tab.search)
-                NavigationView{
-                    ZStack(alignment:.bottom){
-                        MessageListView()
-                    CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
-                    }.navigationTitle("メッセージ").ignoresSafeArea(edges: .bottom)
+                
+                
+                NavigationView {
+                    VStack{
+                        MessageListView(mentorMessages: mentorMessages, studentsMessages: studentsMessages)
+                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                    }
                 }.tag(Tab.message)
-                NavigationView{
-                    ZStack(alignment:.bottom){
+                
+                NavigationView {
+                    VStack{
                         ProfileView(username: user.username, email: user.email, profileImage: user.profileImage)
-                    CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
-                    }.ignoresSafeArea()
+                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                    }
                 }.tag(Tab.profile)
             }
         }.onAppear{
@@ -105,16 +115,29 @@ struct ContentView: View {
                     }
                 }
             }
-        }
+            FetchFromFirestore().fetchStudentMessageInfo { studentChatRoom in
+                FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: studentChatRoom.studentUid) { userInfo in
+                    let messageData = MessageListData(senderIconImage: userInfo.profileImage, senderName: userInfo.username, lastMessage: studentChatRoom.lastMessageText, lastMessageDate: studentChatRoom.lastMessageDate)
+                    self.studentsMessages.append(messageData)
+                }
+            }
+            FetchFromFirestore().fetchMentorMessageInfo { mentorChatRoom in
+                FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: mentorChatRoom.mentorUid) { userInfo in
+                    let messageData = MessageListData(senderIconImage: userInfo.profileImage, senderName: userInfo.username, lastMessage: mentorChatRoom.lastMessageText, lastMessageDate: mentorChatRoom.lastMessageDate)
+                    self.mentorMessages.append(messageData)
+                }
+            }
+        }.accentColor(.black).background(.ultraThinMaterial)
     }
 }
+
 
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             .previewInterfaceOrientation(.portrait)
-            
+        
     }
 }
 

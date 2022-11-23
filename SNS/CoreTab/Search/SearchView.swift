@@ -23,45 +23,32 @@ struct SearchView:View {
     
     
     var body: some View{
-        ZStack {
-            VStack(alignment:.leading ,spacing: 20){
-                HStack{
-                    Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.yellow)
-                    Circle().size(width: 200, height: 200).blur(radius: 80).foregroundColor(.pink)
-                }
-                HStack{
-                    Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.blue).padding(.top,-120)
-                    Circle().size(width: 200, height: 200).blur(radius: 50).foregroundColor(.orange).padding(.top,30)
-                }
-            }
-            ScrollView{
-                VStack {
-                    if suggestion.filter{ $0.suggestionTitle.contains(serarchWord) || serarchWord == "" || $0.description.contains(serarchWord)}.count == 0{
-                        VStack{
-                            Text("NOT FOUND").bold()
-                            Image("sorry").resizable().frame(width: 100, height: 100)
-                            Text("検索結果が見つかりませんでした。\n入力を変えて再度お試しください。")
-                        }
-                    }else{
-                        ForEach(suggestion.filter({ $0.suggestionTitle.contains(serarchWord) || serarchWord == "" || $0.description.contains(serarchWord)
-                        })) { suggestion in
-                            Divider()
-                            SuggestionView(classImage: suggestion.suggestionImage, classTitle: suggestion.suggestionTitle, classDescription: suggestion.description)
-                        }
+        ScrollView{
+            VStack {
+                if suggestion.filter{ $0.suggestionTitle.contains(serarchWord) || serarchWord == "" || $0.description.contains(serarchWord)}.count == 0{
+                    VStack{
+                        Text("NOT FOUND").bold()
+                        Image("sorry").resizable().frame(width: 100, height: 100)
+                        Text("検索結果が見つかりませんでした。\n入力を変えて再度お試しください。")
                     }
-                    Divider()
-                }.padding().background(.thinMaterial, in: RoundedRectangle(cornerRadius: 20)).padding()
-            }
-            .searchable(text: $serarchWord,placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search All")).navigationBarTitleDisplayMode(.inline).navigationBarItems(trailing: Button(action: {
-                print("aaa")
-            }, label: {
-                Text("Done")
-            })).toolbar(content: {
-                Picker("", selection: $selectedColorIndex) {
-                    
+                }else{
+                    ForEach(suggestion.filter({ $0.suggestionTitle.contains(serarchWord) || serarchWord == "" || $0.description.contains(serarchWord)
+                    })) { suggestion in
+                        Divider()
+                        SuggestionView(classImage: suggestion.suggestionImage, classTitle: suggestion.suggestionTitle, classDescription: suggestion.description)
+                    }
                 }
-            }).ignoresSafeArea(edges: .bottom)
+                Divider()
+            }.padding().background(.thinMaterial, in: RoundedRectangle(cornerRadius: 20)).padding()
         }
+        .searchable(text: $serarchWord,placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search All")).navigationBarTitleDisplayMode(.inline).navigationBarItems(trailing: Button(action: {
+            print("aaa")
+        }, label: {
+            Text("Done")
+        })).toolbar(content: {
+            Picker("", selection: $selectedColorIndex) {
+            }
+        }).navigationBarTitleDisplayMode(.inline).navigationTitle("探す").ignoresSafeArea(edges: .bottom)
     }
 }
 

@@ -23,6 +23,11 @@
 		5306B7F628DE149C00BEE750 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5306B7F528DE149C00BEE750 /* Tab.swift */; };
 		5306B7FB28E19F2800BEE750 /* LoginAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5306B7FA28E19F2800BEE750 /* LoginAPIClient.swift */; };
 		533555A22913250800513369 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 533555A12913250800513369 /* Preview Assets.xcassets */; };
+		534D778D292C6713006CFF10 /* TabBarSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D778C292C6713006CFF10 /* TabBarSliderView.swift */; };
+		534D7790292C6A65006CFF10 /* ToolBarViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D778F292C6A65006CFF10 /* ToolBarViewModifier.swift */; };
+		534D7792292C6AE5006CFF10 /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D7791292C6AE5006CFF10 /* MainHomeView.swift */; };
+		534D7794292D6F90006CFF10 /* NavigationStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D7793292D6F90006CFF10 /* NavigationStyleModifier.swift */; };
+		534D7796292D97AD006CFF10 /* RequestHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D7795292D97AD006CFF10 /* RequestHomeView.swift */; };
 		534DF2B72903D5C0006E9558 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534DF2B62903D5C0006E9558 /* MessageView.swift */; };
 		535B00B228C444B0000B5DCD /* SNSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535B00B128C444B0000B5DCD /* SNSApp.swift */; };
 		535B00BB28C444B1000B5DCD /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535B00BA28C444B1000B5DCD /* Persistence.swift */; };
@@ -157,6 +162,11 @@
 		533555A12913250800513369 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		534D778A29286EC7006CFF10 /* SNS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SNS.entitlements; sourceTree = "<group>"; };
 		534D778B29286ED7006CFF10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		534D778C292C6713006CFF10 /* TabBarSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarSliderView.swift; sourceTree = "<group>"; };
+		534D778F292C6A65006CFF10 /* ToolBarViewModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBarViewModifier.swift; sourceTree = "<group>"; };
+		534D7791292C6AE5006CFF10 /* MainHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeView.swift; sourceTree = "<group>"; };
+		534D7793292D6F90006CFF10 /* NavigationStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStyleModifier.swift; sourceTree = "<group>"; };
+		534D7795292D97AD006CFF10 /* RequestHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHomeView.swift; sourceTree = "<group>"; };
 		534DF2B62903D5C0006E9558 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		535B00AE28C444B0000B5DCD /* SNS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SNS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535B00B128C444B0000B5DCD /* SNSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSApp.swift; sourceTree = "<group>"; };
@@ -314,6 +324,15 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		534D778E292C6A49006CFF10 /* Modifier */ = {
+			isa = PBXGroup;
+			children = (
+				534D778F292C6A65006CFF10 /* ToolBarViewModifier.swift */,
+				534D7793292D6F90006CFF10 /* NavigationStyleModifier.swift */,
+			);
+			path = Modifier;
+			sourceTree = "<group>";
+		};
 		534DF2B42903D574006E9558 /* Message */ = {
 			isa = PBXGroup;
 			children = (
@@ -390,6 +409,7 @@
 		535B00B028C444B0000B5DCD /* SNS */ = {
 			isa = PBXGroup;
 			children = (
+				534D778E292C6A49006CFF10 /* Modifier */,
 				534D778B29286ED7006CFF10 /* Info.plist */,
 				534D778A29286EC7006CFF10 /* SNS.entitlements */,
 				53B68D14290475D90078DDD2 /* SNSDebug.entitlements */,
@@ -527,6 +547,7 @@
 				536B1EBD2911730C007058CC /* Extension+UIColor.swift */,
 				53BD18152923CD8C0026EFE5 /* Firestore.swift */,
 				53BD18172923CD9D0026EFE5 /* FirebaseFunctions.swift */,
+				534D778C292C6713006CFF10 /* TabBarSliderView.swift */,
 			);
 			path = Base;
 			sourceTree = "<group>";
@@ -599,6 +620,8 @@
 				53CD16C528EE81E6009CF670 /* HomeEnvironment.swift */,
 				53CD16C728EE81FA009CF670 /* HomeAction.swift */,
 				53BD18292923D20E0026EFE5 /* RequestDetailView.swift */,
+				534D7791292C6AE5006CFF10 /* MainHomeView.swift */,
+				534D7795292D97AD006CFF10 /* RequestHomeView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -782,6 +805,7 @@
 				53CD16C628EE81E6009CF670 /* HomeEnvironment.swift in Sources */,
 				53B68D16290490E20078DDD2 /* SignInWithEmail.swift in Sources */,
 				5306B7FB28E19F2800BEE750 /* LoginAPIClient.swift in Sources */,
+				534D7794292D6F90006CFF10 /* NavigationStyleModifier.swift in Sources */,
 				538D062B2902B6FB00C937B3 /* RegisterState.swift in Sources */,
 				53B68D27290995680078DDD2 /* CategorizationView.swift in Sources */,
 				53BD18452923DB8A0026EFE5 /* ChatView.swift in Sources */,
@@ -796,6 +820,7 @@
 				53CD16C228EE81D2009CF670 /* HomeState.swift in Sources */,
 				538D06332902C9E700C937B3 /* ProfileAction.swift in Sources */,
 				53BD184C2923DE6F0026EFE5 /* OneClassView.swift in Sources */,
+				534D7796292D97AD006CFF10 /* RequestHomeView.swift in Sources */,
 				53BD18472923DCB10026EFE5 /* MakeLessonView.swift in Sources */,
 				53BD18162923CD8C0026EFE5 /* Firestore.swift in Sources */,
 				538D06312902B72000C937B3 /* RegisterEnvironment.swift in Sources */,
@@ -816,17 +841,20 @@
 				53B68CFC2903EFB60078DDD2 /* RootView.swift in Sources */,
 				53BD18362923D49D0026EFE5 /* User.swift in Sources */,
 				53B68D1F2906095B0078DDD2 /* SuggestionView.swift in Sources */,
+				534D778D292C6713006CFF10 /* TabBarSliderView.swift in Sources */,
 				5306B7A928D5B57600BEE750 /* CardView.swift in Sources */,
 				53B68D3E290A39070078DDD2 /* Stripe.swift in Sources */,
 				53B68D44290BC9540078DDD2 /* CheckoutView.swift in Sources */,
 				53CD16CD28EE8235009CF670 /* ProfileReducer.swift in Sources */,
 				536B1ECB291221E8007058CC /* EmailChangeView.swift in Sources */,
+				534D7790292C6A65006CFF10 /* ToolBarViewModifier.swift in Sources */,
 				53B68D252907F79F0078DDD2 /* CustomTabView.swift in Sources */,
 				53B68D03290454EB0078DDD2 /* MessageAction.swift in Sources */,
 				53BD181E2923CF020026EFE5 /* IntroView.swift in Sources */,
 				536B1EBA2910BB4A007058CC /* ConnectOnboardViewController.swift in Sources */,
 				536B1EBC2910BD71007058CC /* ConnectAccountView.swift in Sources */,
 				538D062F2902B71400C937B3 /* RegisterAction.swift in Sources */,
+				534D7792292C6AE5006CFF10 /* MainHomeView.swift in Sources */,
 				53BD182A2923D20E0026EFE5 /* RequestDetailView.swift in Sources */,
 				5306B7F428DCD1AB00BEE750 /* TrackableScrollView.swift in Sources */,
 				53B68D05290454F40078DDD2 /* MessageReducer.swift in Sources */,

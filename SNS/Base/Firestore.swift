@@ -61,6 +61,34 @@ class FetchFromFirestore{
         }
     }
     
+    func fetchStudentMessageInfo(completion:@escaping(ChatRoomData)-> Void){
+        guard let uid = uid else { return }
+        db.collection("Chat").whereField("studentUid", isEqualTo: uid).getDocuments { querySnapshot, error in
+            if let error = error {
+                print("Error=>fetchMessageCategoryInfo2:\(error)")
+                return
+            }
+            querySnapshot?.documents.forEach({ document in
+                let messageData =  ChatRoomData(document: document)
+                completion(messageData)
+            })
+        }
+    }
+    
+    func fetchMentorMessageInfo(completion:@escaping (ChatRoomData) -> Void){
+        guard let uid = uid else { return }
+        db.collection("Chat").whereField("mentorUid", isEqualTo: uid).getDocuments { querySnapshot, error in
+            if let error = error {
+                print("Error=>fetchMessageCategoryInfo2:\(error)")
+                return
+            }
+            querySnapshot?.documents.forEach({ document in
+                let messageData =  ChatRoomData(document: document)
+                completion(messageData)
+            })
+        }
+    }
+    
     func fetchRequestInfoFromFirestore(completion: @escaping (RequestData)-> Void){
         db.collection(requestPath).addSnapshotListener { querySnapshot, error in
             if let error = error {
@@ -78,19 +106,18 @@ class FetchFromFirestore{
     
     func fetchChatRoomInfoFromFirestore(mentorUid: String, completion: @escaping (ChatRoomData) -> Void){
         guard let studentUid = uid else { return }
-        db.collection("Chat").whereField("chatMember", arrayContains: mentorUid).getDocuments { querySnapshot, error in
+        db.collection("Chat").document(mentorUid+studentUid).getDocument { document, error in
             if error != nil {
                 return
             }
-            if querySnapshot?.documents.count == 0 {
-                SetToFirestore().registerChatRoomInfo(member: [studentUid, mentorUid]){
+            guard let document = document else { return }
+            if document.exists {
+                let chatroomData = ChatRoomData(document: document)
+                completion(chatroomData)
+            }else{
+                SetToFirestore().registerChatRoomInfo(mentorUid: mentorUid, studentuid:studentUid){
                     completion($0)
                 }
-            }else{
-                querySnapshot?.documents.forEach({ document in
-                    let chatroomData = ChatRoomData(document: document)
-                    completion(chatroomData)
-                })
             }
         }
     }
@@ -159,15 +186,16 @@ class SetToFirestore{
     }
     
     
-    func registerChatRoomInfo(member: [String], completion: @escaping (ChatRoomData) -> Void){
-        var ref: DocumentReference? = nil
-        ref = db.collection("Chat").addDocument(data: [
-            "chatMember": member
+    func registerChatRoomInfo(mentorUid:String, studentuid: String, completion: @escaping (ChatRoomData) -> Void){
+        let chatRoomRef = db.collection("Chat").document(mentorUid+studentuid)
+        chatRoomRef.setData([
+            "mentorUid": mentorUid,
+            "studentUid": studentuid
         ]){ error in
             if let error = error {
                 print("Error=>registerMessageInfo:\(error)")
             }else{
-                ref?.getDocument(completion: { document, error in
+                chatRoomRef.getDocument(completion: { document, error in
                     if let error = error {
                        print("\(error)")
                         return

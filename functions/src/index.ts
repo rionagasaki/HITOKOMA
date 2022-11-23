@@ -144,13 +144,22 @@ exports.createDashboardLink = functions.https.onCall(async () => {
   }
 });
 
-exports.createNotification = functions.firestore.document("Chat/{chatId}/Message/{docId").onWrite((snap, context) => {
-  const roomId = context.params.roomId;
+exports.createNotification = functions.firestore.document("Chat/{chatId}/Message/{docId}").onWrite(async (snap, context) => {
+  const fcmToken = "eECx5B9u3k0ImZsqHtqPOm:APA91bGAlulOeHU5DFm79NBN-odI8d5eQz8N0TJz72d9TFFIcru5UnJHf0D6EB4FzJFc9aBkqp87BfoukyepAtdSSIGCBZWiANrMZ0AmfaCzKZJo2BIRVS4--kw_XhFNl7JQ8QLV6AHC";
   const title = "ひとこま";
   const payload = {
     notification: {
       title: title,
-      body: title,
+      body: "メッセージが来たよ",
+      badge: "1",
+      sound: "default",
     },
   };
+  const options = {
+    priority: "high",
+  };
+  // const messageRef = db.collection("Chat").doc(chatId).collection("Message");
+  admin.messaging().sendToDevice(fcmToken, payload, options);
 });
+
+exports.create

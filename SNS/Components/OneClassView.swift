@@ -16,18 +16,20 @@ struct OneClassView: View {
     
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false){
-            HStack{
-               
-                    VStack(alignment: .leading){
-                        WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: 125, height: 90)
-
-                        Text(lessonName).frame(width: 115).font(.system(size: 11)).padding(.horizontal,5).foregroundColor(.black)
+            HStack(alignment: .top){
+                    VStack(alignment: .leading, spacing: 0){
+                        WebImage(url: URL(string: lessonImageURLString)).resizable().scaledToFill().frame(width: 120, height: 90)
+                        HStack(alignment: .top){
+                            Text(lessonName).font(.system(size: 10)).font(.subheadline).lineLimit(3).foregroundColor(.black).multilineTextAlignment(.leading).padding(.top,5)
+                            Spacer()
+                        }.frame(width: 120)
+                        Spacer()
                         HStack{
                             WebImage(url: URL(string: userIconURLString)).resizable().frame(width:20, height: 20).clipShape(Circle())
                             Spacer()
                             Text("\(lessonBudgets)円").font(.footnote).foregroundColor(.black)
-                        }.frame(width:115).padding(.bottom,5).padding(.horizontal,5)
-                    }.background(.ultraThinMaterial).cornerRadius(5)
+                        }.frame(width:120)
+                    }.frame(height: 150)
             }
         }
     }

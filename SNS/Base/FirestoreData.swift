@@ -121,14 +121,16 @@ class UserInfo: ObservableObject{
 class ChatRoomData: Identifiable{
     var id = UUID()
     var chatroomId: String
-    var chatMember: [String]
+    var mentorUid: String
+    var studentUid: String
     var lastMessageText: String
     var lastMessageDate: String
     
     init(document: QueryDocumentSnapshot){
         self.chatroomId = document.documentID
         let messageDic = document.data()
-        self.chatMember = messageDic["chatMember"] as? [String] ?? []
+        self.mentorUid = messageDic["mentorUid"] as? String ?? ""
+        self.studentUid = messageDic["studentUid"] as? String ?? ""
         self.lastMessageText = messageDic["lastMessageText"] as? String ?? ""
         self.lastMessageDate = messageDic["lastMessageDate"] as? String ?? ""
     }
@@ -136,7 +138,8 @@ class ChatRoomData: Identifiable{
     init(document: DocumentSnapshot){
         self.chatroomId = document.documentID
         let messageDic = document.data()
-        self.chatMember = messageDic?["chatMember"] as? [String] ?? []
+        self.mentorUid = messageDic?["mentorUid"] as? String ?? ""
+        self.studentUid = messageDic?["studentUid"] as? String ?? ""
         self.lastMessageText = messageDic?["lastMessageText"] as? String ?? ""
         self.lastMessageDate = messageDic?["lastMessageDate"] as? String ?? ""
     }

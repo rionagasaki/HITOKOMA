@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct DetailCategoryView: View {
-    
-   
-    
     @State var detailCategory: [DetailCategory]
-    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false){
             HStack{

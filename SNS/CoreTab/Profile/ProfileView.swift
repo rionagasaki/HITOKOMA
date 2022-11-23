@@ -122,7 +122,7 @@ struct ProfileView: View {
                 }
             }.onAppear{
                 UITableView.appearance().backgroundColor = .clear
-            }.padding(.top,20).padding(.bottom, 80)
+            }.padding(.top,20)
         }.ignoresSafeArea().navigationBarHidden(true)
     }
 }

@@ -6,48 +6,70 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
+
+enum MentorOrStudent: String, CaseIterable{
+    case mentor = "メンターへのチャット"
+    case student = "生徒へのチャット"
+}
 
 struct MessageListView: View {
     @State var searchWord: String = ""
-    let messages: [MessageListData] = [MessageListData(senderIconImage: "rootImage", senderName: "Rio", lastMessage: "こんにちは", lastMessageDate: "12月2日"), MessageListData(senderIconImage: "rootImage", senderName: "Rio", lastMessage: "こんにちは", lastMessageDate: "12月2日")]
+    @State var selectPicker: MentorOrStudent = .mentor
+    let mentorMessages: [MessageListData]
+    let studentsMessages: [MessageListData]
+    
     var body: some View {
-        List(messages){ message in
-            NavigationLink {
-                ChatView(chatUserName: "", chatUserUid: "", chatData: nil)
-            } label: {
-                HStack{
-                    Image(message.senderIconImage).resizable().frame(width:60, height: 60).clipShape(Circle())
-                    VStack(alignment: .leading){
-                        HStack{
-                            Text(message.senderName).bold()
-                            Spacer()
-                            Text(message.lastMessageDate).foregroundColor(.init(uiColor: .lightGray)).font(.system(size: 12)).padding(.bottom,4)
-                        }.padding(.top, 3)
-                        HStack{
-                            Text(message.lastMessage)
-                            Spacer()
-                            Text("3").font(.system(size: 14)).padding(.horizontal, 6).foregroundColor(.white).background(.red).cornerRadius(10)
-                        }
+        ScrollView{
+            VStack(spacing: .zero){
+                Picker("",selection: $selectPicker) {
+                    ForEach(MentorOrStudent.allCases, id:\.self) {
+                        mentor in
+                        Text(mentor.rawValue).tag(mentor)
                     }
+                }.pickerStyle(SegmentedPickerStyle()).padding(.horizontal, 16).padding(.vertical,7)
+                
+                ForEach(self.selectPicker == .mentor ? self.mentorMessages: studentsMessages){ chatRoom in
+                    NavigationLink {
+                        ChatView(chatUserName: "", chatUserUid: "", chatData: nil)
+                    } label: {
+                        OneMessageListView(message: chatRoom)
+                    }
+                }.listStyle(.plain).padding(.horizontal,16).padding(.top,16)
+                Spacer()
+            }
+        }.searchable(text: $searchWord).navigationTitle("メッセージ")
+    }
+}
+
+struct OneMessageListView: View {
+    let message: MessageListData
+    
+    var body: some View{
+        HStack{
+            WebImage(url: URL(string: message.senderIconImage)).resizable().frame(width:60, height: 60).clipShape(Circle())
+            VStack(alignment: .leading){
+                HStack{
+                    Text(message.senderName).foregroundColor(.black).bold()
+                    Spacer()
+                    Text(message.lastMessageDate).foregroundColor(.init(uiColor: .lightGray)).font(.system(size: 12)).padding(.bottom,4)
+                }.padding(.top, 3)
+                HStack{
+                    Text(message.lastMessage)
+                    Spacer()
+                    Text("3").font(.system(size: 14)).padding(.horizontal, 6).foregroundColor(.white).background(.red).cornerRadius(10)
                 }
             }
-
-        }.listStyle(.plain).onAppear{
-        }.searchable(text: $searchWord)
+        }
     }
 }
 
-struct MessageListView_Previews: PreviewProvider {
-    static var previews: some View {
-        MessageListView()
-    }
-}
 
-struct MessageListData: Identifiable {
+struct MessageListData: Identifiable{
     let id = UUID()
-    var senderIconImage: String
-    var senderName: String
-    var lastMessage: String
-    var lastMessageDate: String
+    let senderIconImage: String
+    let senderName: String
+    let lastMessage: String
+    let lastMessageDate: String
 }
 
