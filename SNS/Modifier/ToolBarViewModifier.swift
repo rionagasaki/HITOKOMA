@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ToolBarviewModifier: ViewModifier {
+    @State var shouldOpenNotification: Bool = false
     @Binding var selection: Int  // Tabのタップで選択状態が変化
     let items: [String]          // このビューで配列に変更はないので値渡し
     private let tabButtonSize: CGSize = CGSize(width: 100.0, height: 44.0)
@@ -27,6 +28,7 @@ struct ToolBarviewModifier: ViewModifier {
         }.toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
+                    self.shouldOpenNotification = true
                 } label: {
                     Image(systemName: "bell.fill")
                         .resizable()
@@ -69,6 +71,8 @@ struct ToolBarviewModifier: ViewModifier {
                     }
                 }
             }
+        }.fullScreenCover(isPresented: $shouldOpenNotification) {
+            NotificationView()
         }
     }
     private func spacerWidth(_ viewOriginX: CGFloat) -> CGFloat {

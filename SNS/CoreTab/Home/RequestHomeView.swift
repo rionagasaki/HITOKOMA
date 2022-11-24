@@ -18,14 +18,6 @@ struct RequestHomeView: View {
     
     var body: some View {
         ScrollView{
-            VStack(alignment: .center){
-                TabView {
-                    Image("requestHome").resizable()
-                    Image("requestHome").resizable()
-                }.tabViewStyle(PageTabViewStyle())
-                    .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
-            }.frame(width: UIScreen.main.bounds.width-60,height:200).cornerRadius(15).padding(.top,15).shadow(radius: 10)
-            
             VStack{
                 requestList(bigCategory: "リクエスト一覧", detailsCategory: requestData)
                 requestList(bigCategory: "英語", detailsCategory: requestEnglishData)

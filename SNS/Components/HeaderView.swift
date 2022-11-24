@@ -26,7 +26,7 @@ struct HeaderView: View {
                     NavigationLink {
                         ConnectAccountView()
                     } label: {
-                        Text("ひとこまを販売する").bold().foregroundColor(Color.white).frame(width: 200,height: 30).background(Color.blue.opacity(0.6)).cornerRadius(15)
+                        Text("ひとこまを販売する").font(.subheadline).foregroundColor(Color.black).frame(width: 190,height: 30).background(RoundedRectangle(cornerRadius: 15).stroke(.black, lineWidth: 3)).cornerRadius(15)
                     }
                 }
             }

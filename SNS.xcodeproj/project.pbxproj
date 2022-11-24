@@ -28,6 +28,8 @@
 		534D7792292C6AE5006CFF10 /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D7791292C6AE5006CFF10 /* MainHomeView.swift */; };
 		534D7794292D6F90006CFF10 /* NavigationStyleModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D7793292D6F90006CFF10 /* NavigationStyleModifier.swift */; };
 		534D7796292D97AD006CFF10 /* RequestHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D7795292D97AD006CFF10 /* RequestHomeView.swift */; };
+		534D779C292E3C0E006CFF10 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D779B292E3C0E006CFF10 /* NotificationView.swift */; };
+		534D779E292E421F006CFF10 /* MakeQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D779D292E421F006CFF10 /* MakeQuestionView.swift */; };
 		534DF2B72903D5C0006E9558 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534DF2B62903D5C0006E9558 /* MessageView.swift */; };
 		535B00B228C444B0000B5DCD /* SNSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535B00B128C444B0000B5DCD /* SNSApp.swift */; };
 		535B00BB28C444B1000B5DCD /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535B00BA28C444B1000B5DCD /* Persistence.swift */; };
@@ -167,6 +169,8 @@
 		534D7791292C6AE5006CFF10 /* MainHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainHomeView.swift; sourceTree = "<group>"; };
 		534D7793292D6F90006CFF10 /* NavigationStyleModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationStyleModifier.swift; sourceTree = "<group>"; };
 		534D7795292D97AD006CFF10 /* RequestHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHomeView.swift; sourceTree = "<group>"; };
+		534D779B292E3C0E006CFF10 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		534D779D292E421F006CFF10 /* MakeQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeQuestionView.swift; sourceTree = "<group>"; };
 		534DF2B62903D5C0006E9558 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		535B00AE28C444B0000B5DCD /* SNS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SNS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535B00B128C444B0000B5DCD /* SNSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSApp.swift; sourceTree = "<group>"; };
@@ -622,6 +626,8 @@
 				53BD18292923D20E0026EFE5 /* RequestDetailView.swift */,
 				534D7791292C6AE5006CFF10 /* MainHomeView.swift */,
 				534D7795292D97AD006CFF10 /* RequestHomeView.swift */,
+				534D779B292E3C0E006CFF10 /* NotificationView.swift */,
+				534D779D292E421F006CFF10 /* MakeQuestionView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -810,6 +816,7 @@
 				53B68D27290995680078DDD2 /* CategorizationView.swift in Sources */,
 				53BD18452923DB8A0026EFE5 /* ChatView.swift in Sources */,
 				536B1ECD29130879007058CC /* OpenSourceLicenseView.swift in Sources */,
+				534D779E292E421F006CFF10 /* MakeQuestionView.swift in Sources */,
 				538D062D2902B70800C937B3 /* RegisterReducer.swift in Sources */,
 				53BD18242923D05B0026EFE5 /* SearchCategoryDetailView.swift in Sources */,
 				536B1EB0290F8AF2007058CC /* AddNewLessonView.swift in Sources */,
@@ -833,6 +840,7 @@
 				53BD18432923DB670026EFE5 /* MessageListView.swift in Sources */,
 				53A3344928F6E81800B467CC /* BubbleView.swift in Sources */,
 				5306B7B128D60E4A00BEE750 /* LoginReducer.swift in Sources */,
+				534D779C292E3C0E006CFF10 /* NotificationView.swift in Sources */,
 				53A3344B28F9451E00B467CC /* RegisterView.swift in Sources */,
 				538D059228FA8E9D00C937B3 /* RichButton.swift in Sources */,
 				5306B7F628DE149C00BEE750 /* Tab.swift in Sources */,

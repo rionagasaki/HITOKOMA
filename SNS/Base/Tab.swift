@@ -15,7 +15,7 @@ struct TabBar: Identifiable{
 }
 
 var tabItems = [
-    TabBar(menuTitle: "ひとこま", menuImage: "house", tab: Tab.home),
+    TabBar(menuTitle: "ホーム", menuImage: "house", tab: Tab.home),
     TabBar(menuTitle: "探す", menuImage: "magnifyingglass", tab: Tab.search),
     TabBar(menuTitle: "メッセージ", menuImage: "message", tab: Tab.message),
     TabBar(menuTitle: "マイページ", menuImage:"person", tab: Tab.profile)

@@ -167,3 +167,30 @@ class ChatData: Identifiable{
         self.senderUId = chatDic?["senderUid"] as? String ?? ""
     }
 }
+
+class QuestionToMentorData: Identifiable{
+    var id = UUID()
+    var questionID: String
+    var lessonID: String
+    var questionUserUid: String
+    var questionText:String
+    var answerText:String
+    
+    init(document: QueryDocumentSnapshot){
+        self.questionID = document.documentID
+        let questionDic = document.data()
+        self.lessonID = questionDic["lessonId"] as? String ?? ""
+        self.questionUserUid = questionDic["questionUserUid"] as? String ?? ""
+        self.questionText = questionDic["questionText"] as? String ?? ""
+        self.answerText = questionDic["answerText"] as? String ?? ""
+    }
+    
+    init(document: DocumentSnapshot){
+        self.questionID = document.documentID
+        let questionDic = document.data()
+        self.lessonID = questionDic?["lessonId"] as? String ?? ""
+        self.questionUserUid = questionDic?["questionUserUid"] as? String ?? ""
+        self.questionText = questionDic?["questionText"] as? String ?? ""
+        self.answerText = questionDic?["answerText"] as? String ?? ""
+    }
+}

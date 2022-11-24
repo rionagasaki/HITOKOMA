@@ -13,6 +13,8 @@ struct ChatView:View{
     let chatUserName: String
     let chatUserUid: String
     let chatData: ChatRoomData?
+    let chatStyle: ChatType
+    
     @FocusState var isClosed:Bool
     @State var height:CGFloat = 15
     @State var text = ""
@@ -22,8 +24,11 @@ struct ChatView:View{
     @State var sendImage: UIImage?
     var body: some View{
         ZStack{
-            Color.black.opacity(0.1).background(.ultraThinMaterial).ignoresSafeArea()
+            Color.white
             VStack{
+                if chatStyle == .beforePurchase{
+                    Text("購入前チャットです。\nトラブルのないよう、事前相談をしましょう。").frame(width: UIScreen.main.bounds.width, height: 50).foregroundColor(.white).background(.blue.opacity(0.8))
+                }
                 Spacer()
                 ScrollViewReader{ reader in
                     ScrollView {
@@ -46,7 +51,7 @@ struct ChatView:View{
         }.gesture(TapGesture().onEnded({ _ in
             self.isClosed = false
         })).onAppear{
-            SetToFirestore().snapShotMessage(chatRoomId: chatData!.chatroomId) { chat in
+            SetToFirestore().snapShotMessage(path: chatStyle == .afterPurchase ? "Chat":"BeforePurchaseChat",chatRoomId: chatData!.chatroomId) { chat in
                 guard let uid = Auth.auth().currentUser?.uid else { return }
                 let message = Chat(messageText: chat.messageText, sender: chat.senderUId == uid, messageDate: chat.messageDate)
                 messages.append(message)
@@ -83,7 +88,7 @@ struct ChatView:View{
                     Button {
                         self.text = self.text.trimmingCharacters(in: .whitespaces)
                         if !isTextEmpty{
-                            SetToFirestore().registerMessage(chatRoomId: chatData!.chatroomId, messageText:self.text, messageDate: dateFormat(date: Date()))
+                            SetToFirestore().registerMessage(path: chatStyle == .afterPurchase ? "Chat":"BeforePurchaseChat", chatRoomId: chatData!.chatroomId, messageText:self.text, messageDate: dateFormat(date: Date()))
                         }
                     } label: {
                         if isTextEmpty && (sendImage == nil){
@@ -119,8 +124,13 @@ struct ChatView:View{
     }
 }
 
+enum ChatType {
+    case afterPurchase
+    case beforePurchase
+}
+
 struct ChatView_Preview:PreviewProvider{
     static var previews: some View{
-        ChatView(chatUserName: "", chatUserUid: "", chatData: nil, height: 0)
+        ChatView(chatUserName: "", chatUserUid: "", chatData: nil, chatStyle: .afterPurchase, height: 0)
     }
 }

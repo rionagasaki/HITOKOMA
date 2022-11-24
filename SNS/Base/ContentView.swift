@@ -61,6 +61,7 @@ struct ContentView: View {
                 NavigationView {
                     VStack{
                         MessageListView(mentorMessages: mentorMessages, studentsMessages: studentsMessages)
+                        Divider()
                         CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
                     }
                 }.tag(Tab.message)

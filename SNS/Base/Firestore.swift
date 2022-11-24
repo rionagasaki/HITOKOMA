@@ -104,9 +104,9 @@ class FetchFromFirestore{
         }
     }
     
-    func fetchChatRoomInfoFromFirestore(mentorUid: String, completion: @escaping (ChatRoomData) -> Void){
+    func fetchChatRoomInfoFromFirestore(path: String,mentorUid: String, completion: @escaping (ChatRoomData) -> Void){
         guard let studentUid = uid else { return }
-        db.collection("Chat").document(mentorUid+studentUid).getDocument { document, error in
+        db.collection(path).document(mentorUid+studentUid).getDocument { document, error in
             if error != nil {
                 return
             }
@@ -115,11 +115,15 @@ class FetchFromFirestore{
                 let chatroomData = ChatRoomData(document: document)
                 completion(chatroomData)
             }else{
-                SetToFirestore().registerChatRoomInfo(mentorUid: mentorUid, studentuid:studentUid){
+                SetToFirestore().registerChatRoomInfo(path: path, mentorUid: mentorUid, studentuid:studentUid){
                     completion($0)
                 }
             }
         }
+    }
+    
+    func fetchQuestionInfoFromFirestore(){
+        
     }
 }
 
@@ -185,9 +189,8 @@ class SetToFirestore{
         }
     }
     
-    
-    func registerChatRoomInfo(mentorUid:String, studentuid: String, completion: @escaping (ChatRoomData) -> Void){
-        let chatRoomRef = db.collection("Chat").document(mentorUid+studentuid)
+    func registerChatRoomInfo(path: String,mentorUid:String, studentuid: String, completion: @escaping (ChatRoomData) -> Void){
+        let chatRoomRef = db.collection(path).document(mentorUid+studentuid)
         chatRoomRef.setData([
             "mentorUid": mentorUid,
             "studentUid": studentuid
@@ -210,9 +213,9 @@ class SetToFirestore{
         }
     }
     
-    func registerMessage(chatRoomId: String, messageText:String, messageDate: String){
+    func registerMessage(path: String,chatRoomId: String, messageText:String, messageDate: String){
         guard let uid = uid else { return }
-        db.collection("Chat").document(chatRoomId).collection("Message").addDocument(data: [
+        db.collection(path).document(chatRoomId).collection("Message").addDocument(data: [
             "messageText": messageText,
             "messageDate": messageDate,
             "senderUid": uid
@@ -223,8 +226,8 @@ class SetToFirestore{
         }
     }
     
-    func snapShotMessage(chatRoomId: String,completion: @escaping (ChatData)-> Void){
-        db.collection("Chat").document(chatRoomId).collection("Message").addSnapshotListener { querySnapshot, error in
+    func snapShotMessage(path: String,chatRoomId: String,completion: @escaping (ChatData)-> Void){
+        db.collection(path).document(chatRoomId).collection("Message").addSnapshotListener { querySnapshot, error in
             if let error = error {
                 print("Error=>registerMessageInfo:\(error)")
                 return
@@ -235,6 +238,19 @@ class SetToFirestore{
                 case .modified, .removed: print("nothing to do")
                 }
             })
+        }
+    }
+    
+    func registerQuestionToLesson(lessonId: String, questionText: String){
+        guard let uid = uid else { return }
+        db.collection("Question").addDocument(data: [
+            "lessonId": lessonId,
+            "questionUserUid": uid,
+            "questionText": questionText
+        ]){ error in
+            if let error = error {
+                print("Error=>registerQuestionToLesson:\(error)")
+            }
         }
     }
 }

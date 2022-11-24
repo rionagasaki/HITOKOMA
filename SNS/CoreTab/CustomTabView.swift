@@ -17,6 +17,7 @@ struct CustomTabView: View {
                 Button {
                     self.selectedTab = item.tab
                     self.navigationTitle = item.tab.rawValue
+                    
                 } label: {
                     VStack(spacing:0){
                         Image(systemName: item.menuImage).foregroundColor(item.tab == selectedTab ? .black: .gray).symbolVariant(.fill).font(.body.bold()).frame(width: 44, height: 29)
@@ -34,3 +35,4 @@ struct CustomTabView_Previews: PreviewProvider {
         ContentView()
     }
 }
+

@@ -31,7 +31,7 @@ struct MessageListView: View {
                 
                 ForEach(self.selectPicker == .mentor ? self.mentorMessages: studentsMessages){ chatRoom in
                     NavigationLink {
-                        ChatView(chatUserName: "", chatUserUid: "", chatData: nil)
+                        ChatView(chatUserName: "", chatUserUid: "", chatData: nil, chatStyle: .afterPurchase)
                     } label: {
                         OneMessageListView(message: chatRoom)
                     }

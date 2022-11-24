@@ -13,6 +13,7 @@ struct OneClassDetailView: View {
     @EnvironmentObject var user:User
     @State private var openCharge: Bool = false
     @State var alreadyChat: Bool = false
+    @State var preChatRoomData: ChatRoomData?
     @State var chatroomData:ChatRoomData?
     let lessonImageURLString: String
     let mentorIconImageURLString: String
@@ -53,17 +54,16 @@ struct OneClassDetailView: View {
                     Divider()
                     VStack{
                         Text("*この講座は購入前に事前チャットする必要があります。").font(.caption)
-                        Button {
-                            print("aaa")
+                        NavigationLink {
+                            ChatView(chatUserName: mentorName, chatUserUid: mentorUid, chatData: preChatRoomData, chatStyle: .beforePurchase)
                         } label: {
                             HStack{
                                 Image("mail").resizable().frame(width:30,height: 30)
                                 Text("購入前チャット").font(.callout).foregroundColor(.black)
                             }.padding(.horizontal,10).background(.ultraThinMaterial).cornerRadius(3).overlay(RoundedRectangle(cornerRadius: 3).stroke(.black.opacity(0.3), lineWidth: 1))
                         }
-                        
                     }
-                    LessonQuestionView()
+                    LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId)
                     EvaluationView()
                     VStack(alignment: .leading){
                         HStack{
@@ -79,7 +79,7 @@ struct OneClassDetailView: View {
             }
             if self.user.purchasedLesson.contains(lessonId) {
                 HStack(alignment: .bottom){
-                    Text("\(budgets)円/h").padding(.all,10).foregroundColor(.white).background(.green).cornerRadius(20).padding(.leading,16)
+                    Text("\(budgets)円/h").padding(.all,10).foregroundColor(.white).background(.black).cornerRadius(20).padding(.leading,16)
                     Spacer()
                     VStack{
                         Divider()
@@ -88,13 +88,13 @@ struct OneClassDetailView: View {
                             Text("購入済み")
                         }
                         NavigationLink {
-                            ChatView(chatUserName: mentorName, chatUserUid: mentorUid, chatData: self.chatroomData)
+                            ChatView(chatUserName: mentorName, chatUserUid: mentorUid, chatData: self.chatroomData, chatStyle: .afterPurchase)
                         } label: {
                             RichButton(buttonText: "やり取りをする", buttonImage: "bird.fill")
                         }
                     }
                 }.background(.ultraThinMaterial).onAppear{
-                    FetchFromFirestore().fetchChatRoomInfoFromFirestore(mentorUid: mentorUid) { chatroomData in
+                    FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "Chat", mentorUid: mentorUid) { chatroomData in
                         self.chatroomData = chatroomData
                     }
                 }
@@ -110,6 +110,9 @@ struct OneClassDetailView: View {
             }
         }.onAppear{
             UITabBar.appearance().isHidden = true
+            FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", mentorUid: mentorUid) { preChatRoom in
+                self.preChatRoomData = preChatRoom
+            }
         }
     }
 }
@@ -142,6 +145,10 @@ struct EvaluationView:View {
 }
 
 struct LessonQuestionView: View {
+    @State var shoudOpenMakeQuestionScreen:Bool = false
+    let lessonImageURLString: String
+    let lessonTitle: String
+    let lessonId: String
     var body: some View{
         VStack{
             Divider()
@@ -163,7 +170,7 @@ struct LessonQuestionView: View {
                 }
                 VStack{
                     Button {
-                        print("aaa")
+                        self.shoudOpenMakeQuestionScreen = true
                     } label: {
                         HStack{
                             Image(systemName: "questionmark.app.fill").resizable().frame(width:20,height: 20).foregroundColor(.black)
@@ -172,6 +179,8 @@ struct LessonQuestionView: View {
                     }
                 }
             }
+        }.sheet(isPresented: $shoudOpenMakeQuestionScreen) {
+            MakeQuestionView(lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId)
         }
     }
 }

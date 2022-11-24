@@ -13,8 +13,8 @@ enum BuyOrSell: String, CaseIterable{
     case sell = "リクエスト"
 }
 struct HomeView:View{
-    @State private var selection = 0
-    @State private var items = ["ホーム","リクエスト","英語"]
+    @State private var selection = 1
+    @State private var items = ["レッスン","ホーム","リクエスト"]
     @State var searchWord: String = ""
     let requestData: [RequestData]
     let requestEnglishData: [RequestData]
@@ -37,13 +37,13 @@ struct HomeView:View{
                     if index == 0 {
                         MainHomeView(lessonData: lessonData, lessonEnglishData: lessonEnglishData, lessonComputerData: lessonComputerData, lessonLawData: lessonLawData, lessonFinanceData: lessonFinanceData, lessonInvestmentData: lessonInvestmentData)
                     }else if index == 1{
+                        MainHomeView(lessonData: lessonData, lessonEnglishData: lessonEnglishData, lessonComputerData: lessonComputerData, lessonLawData: lessonLawData, lessonFinanceData: lessonFinanceData, lessonInvestmentData: lessonInvestmentData)
+                    }else if index == 2{
                         RequestHomeView(requestData: requestData, requestEnglishData: requestEnglishData, requestComputerData: requestComputerData, requestLawData: requestLawData, requestFinanceData: requestFinanceData, requestInvestmentData: requestInvestmentData)
-                    }else if index == 2 {
-                        Text("bbb")
                     }
                 }
             }.tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-        }.searchable(text: $searchWord).modifier(ToolBarviewModifier(selection: $selection, items: items)).navigationBarTitleDisplayMode(.inline)
+        }.modifier(ToolBarviewModifier(selection: $selection, items: items))
     }
 }
 
