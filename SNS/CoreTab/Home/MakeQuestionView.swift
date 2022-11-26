@@ -7,42 +7,56 @@
 
 import SwiftUI
 import SDWebImageSwiftUI
+import PKHUD
 
 struct MakeQuestionView: View {
     let lessonImageURL:String
     let lessonTitle: String
     let lessonID: String
     @State var questionText: String = ""
+    @State var buttonEnabled: Bool = false
+    @Binding var closed: Bool
+    @FocusState var keyboardFocus
     var body: some View {
         VStack{
             VStack(alignment: .leading,spacing: 0){
-                HStack{
-                    WebImage(url: URL(string: lessonImageURL)).resizable().frame(width: 70, height: 70).padding(.leading, 16).padding(.vertical, 20)
-                    Text(lessonTitle).bold()
+                HStack(alignment: .top){
+                    WebImage(url: URL(string: lessonImageURL)).resizable().frame(width: 70, height: 70).padding(.leading, 16)
+                    Text(lessonTitle).font(.system(size: 15)).bold()
                     Spacer()
-                }
+                }.padding(.vertical, 20)
+                Divider()
+                Text("質問は他のユーザーに公開されます。").font(.caption).padding(.leading, 16)
                 Divider()
                 HStack{
                     Image(systemName: "questionmark.square.fill").resizable().frame(width:20, height: 20)
                     Text("Question").bold().font(.system(size: 25)).foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
                 }.padding(.leading,16).padding(.top, 16)
                 Text("質問文を入力してください。").font(.system(size: 15)).bold().padding(.leading, 16).padding(.top,7)
-                TextEditor(text: $questionText).frame(width: UIScreen.main.bounds.width-32, height: 200).overlay(RoundedRectangle(cornerRadius: 10).stroke(.gray, lineWidth: 2)).padding(.leading, 16).padding(.top,7)
-                Spacer()
+                TextEditor(text: $questionText).frame(width: UIScreen.main.bounds.width-32, height: 150).overlay(RoundedRectangle(cornerRadius: 10).stroke(.gray, lineWidth: 2)).padding(.leading, 16).padding(.top,7).focused($keyboardFocus).onChange(of: questionText) { newValue in
+                    print(newValue)
+                }
             }
             VStack{
                 Button {
-                    SetToFirestore().registerQuestionToLesson(lessonId: lessonID, questionText: questionText)
+                    SetToFirestore().registerQuestionToLesson(lessonId: lessonID, questionText: questionText){
+                        HUD.flash(.success, delay: 1.0)
+                        self.closed = false
+                    }
                 } label: {
-                    RichButton(buttonText: "質問する", buttonImage: "")
-                }
+                    Text("質問する").foregroundColor(.white).bold().frame(width: UIScreen.main.bounds.width-40, height: 40).background(.black).cornerRadius(10)
+                }.disabled(self.buttonEnabled)
             }
+            Spacer()
+        }.onTapGesture {
+            self.keyboardFocus = false
         }
     }
 }
 
 struct MakeQuestionView_Previews: PreviewProvider {
+    @State static var closed = false
     static var previews: some View {
-        MakeQuestionView(lessonImageURL: "", lessonTitle: "", lessonID: "")
+        MakeQuestionView(lessonImageURL: "", lessonTitle: "", lessonID: "", closed: $closed)
     }
 }

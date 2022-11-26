@@ -27,7 +27,7 @@ struct ChatView:View{
             Color.white
             VStack{
                 if chatStyle == .beforePurchase{
-                    Text("購入前チャットです。\nトラブルのないよう、事前相談をしましょう。").frame(width: UIScreen.main.bounds.width, height: 50).foregroundColor(.white).background(.blue.opacity(0.8))
+                    Text("購入前チャットです。\nトラブルのないよう、事前相談をしましょう。").frame(width: UIScreen.main.bounds.width, height: 50).foregroundColor(.white).background(.black)
                 }
                 Spacer()
                 ScrollViewReader{ reader in

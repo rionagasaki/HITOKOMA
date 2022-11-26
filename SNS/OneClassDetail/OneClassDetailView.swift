@@ -52,7 +52,7 @@ struct OneClassDetailView: View {
                         }
                     }.padding(.leading,16)
                     Divider()
-                    VStack{
+                    VStack(alignment: .leading){
                         Text("*この講座は購入前に事前チャットする必要があります。").font(.caption)
                         NavigationLink {
                             ChatView(chatUserName: mentorName, chatUserUid: mentorUid, chatData: preChatRoomData, chatStyle: .beforePurchase)
@@ -63,7 +63,7 @@ struct OneClassDetailView: View {
                             }.padding(.horizontal,10).background(.ultraThinMaterial).cornerRadius(3).overlay(RoundedRectangle(cornerRadius: 3).stroke(.black.opacity(0.3), lineWidth: 1))
                         }
                     }
-                    LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId)
+                    LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId, mentorIconImageURLString: mentorIconImageURLString)
                     EvaluationView()
                     VStack(alignment: .leading){
                         HStack{
@@ -144,11 +144,23 @@ struct EvaluationView:View {
     }
 }
 
+enum QuestionNextScereen: String ,Identifiable {
+    var id: String { rawValue }
+    case moreQuestion
+    case makeQuestion
+}
+
 struct LessonQuestionView: View {
+    
+    @State var lessonQuestions: [QuestionRecords] = []
+    @State var modalContents: QuestionNextScereen?
     @State var shoudOpenMakeQuestionScreen:Bool = false
+    
     let lessonImageURLString: String
     let lessonTitle: String
     let lessonId: String
+    let mentorIconImageURLString: String
+    
     var body: some View{
         VStack{
             Divider()
@@ -158,29 +170,35 @@ struct LessonQuestionView: View {
                         Text("講座に関する質問").bold()
                         Spacer()
                         Button {
-                            print("aaaa")
+                            self.modalContents = .moreQuestion
                         } label: {
                             Text("もっと見る").font(.subheadline).padding(.trailing,16)
                         }
                         
                     }.padding(.leading,16)
-                    ForEach(0..<3) { _ in
-                        Text("この講座はわかりやすいですか??").font(.caption)
+                    ForEach(lessonQuestions, id: \.self) { question in
+                        HStack{
+                            Text("Q:").foregroundColor(.gray)
+                            Text(question.questionText).font(.caption)
+                        }
                     }.padding(.leading,16)
                 }
-                VStack{
-                    Button {
-                        self.shoudOpenMakeQuestionScreen = true
-                    } label: {
-                        HStack{
-                            Image(systemName: "questionmark.app.fill").resizable().frame(width:20,height: 20).foregroundColor(.black)
-                            Text("質問する").font(.callout).foregroundColor(.black)
-                        }.padding(.horizontal,10).padding(.vertical,5).background(.ultraThinMaterial).cornerRadius(3).overlay(RoundedRectangle(cornerRadius: 3).stroke(.black.opacity(0.3), lineWidth: 1))
-                    }
-                }
             }
-        }.sheet(isPresented: $shoudOpenMakeQuestionScreen) {
-            MakeQuestionView(lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId)
+        }
+        .sheet(item: $modalContents, content: { screenType in
+            switch screenType {
+            case .makeQuestion:
+                MakeQuestionView(lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId, closed: $shoudOpenMakeQuestionScreen)
+            case .moreQuestion:
+                MoreQuestionView(questionRecords: lessonQuestions, mentorIcon: mentorIconImageURLString)
+            }
+        })
+        .onAppear{
+            self.lessonQuestions = []
+            SearchByAlgolia().searchQuestionData(keyword: lessonId) { result in
+               
+                self.lessonQuestions.append(result)
+            }
         }
     }
 }

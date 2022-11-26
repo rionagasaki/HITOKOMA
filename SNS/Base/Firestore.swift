@@ -122,7 +122,7 @@ class FetchFromFirestore{
         }
     }
     
-    func fetchQuestionInfoFromFirestore(){
+    func fetchQuestionInfoFromFirestore(lessonId: String){
         
     }
 }
@@ -241,15 +241,18 @@ class SetToFirestore{
         }
     }
     
-    func registerQuestionToLesson(lessonId: String, questionText: String){
+    func registerQuestionToLesson(lessonId: String, questionText: String, completion:@escaping ()-> Void){
         guard let uid = uid else { return }
         db.collection("Question").addDocument(data: [
             "lessonId": lessonId,
             "questionUserUid": uid,
-            "questionText": questionText
+            "questionText": questionText,
+            "answerText": ""
         ]){ error in
             if let error = error {
                 print("Error=>registerQuestionToLesson:\(error)")
+            }else{
+                completion()
             }
         }
     }
