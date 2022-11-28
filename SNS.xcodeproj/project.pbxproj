@@ -23,6 +23,9 @@
 		5306B7F628DE149C00BEE750 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5306B7F528DE149C00BEE750 /* Tab.swift */; };
 		5306B7FB28E19F2800BEE750 /* LoginAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5306B7FA28E19F2800BEE750 /* LoginAPIClient.swift */; };
 		533555A22913250800513369 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 533555A12913250800513369 /* Preview Assets.xcassets */; };
+		534A199D29338DB4008D9698 /* UIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A199C29338DB4008D9698 /* UIImage.swift */; };
+		534A19A0293404E3008D9698 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 534A199F293404E3008D9698 /* Introspect */; };
+		534A19A229340C9C008D9698 /* AfterLessonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534A19A129340C9C008D9698 /* AfterLessonView.swift */; };
 		534D778D292C6713006CFF10 /* TabBarSliderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D778C292C6713006CFF10 /* TabBarSliderView.swift */; };
 		534D7790292C6A65006CFF10 /* ToolBarViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D778F292C6A65006CFF10 /* ToolBarViewModifier.swift */; };
 		534D7792292C6AE5006CFF10 /* MainHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D7791292C6AE5006CFF10 /* MainHomeView.swift */; };
@@ -39,6 +42,7 @@
 		534D77AF2931A5C9006CFF10 /* Records.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D77AE2931A5C9006CFF10 /* Records.swift */; };
 		534D77B12931B46C006CFF10 /* MoreQuestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D77B02931B46C006CFF10 /* MoreQuestionView.swift */; };
 		534D77B42931C450006CFF10 /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D77B32931C450006CFF10 /* ViewExtension.swift */; };
+		534D77B72932F2A9006CFF10 /* LessonEvalutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534D77B62932F2A9006CFF10 /* LessonEvalutionView.swift */; };
 		534DF2B72903D5C0006E9558 /* MessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 534DF2B62903D5C0006E9558 /* MessageView.swift */; };
 		535B00B228C444B0000B5DCD /* SNSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535B00B128C444B0000B5DCD /* SNSApp.swift */; };
 		535B00BB28C444B1000B5DCD /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 535B00BA28C444B1000B5DCD /* Persistence.swift */; };
@@ -171,6 +175,8 @@
 		5306B7F528DE149C00BEE750 /* Tab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		5306B7FA28E19F2800BEE750 /* LoginAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginAPIClient.swift; sourceTree = "<group>"; };
 		533555A12913250800513369 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		534A199C29338DB4008D9698 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
+		534A19A129340C9C008D9698 /* AfterLessonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AfterLessonView.swift; sourceTree = "<group>"; };
 		534D778A29286EC7006CFF10 /* SNS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SNS.entitlements; sourceTree = "<group>"; };
 		534D778B29286ED7006CFF10 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		534D778C292C6713006CFF10 /* TabBarSliderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarSliderView.swift; sourceTree = "<group>"; };
@@ -184,6 +190,7 @@
 		534D77AE2931A5C9006CFF10 /* Records.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Records.swift; sourceTree = "<group>"; };
 		534D77B02931B46C006CFF10 /* MoreQuestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreQuestionView.swift; sourceTree = "<group>"; };
 		534D77B32931C450006CFF10 /* ViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtension.swift; sourceTree = "<group>"; };
+		534D77B62932F2A9006CFF10 /* LessonEvalutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonEvalutionView.swift; sourceTree = "<group>"; };
 		534DF2B62903D5C0006E9558 /* MessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageView.swift; sourceTree = "<group>"; };
 		535B00AE28C444B0000B5DCD /* SNS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SNS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		535B00B128C444B0000B5DCD /* SNSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SNSApp.swift; sourceTree = "<group>"; };
@@ -276,6 +283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				538D0627290267F600C937B3 /* PartialSheet in Frameworks */,
+				534A19A0293404E3008D9698 /* Introspect in Frameworks */,
 				538D05D628FABE2400C937B3 /* FirebaseMessaging in Frameworks */,
 				53B68D30290A2C6C0078DDD2 /* StripeApplePay in Frameworks */,
 				536B1EC42911971D007058CC /* PKHUD in Frameworks */,
@@ -368,8 +376,17 @@
 			isa = PBXGroup;
 			children = (
 				534D77B32931C450006CFF10 /* ViewExtension.swift */,
+				534A199C29338DB4008D9698 /* UIImage.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		534D77B52932F28D006CFF10 /* AfterLesson */ = {
+			isa = PBXGroup;
+			children = (
+				534D77B62932F2A9006CFF10 /* LessonEvalutionView.swift */,
+			);
+			path = AfterLesson;
 			sourceTree = "<group>";
 		};
 		534DF2B42903D574006E9558 /* Message */ = {
@@ -391,6 +408,7 @@
 			children = (
 				53BD18442923DB8A0026EFE5 /* ChatView.swift */,
 				53B68D102904605F0078DDD2 /* Chat.swift */,
+				534A19A129340C9C008D9698 /* AfterLessonView.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -448,6 +466,7 @@
 		535B00B028C444B0000B5DCD /* SNS */ = {
 			isa = PBXGroup;
 			children = (
+				534D77B52932F28D006CFF10 /* AfterLesson */,
 				534D77B22931C440006CFF10 /* Extension */,
 				534D77AD2931A59B006CFF10 /* ManageAlgolia */,
 				534D778E292C6A49006CFF10 /* Modifier */,
@@ -748,6 +767,7 @@
 				534D77A72931A58A006CFF10 /* InstantSearchCore */,
 				534D77A92931A58A006CFF10 /* InstantSearchInsights */,
 				534D77AB2931A58A006CFF10 /* InstantSearchSwiftUI */,
+				534A199F293404E3008D9698 /* Introspect */,
 			);
 			productName = SNS;
 			productReference = 535B00AE28C444B0000B5DCD /* SNS.app */;
@@ -789,6 +809,7 @@
 				53BD18482923DD330026EFE5 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				534D779F2931953D006CFF10 /* XCRemoteSwiftPackageReference "algoliasearch-client-swift" */,
 				534D77A42931A58A006CFF10 /* XCRemoteSwiftPackageReference "instantsearch-ios" */,
+				534A199E293404E3008D9698 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = 535B00AF28C444B0000B5DCD /* Products */;
 			projectDirPath = "";
@@ -825,6 +846,7 @@
 				53BD18222923D0310026EFE5 /* CategoryData.swift in Sources */,
 				536B1EC62911A371007058CC /* DashBoardView.swift in Sources */,
 				535B00BE28C444B1000B5DCD /* SNS.xcdatamodeld in Sources */,
+				534A199D29338DB4008D9698 /* UIImage.swift in Sources */,
 				536B1EB829106E34007058CC /* LottieView.swift in Sources */,
 				5306B7CA28D6E18D00BEE750 /* SettingCellView.swift in Sources */,
 				53B68CFA2903DC090078DDD2 /* PurchaseView.swift in Sources */,
@@ -863,6 +885,7 @@
 				53B68D27290995680078DDD2 /* CategorizationView.swift in Sources */,
 				53BD18452923DB8A0026EFE5 /* ChatView.swift in Sources */,
 				536B1ECD29130879007058CC /* OpenSourceLicenseView.swift in Sources */,
+				534A19A229340C9C008D9698 /* AfterLessonView.swift in Sources */,
 				534D779E292E421F006CFF10 /* MakeQuestionView.swift in Sources */,
 				538D062D2902B70800C937B3 /* RegisterReducer.swift in Sources */,
 				53BD18242923D05B0026EFE5 /* SearchCategoryDetailView.swift in Sources */,
@@ -909,6 +932,7 @@
 				53BD181E2923CF020026EFE5 /* IntroView.swift in Sources */,
 				536B1EBA2910BB4A007058CC /* ConnectOnboardViewController.swift in Sources */,
 				536B1EBC2910BD71007058CC /* ConnectAccountView.swift in Sources */,
+				534D77B72932F2A9006CFF10 /* LessonEvalutionView.swift in Sources */,
 				538D062F2902B71400C937B3 /* RegisterAction.swift in Sources */,
 				534D7792292C6AE5006CFF10 /* MainHomeView.swift in Sources */,
 				53BD182A2923D20E0026EFE5 /* RequestDetailView.swift in Sources */,
@@ -1075,6 +1099,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1112,6 +1137,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1157,6 +1183,14 @@
 			requirement = {
 				branch = main;
 				kind = branch;
+			};
+		};
+		534A199E293404E3008D9698 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.4;
 			};
 		};
 		534D779F2931953D006CFF10 /* XCRemoteSwiftPackageReference "algoliasearch-client-swift" */ = {
@@ -1238,6 +1272,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5306B7B228D60EAA00BEE750 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
+		};
+		534A199F293404E3008D9698 /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 534A199E293404E3008D9698 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
 		};
 		534D77A02931953D006CFF10 /* AlgoliaSearchClient */ = {
 			isa = XCSwiftPackageProductDependency;

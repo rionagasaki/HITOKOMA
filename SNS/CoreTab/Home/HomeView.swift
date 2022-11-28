@@ -31,6 +31,7 @@ struct HomeView:View{
     
     var body: some View {
         VStack{
+            CustomScrollView(selection: $selection).frame(height: 30)
             TabBarSliderView()
             TabView(selection: $selection) {
                 ForEach(0..<3, id: \.self){ index in
@@ -43,7 +44,74 @@ struct HomeView:View{
                     }
                 }
             }.tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-        }.modifier(ToolBarviewModifier(selection: $selection, items: items))
+        }
+    }
+}
+
+struct CustomScrollView: View {
+    let menus = ["レッスン","ホーム","リクエスト"]
+    @Binding var selection: Int
+    private let tabButtonSize: CGSize = CGSize(width: 100.0, height: 44.0)
+    
+    
+    private func spacerWidth(_ viewOriginX: CGFloat) -> CGFloat {
+        return (UIScreen.main.bounds.width - (viewOriginX * 2) - tabButtonSize.width) / 2
+    }
+    
+    var body: some View{
+        HStack{
+            Button {
+            } label: {
+                Image(systemName: "line.horizontal.3.circle.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width:24.0, height: 24.0)
+                    .foregroundColor(.black)
+            }.padding(.leading,16)
+            GeometryReader { geometryProxy in
+                ScrollViewReader { scrollProxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: .zero) {
+                            Spacer()
+                                .frame(width: spacerWidth(geometryProxy.frame(in: .global).origin.x))
+                            ForEach(menus.reversed().indices, id: \.self) { index in
+                                Button {
+                                    selection = index
+                                    withAnimation {
+                                        scrollProxy.scrollTo(selection, anchor: .center)
+                                    }
+                                } label: {
+                                    Text(menus[index])
+                                        .font(.subheadline)
+                                        .fontWeight(selection == index ? .semibold: .regular)
+                                        .foregroundColor(selection == index ? .primary: .gray).padding(.bottom, 7)
+                                        .id(index)
+                                }
+                                .frame(width: tabButtonSize.width, height: tabButtonSize.height)
+                            }
+                            Spacer()
+                                .frame(width: spacerWidth(geometryProxy.frame(in: .global).origin.x))
+                        }.onChange(of: selection) { _ in
+                            withAnimation {
+                                scrollProxy.scrollTo(selection, anchor: .center)
+                            }
+                        }.onAppear{
+                            withAnimation {
+                                scrollProxy.scrollTo(selection, anchor: .center)
+                            }
+                        }
+                    }
+                }
+            }
+            Button {
+            } label: {
+                Image(systemName: "bell.fill")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 24.0, height: 24.0)
+                    .foregroundColor(.black)
+            }.padding(.trailing,16)
+        }
     }
 }
 

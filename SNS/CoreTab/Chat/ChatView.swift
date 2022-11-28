@@ -44,6 +44,7 @@ struct ChatView:View{
                     }
                 }
                 Spacer()
+                AfterLessonView(allSelection: -1, clearitySelection: -1)
                 Divider().background(.white).padding(.bottom,5)
                 InputView()
             }.navigationTitle(chatUserName)

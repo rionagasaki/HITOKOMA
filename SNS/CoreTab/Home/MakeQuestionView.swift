@@ -10,23 +10,31 @@ import SDWebImageSwiftUI
 import PKHUD
 
 struct MakeQuestionView: View {
+    
     let lessonImageURL:String
     let lessonTitle: String
     let lessonID: String
+    let mentorIconImageURLString: String
+    let mentorName: String
     @State var questionText: String = ""
     @State var buttonEnabled: Bool = false
-    @Binding var closed: Bool
     @FocusState var keyboardFocus
     var body: some View {
         VStack{
             VStack(alignment: .leading,spacing: 0){
                 HStack(alignment: .top){
                     WebImage(url: URL(string: lessonImageURL)).resizable().frame(width: 70, height: 70).padding(.leading, 16)
-                    Text(lessonTitle).font(.system(size: 15)).bold()
+                    VStack{
+                        Text(lessonTitle).font(.system(size: 15)).bold()
+                        HStack{
+                            WebImage(url: URL(string: mentorIconImageURLString)).resizable().frame(width:20, height: 20).clipShape(Circle())
+                            Text(mentorName)
+                        }
+                    }
                     Spacer()
                 }.padding(.vertical, 20)
                 Divider()
-                Text("質問は他のユーザーに公開されます。").font(.caption).padding(.leading, 16)
+                Text("質問は他のユーザーに公開されます。").font(.caption).padding(.leading, 16).padding(.vertical, 16)
                 Divider()
                 HStack{
                     Image(systemName: "questionmark.square.fill").resizable().frame(width:20, height: 20)
@@ -41,7 +49,6 @@ struct MakeQuestionView: View {
                 Button {
                     SetToFirestore().registerQuestionToLesson(lessonId: lessonID, questionText: questionText){
                         HUD.flash(.success, delay: 1.0)
-                        self.closed = false
                     }
                 } label: {
                     Text("質問する").foregroundColor(.white).bold().frame(width: UIScreen.main.bounds.width-40, height: 40).background(.black).cornerRadius(10)
@@ -57,6 +64,6 @@ struct MakeQuestionView: View {
 struct MakeQuestionView_Previews: PreviewProvider {
     @State static var closed = false
     static var previews: some View {
-        MakeQuestionView(lessonImageURL: "", lessonTitle: "", lessonID: "", closed: $closed)
+        MakeQuestionView(lessonImageURL: "", lessonTitle: "", lessonID: "", mentorIconImageURLString: "", mentorName: "")
     }
 }

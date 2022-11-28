@@ -37,45 +37,11 @@ struct ToolBarviewModifier: ViewModifier {
                         .foregroundColor(.black)
                 }
             }
-        }.toolbar {
-            ToolbarItem(placement: .principal) {
-                GeometryReader { geometryProxy in
-                    ScrollViewReader { scrollProxy in
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: .zero) {
-                                Spacer()
-                                    .frame(width: spacerWidth(geometryProxy.frame(in: .global).origin.x))
-                                ForEach(items.reversed().indices, id: \.self) { index in
-                                    Button {
-                                        selection = index
-                                        withAnimation {
-                                            scrollProxy.scrollTo(selection, anchor: .center)
-                                        }
-                                    } label: {
-                                        Text(items[index])
-                                            .font(.subheadline)
-                                            .fontWeight(selection == index ? .semibold: .regular)
-                                            .foregroundColor(selection == index ? .primary: .gray)
-                                            .id(index)
-                                    }
-                                    .frame(width: tabButtonSize.width, height: tabButtonSize.height)
-                                }
-                                Spacer()
-                                    .frame(width: spacerWidth(geometryProxy.frame(in: .global).origin.x))
-                            }.onChange(of: selection) { _ in
-                                withAnimation {
-                                    scrollProxy.scrollTo(selection, anchor: .center)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }.fullScreenCover(isPresented: $shouldOpenNotification) {
             NotificationView()
         }
     }
     private func spacerWidth(_ viewOriginX: CGFloat) -> CGFloat {
-        return (UIScreen.main.bounds.width - (viewOriginX * 2) - tabButtonSize.width) / 2
+        return (UIScreen.main.bounds.width - (viewOriginX * 2)) / 2
     }
 }

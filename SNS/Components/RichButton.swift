@@ -11,7 +11,7 @@ struct RichButton: View {
     let buttonText:String
     let buttonImage:String
     var body: some View {
-        LinearGradient(colors: [.red, .purple], startPoint: .topLeading, endPoint: .bottom).mask {
+        LinearGradient(colors: [.black, .black], startPoint: .topLeading, endPoint: .bottom).mask {
             HStack{
                 Image(systemName: buttonImage)
                 Text(buttonText).bold()

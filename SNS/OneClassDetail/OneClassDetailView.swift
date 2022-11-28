@@ -28,13 +28,11 @@ struct OneClassDetailView: View {
         VStack{
             ScrollView {
                 VStack{
-                    GeometryReader{ geometry in
-                        WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: UIScreen.main.bounds.width, height: geometry.frame(in: .global).minY > 0 ? 250+geometry.frame(in: .global).minY :250).offset(y: geometry.frame(in: .global).minY > 0 ? -geometry.frame(in: .global).minY: 0)
-                    }.frame(height: 250)
+                    WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: UIScreen.main.bounds.width, height: 250)
                     Text(lessonTitle).font(.system(size: 25)).fontWeight(.bold)
                     Divider()
                     NavigationLink {
-                        UserProfileView()
+                        UserProfileView(username: mentorName, userProfileImageURL: mentorIconImageURLString, usersLessonData: [], usersRequestData: [])
                     } label: {
                         HStack{
                             WebImage(url: URL(string: mentorIconImageURLString)).resizable().frame(width: 40, height: 40).clipShape(Circle())
@@ -52,19 +50,10 @@ struct OneClassDetailView: View {
                         }
                     }.padding(.leading,16)
                     Divider()
-                    VStack(alignment: .leading){
-                        Text("*この講座は購入前に事前チャットする必要があります。").font(.caption)
-                        NavigationLink {
-                            ChatView(chatUserName: mentorName, chatUserUid: mentorUid, chatData: preChatRoomData, chatStyle: .beforePurchase)
-                        } label: {
-                            HStack{
-                                Image("mail").resizable().frame(width:30,height: 30)
-                                Text("購入前チャット").font(.callout).foregroundColor(.black)
-                            }.padding(.horizontal,10).background(.ultraThinMaterial).cornerRadius(3).overlay(RoundedRectangle(cornerRadius: 3).stroke(.black.opacity(0.3), lineWidth: 1))
-                        }
-                    }
-                    LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId, mentorIconImageURLString: mentorIconImageURLString)
+                    PreLessonChatView(mentorName: mentorName, mentorUid: mentorUid, preChatRoomData: preChatRoomData)
+                    LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
                     EvaluationView()
+                    // AfterLessonView(allSelection: -1, clearitySelection: -1).pa
                     VStack(alignment: .leading){
                         HStack{
                             Text("レッスン内容").bold()
@@ -113,7 +102,7 @@ struct OneClassDetailView: View {
             FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", mentorUid: mentorUid) { preChatRoom in
                 self.preChatRoomData = preChatRoom
             }
-        }
+        }.navigationTitle("レッスン詳細").navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -146,20 +135,44 @@ struct EvaluationView:View {
 
 enum QuestionNextScereen: String ,Identifiable {
     var id: String { rawValue }
+    case noContent
     case moreQuestion
-    case makeQuestion
+}
+
+
+struct PreLessonChatView: View {
+    
+    let mentorName: String
+    let mentorUid: String
+    let preChatRoomData: ChatRoomData?
+    
+    var body: some View {
+        VStack(alignment: .leading){
+            Text("*この講座は購入前に事前チャットする必要があります。").font(.caption).padding(.leading, 16)
+            NavigationLink {
+                ChatView(chatUserName: mentorName, chatUserUid: mentorUid, chatData: preChatRoomData, chatStyle: .beforePurchase)
+            } label: {
+                HStack{
+                    Text("購入前チャットはこちら").font(.system(size: 13)).foregroundColor(.blue.opacity(0.8)).bold()
+                    Spacer()
+                }.padding(.leading, 16)
+            }
+        }
+    }
 }
 
 struct LessonQuestionView: View {
     
     @State var lessonQuestions: [QuestionRecords] = []
     @State var modalContents: QuestionNextScereen?
-    @State var shoudOpenMakeQuestionScreen:Bool = false
+    @State var shouldOpenMoreQuestionScreen:Bool = false
+    @State var shouldOpenMakeQuestionScreen: Bool = false
     
     let lessonImageURLString: String
     let lessonTitle: String
     let lessonId: String
     let mentorIconImageURLString: String
+    let mentorName: String
     
     var body: some View{
         VStack{
@@ -169,34 +182,42 @@ struct LessonQuestionView: View {
                     HStack{
                         Text("講座に関する質問").bold()
                         Spacer()
-                        Button {
-                            self.modalContents = .moreQuestion
-                        } label: {
-                            Text("もっと見る").font(.subheadline).padding(.trailing,16)
+                        if lessonQuestions.count != 0 {
+                            Button {
+                                self.shouldOpenMoreQuestionScreen = true
+                            } label: {
+                                Text("詳細を見る").font(.system(size: 13)).foregroundColor(.blue.opacity(0.8)).bold().padding(.trailing, 16)
+                            }
+                        }else{
+                            Button {
+                                self.shouldOpenMakeQuestionScreen = true
+                            } label: {
+                                Text("質問をする").font(.system(size: 13)).foregroundColor(.blue.opacity(0.8)).bold().padding(.trailing, 16)
+                            }
                         }
-                        
                     }.padding(.leading,16)
-                    ForEach(lessonQuestions, id: \.self) { question in
-                        HStack{
-                            Text("Q:").foregroundColor(.gray)
-                            Text(question.questionText).font(.caption)
-                        }
-                    }.padding(.leading,16)
+                    if lessonQuestions.count == 0 {
+                        Text("この講座にはまだ質問がありません。質問してみましょう。").font(.caption).padding(.leading, 16)
+                    } else {
+                        ForEach(lessonQuestions, id: \.self) { question in
+                            HStack{
+                                Text("Q:").foregroundColor(.gray)
+                                Text(question.questionText).font(.caption)
+                            }
+                        }.padding(.leading,16)
+                    }
                 }
             }
         }
-        .sheet(item: $modalContents, content: { screenType in
-            switch screenType {
-            case .makeQuestion:
-                MakeQuestionView(lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId, closed: $shoudOpenMakeQuestionScreen)
-            case .moreQuestion:
-                MoreQuestionView(questionRecords: lessonQuestions, mentorIcon: mentorIconImageURLString)
-            }
+        .fullScreenCover(isPresented: self.$shouldOpenMoreQuestionScreen, content: {
+            MoreQuestionView(questionRecords:lessonQuestions, mentorIcon: mentorIconImageURLString, mentorName: mentorName, lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId, dismiss: $shouldOpenMoreQuestionScreen)
+        })
+        .sheet(isPresented: self.$shouldOpenMakeQuestionScreen, content: {
+            MakeQuestionView(lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
         })
         .onAppear{
             self.lessonQuestions = []
             SearchByAlgolia().searchQuestionData(keyword: lessonId) { result in
-               
                 self.lessonQuestions.append(result)
             }
         }

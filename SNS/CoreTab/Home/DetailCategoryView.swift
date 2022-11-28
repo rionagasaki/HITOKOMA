@@ -9,17 +9,18 @@ import SwiftUI
 
 struct DetailCategoryView: View {
     @State var detailCategory: [DetailCategory]
+    @State var selection: Int
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false){
             HStack{
-                ForEach(detailCategory) { detail in
+                ForEach(detailCategory.indices) { index in
                     Button {
-                        print("aaaa")
+                        selection = index
                     } label: {
                         VStack{
-                            Image(detail.categoryImage).resizable().scaledToFit().frame(width:140, height: 90).cornerRadius(10)
-                            Text(detail.categoryName).foregroundColor(.black).bold()
-                        }.background(.white).overlay(RoundedRectangle(cornerRadius: 10).stroke(.black, lineWidth: 1))
+                            Image(detailCategory[index].categoryImage).resizable().scaledToFit().frame(width: 120, height: 50)
+                            Text(detailCategory[index].categoryName).foregroundColor(.black).bold()
+                        }.frame(width:140, height: 90).background(RoundedRectangle(cornerRadius: 8).stroke(selection == index ? .green: .black, lineWidth: selection == index ? 3 : 1.5)).cornerRadius(8)
                     }
                 }
             }.padding(.horizontal,16)
@@ -29,7 +30,7 @@ struct DetailCategoryView: View {
 
 struct DetailCategoryView_Previews: PreviewProvider {
     static var previews: some View {
-        DetailCategoryView(detailCategory: [])
+        DetailCategoryView(detailCategory: [], selection: 0)
     }
 }
 
