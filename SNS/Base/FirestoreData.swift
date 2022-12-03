@@ -71,7 +71,7 @@ class LessonData: Identifiable {
         self.mentorUid = lessonDic?["mentorUid"] as? String ?? ""
         self.lessonName = lessonDic?["lessonName"] as? String ?? ""
         self.lessonContent = lessonDic?["lessonContent"] as? String ?? ""
-        self.lessonImageURLString = lessonDic?["lesssonImageURLString"] as? String ?? ""
+        self.lessonImageURLString = lessonDic?["lessonImageURLString"] as? String ?? ""
         self.bigCategory = lessonDic?["bigCategory"] as? String ?? ""
         self.category = lessonDic?["category"] as? String ?? ""
         self.budget = lessonDic?["budget"] as? Int ?? 0
@@ -120,6 +120,7 @@ class UserInfo: ObservableObject{
 
 class ChatRoomData: Identifiable{
     var id = UUID()
+    var lessonId: String
     var chatroomId: String
     var mentorUid: String
     var studentUid: String
@@ -129,6 +130,7 @@ class ChatRoomData: Identifiable{
     init(document: QueryDocumentSnapshot){
         self.chatroomId = document.documentID
         let messageDic = document.data()
+        self.lessonId = messageDic["lessonId"] as? String ?? ""
         self.mentorUid = messageDic["mentorUid"] as? String ?? ""
         self.studentUid = messageDic["studentUid"] as? String ?? ""
         self.lastMessageText = messageDic["lastMessageText"] as? String ?? ""
@@ -138,6 +140,7 @@ class ChatRoomData: Identifiable{
     init(document: DocumentSnapshot){
         self.chatroomId = document.documentID
         let messageDic = document.data()
+        self.lessonId = messageDic?["lessonId"] as? String ?? ""
         self.mentorUid = messageDic?["mentorUid"] as? String ?? ""
         self.studentUid = messageDic?["studentUid"] as? String ?? ""
         self.lastMessageText = messageDic?["lastMessageText"] as? String ?? ""

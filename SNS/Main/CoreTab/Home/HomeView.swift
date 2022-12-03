@@ -32,7 +32,7 @@ struct HomeView:View{
     var body: some View {
         VStack{
             CustomScrollView(selection: $selection).frame(height: 30)
-            TabBarSliderView()
+            TabBarSliderView(width: 100.0, alignment: .top)
             TabView(selection: $selection) {
                 ForEach(0..<3, id: \.self){ index in
                     if index == 0 {

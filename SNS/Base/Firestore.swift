@@ -61,6 +61,18 @@ class FetchFromFirestore{
         }
     }
     
+    func fetchOneLessonInfoFromFirestore(lessonId: String, completion: @escaping (LessonData)-> Void){
+        db.collection(lessonPath).document(lessonId).getDocument { document, error in
+            if error != nil {
+                print("Error=>fetchOneLessonInfoFromFirestore:\(String(describing: error))")
+                return
+            }
+            guard let document = document else { return }
+            let lessonData = LessonData(document: document)
+            completion(lessonData)
+        }
+    }
+    
     func fetchStudentMessageInfo(completion:@escaping(ChatRoomData)-> Void){
         guard let uid = uid else { return }
         db.collection("Chat").whereField("studentUid", isEqualTo: uid).getDocuments { querySnapshot, error in
@@ -104,7 +116,7 @@ class FetchFromFirestore{
         }
     }
     
-    func fetchChatRoomInfoFromFirestore(path: String,mentorUid: String, completion: @escaping (ChatRoomData) -> Void){
+    func fetchChatRoomInfoFromFirestore(path: String, lessonId: String, mentorUid: String, completion: @escaping (ChatRoomData) -> Void){
         guard let studentUid = uid else { return }
         db.collection(path).document(mentorUid+studentUid).getDocument { document, error in
             if error != nil {
@@ -115,11 +127,15 @@ class FetchFromFirestore{
                 let chatroomData = ChatRoomData(document: document)
                 completion(chatroomData)
             }else{
-                SetToFirestore().registerChatRoomInfo(path: path, mentorUid: mentorUid, studentuid:studentUid){
+                SetToFirestore().registerChatRoomInfo(path: path, lessonId: lessonId, mentorUid: mentorUid, studentuid:studentUid){
                     completion($0)
                 }
             }
         }
+    }
+    
+    func fetchCompletionTransactionFromFirestore(){
+        
     }
     
     func fetchQuestionInfoFromFirestore(lessonId: String){
@@ -189,9 +205,10 @@ class SetToFirestore{
         }
     }
     
-    func registerChatRoomInfo(path: String,mentorUid:String, studentuid: String, completion: @escaping (ChatRoomData) -> Void){
+    func registerChatRoomInfo(path: String, lessonId: String, mentorUid:String, studentuid: String, completion: @escaping (ChatRoomData) -> Void){
         let chatRoomRef = db.collection(path).document(mentorUid+studentuid)
         chatRoomRef.setData([
+            "lessonId": lessonId,
             "mentorUid": mentorUid,
             "studentUid": studentuid
         ]){ error in

@@ -8,6 +8,15 @@ import SwiftUI
 import ComposableArchitecture
 import FirebaseAuth
 
+
+enum MessageType:String, CaseIterable, Identifiable {
+    var id: String { rawValue }
+    case camera
+    case photo
+    case folder
+    case finish
+}
+
 struct ChatView:View{
     
     let chatUserName: String
@@ -22,6 +31,7 @@ struct ChatView:View{
     @State var messages:[Chat] = []
     @State var showingImageModal: Bool = false
     @State var sendImage: UIImage?
+    @State var messageType: MessageType? = nil
     var body: some View{
         ZStack{
             Color.white
@@ -44,7 +54,7 @@ struct ChatView:View{
                     }
                 }
                 Spacer()
-                AfterLessonView(allSelection: -1, clearitySelection: -1)
+                // AfterLessonView(allSelection: -1, clearitySelection: -1)
                 Divider().background(.white).padding(.bottom,5)
                 InputView()
             }.navigationTitle(chatUserName)
@@ -52,7 +62,7 @@ struct ChatView:View{
         }.gesture(TapGesture().onEnded({ _ in
             self.isClosed = false
         })).onAppear{
-            SetToFirestore().snapShotMessage(path: chatStyle == .afterPurchase ? "Chat":"BeforePurchaseChat",chatRoomId: chatData!.chatroomId) { chat in
+            SetToFirestore().snapShotMessage(path: chatStyle == .afterPurchase ? "Chat":"BeforePurchaseChat",chatRoomId: chatData?.chatroomId ?? "") { chat in
                 guard let uid = Auth.auth().currentUser?.uid else { return }
                 let message = Chat(messageText: chat.messageText, sender: chat.senderUId == uid, messageDate: chat.messageDate)
                 messages.append(message)
@@ -61,7 +71,8 @@ struct ChatView:View{
         }
     }
     func InputView() -> some View{
-        ZStack {
+        VStack {
+            MessageTypeSelectableView(messageType: $messageType)
             HStack(alignment: .bottom){
                 ZStack(alignment:.leading){
                     GeometryReader { geometry in
@@ -81,12 +92,6 @@ struct ChatView:View{
                 }
                 VStack{
                     Button {
-                        self.showingImageModal = true
-                    } label: {
-                        Image(systemName: "photo.artframe")
-                    }
-                    
-                    Button {
                         self.text = self.text.trimmingCharacters(in: .whitespaces)
                         if !isTextEmpty{
                             SetToFirestore().registerMessage(path: chatStyle == .afterPurchase ? "Chat":"BeforePurchaseChat", chatRoomId: chatData!.chatroomId, messageText:self.text, messageDate: dateFormat(date: Date()))
@@ -99,8 +104,14 @@ struct ChatView:View{
                         }
                     }.padding(.trailing,8)
                 }
-            }.padding(.bottom,5).sheet(isPresented: $showingImageModal) {
-                ImagePicker(sourceType: .photoLibrary,selectedImage: $sendImage)
+            }.padding(.bottom,5).sheet(item: $messageType) { type in
+                switch type {
+                case .photo: ImagePicker(sourceType: .photoLibrary,selectedImage: $sendImage).background(Color.black).ignoresSafeArea()
+                case .folder: EmptyView()
+                case .finish: TransactionFInishView()
+                case .camera:
+                    ImagePicker(sourceType: .camera, selectedImage: $sendImage)
+                }
             }
         }.ignoresSafeArea()
     }
@@ -124,6 +135,37 @@ struct ChatView:View{
         return dateformetter.string(from: date)
     }
 }
+
+struct MessageTypeSelectableView: View {
+    @Binding var messageType: MessageType?
+    var body: some View {
+        HStack{
+            Button {
+                self.messageType = .camera
+            } label: {
+                Image(systemName: "camera.fill").resizable().scaledToFit().frame(width:25, height: 25)
+            }.padding(.leading, 20)
+            Button {
+                self.messageType = .photo
+            } label: {
+                Image(systemName: "photo.artframe").resizable().scaledToFit().frame(width:25, height: 25)
+            }.padding(.leading, 16)
+            Button {
+                self.messageType = .folder
+            } label: {
+                Image(systemName: "folder.badge.plus").resizable().scaledToFit().frame(width:25, height: 25)
+            }.padding(.leading, 16)
+            Button {
+                self.messageType = .finish
+            } label: {
+                Text("取引終了").foregroundColor(.white).padding(.vertical,8).padding(.horizontal,16).background(Color.init(uiColor: .systemBlue).opacity(0.5)).cornerRadius(10)
+            }.padding(.leading, 16)
+
+            Spacer()
+        }
+    }
+}
+
 
 enum ChatType {
     case afterPurchase

@@ -16,6 +16,10 @@ extension View {
             
         )
     }
+    
+    func pageLabel()-> some View {
+        self.frame(maxWidth: .infinity, alignment: .center)
+    }
 }
 
 struct HalfModalSheetViewController<Sheet: View>: UIViewControllerRepresentable {

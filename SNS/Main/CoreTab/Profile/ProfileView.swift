@@ -38,14 +38,14 @@ struct ProfileView: View {
         ZStack{
             Form {
                 HeaderView(username: user.username, userProfileImage: user.profileImage)
-                Section {
-                    FavoriteView()
-                } header: {
-                    HStack{
-                        Image(systemName: "heart.fill").foregroundColor(Color.red)
-                        Text("お気に入りなひとこま。").foregroundColor(Color.black)
-                    }
-                }
+//                Section {
+//                    FavoriteView()
+//                } header: {
+//                    HStack{
+//                        Image(systemName: "heart.fill").foregroundColor(Color.red)
+//                        Text("お気に入りなひとこま。").foregroundColor(Color.black)
+//                    }
+//                }
                 Section {
                     List(self.baseSettings){ setting in
                         NavigationLink {

@@ -116,16 +116,24 @@ struct ContentView: View {
                     }
                 }
             }
+            // MARK: LoginUserがMentorモードの場合、自身の生徒とのチャット情報取得
             FetchFromFirestore().fetchStudentMessageInfo { studentChatRoom in
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: studentChatRoom.studentUid) { userInfo in
-                    let messageData = MessageListData(senderIconImage: userInfo.profileImage, senderName: userInfo.username, lastMessage: studentChatRoom.lastMessageText, lastMessageDate: studentChatRoom.lastMessageDate)
-                    self.studentsMessages.append(messageData)
+                    FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: studentChatRoom.lessonId) { lessonInfo in
+                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName, lessonID: studentChatRoom.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: studentChatRoom.lastMessageText, lastMessageDate: studentChatRoom.lastMessageDate)
+                        self.studentsMessages.append(messageData)
+                    }
+                    
                 }
             }
+            // MARK: LoginUserがStudentモードの場合、自身のメンターとのチャット情報取得
             FetchFromFirestore().fetchMentorMessageInfo { mentorChatRoom in
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: mentorChatRoom.mentorUid) { userInfo in
-                    let messageData = MessageListData(senderIconImage: userInfo.profileImage, senderName: userInfo.username, lastMessage: mentorChatRoom.lastMessageText, lastMessageDate: mentorChatRoom.lastMessageDate)
-                    self.mentorMessages.append(messageData)
+                    FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: mentorChatRoom.lessonId) { lessonInfo in
+                        print("lessonContent!!!", lessonInfo.lessonContent)
+                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: mentorChatRoom.lastMessageText, lastMessageDate: mentorChatRoom.lastMessageDate)
+                        self.mentorMessages.append(messageData)
+                    }
                 }
             }
         }.accentColor(.black).background(.ultraThinMaterial)

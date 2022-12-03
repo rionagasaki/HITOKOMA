@@ -8,15 +8,17 @@
 import SwiftUI
 
 struct TabBarSliderView: View {
+    let width: CGFloat
+    let alignment: Alignment
     var body: some View{
-        ZStack(alignment: .top) {
+        ZStack(alignment: alignment) {
             Rectangle()
                 .fill(Color.gray.opacity(0.5))
                 .frame(maxWidth: .infinity)
                 .frame(height: 2.0)
             Rectangle()
-                .fill(Color.blue.opacity(0.8))
-                .frame(width: 100.0, height: 2.0)
+                .fill(Color.customBlue)
+                .frame(width: width, height: 2.0)
         }
     }
 }

@@ -8,14 +8,23 @@
 import SwiftUI
 
 struct DetailCategoryView: View {
-    @State var detailCategory: [DetailCategory]
-    @State var selection: Int
+    let detailCategory: [DetailCategory]
+    let lessonData: [LessonData]
+    @Binding var searchableLessonData: [LessonData]
+    @Binding var selection: Int
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false){
             HStack{
-                ForEach(detailCategory.indices) { index in
+                ForEach(detailCategory.indices, id: \.self) { index in
                     Button {
                         selection = index
+                        if selection == 0 {
+                            self.searchableLessonData = self.lessonData
+                        }else{
+                            self.searchableLessonData = self.lessonData.filter({ 
+                                $0.category == detailCategory[selection].categoryName
+                            })
+                        }
                     } label: {
                         VStack{
                             Image(detailCategory[index].categoryImage).resizable().scaledToFit().frame(width: 120, height: 50)
@@ -29,8 +38,10 @@ struct DetailCategoryView: View {
 }
 
 struct DetailCategoryView_Previews: PreviewProvider {
+    @State static var selection = 0
+    @State static var lessonData: [LessonData] = []
     static var previews: some View {
-        DetailCategoryView(detailCategory: [], selection: 0)
+        DetailCategoryView(detailCategory: [], lessonData: [], searchableLessonData: $lessonData, selection: $selection)
     }
 }
 

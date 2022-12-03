@@ -83,7 +83,7 @@ struct OneClassDetailView: View {
                         }
                     }
                 }.background(.ultraThinMaterial).onAppear{
-                    FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "Chat", mentorUid: mentorUid) { chatroomData in
+                    FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "Chat", lessonId: lessonId, mentorUid: mentorUid) { chatroomData in
                         self.chatroomData = chatroomData
                     }
                 }
@@ -99,7 +99,7 @@ struct OneClassDetailView: View {
             }
         }.onAppear{
             UITabBar.appearance().isHidden = true
-            FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", mentorUid: mentorUid) { preChatRoom in
+            FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", lessonId: lessonId, mentorUid: mentorUid) { preChatRoom in
                 self.preChatRoomData = preChatRoom
             }
         }.navigationTitle("レッスン詳細").navigationBarTitleDisplayMode(.inline)

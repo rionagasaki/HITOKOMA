@@ -16,16 +16,16 @@ struct MainHomeView: View {
         CategoryData(categoryName: "ファイナンス", categoryImage: "coffee", category: .finance),
         CategoryData(categoryName: "投資", categoryImage: "invest", category: .investment)]
     
-    let englishDetails = [DetailCategory(categoryName: "TOEIC", categoryImage: "TOEIC"),DetailCategory(categoryName: "TOEFL", categoryImage: "TOEFL"),DetailCategory(categoryName: "英検", categoryImage: "EnglishTest")]
+    let englishDetails = [DetailCategory(categoryName: "全て", categoryImage: "English"),DetailCategory(categoryName: "TOEIC", categoryImage: "TOEIC"),DetailCategory(categoryName: "TOEFL", categoryImage: "TOEFL"),DetailCategory(categoryName: "英検", categoryImage: "EnglishTest"), DetailCategory(categoryName: "その他", categoryImage: "")]
     
-    let computerDetails = [DetailCategory(categoryName: "基本/応用情報", categoryImage: "basicInformation"), DetailCategory(categoryName: "プログラミング", categoryImage: "programming"), DetailCategory(categoryName: "G/E資格", categoryImage: "AI")
+    let computerDetails = [DetailCategory(categoryName: "全て", categoryImage: "computer"),DetailCategory(categoryName: "基本/応用情報", categoryImage: "basicInformation"), DetailCategory(categoryName: "プログラミング", categoryImage: "programming"), DetailCategory(categoryName: "G/E資格", categoryImage: "AI"),DetailCategory(categoryName: "その他", categoryImage: "")
     ]
     
-    let lawDetails = [DetailCategory(categoryName: "宅建", categoryImage: "law")]
+    let lawDetails = [DetailCategory(categoryName: "全て", categoryImage: "study"),DetailCategory(categoryName: "宅建", categoryImage: "law"), DetailCategory(categoryName: "その他", categoryImage: "")]
     
-    let financeDetails = [DetailCategory(categoryName: "会計士", categoryImage: "accountant"), DetailCategory(categoryName: "簿記", categoryImage: "bookKeeping")]
+    let financeDetails = [DetailCategory(categoryName: "全て", categoryImage: "coffee"),DetailCategory(categoryName: "会計士", categoryImage: "accountant"), DetailCategory(categoryName: "簿記", categoryImage: "bookKeeping"),DetailCategory(categoryName: "その他", categoryImage: "")]
     
-    let investmentDetails = [DetailCategory(categoryName: "株式取引", categoryImage: ""), DetailCategory(categoryName: "為替取引", categoryImage: ""), DetailCategory(categoryName: "資産運用", categoryImage: "")]
+    let investmentDetails = [DetailCategory(categoryName: "全て", categoryImage: "invest"),DetailCategory(categoryName: "株式取引", categoryImage: ""), DetailCategory(categoryName: "為替取引", categoryImage: ""), DetailCategory(categoryName: "資産運用", categoryImage: ""), DetailCategory(categoryName: "その他", categoryImage: "")]
     
     let lessonData: [LessonData]
     let lessonEnglishData: [LessonData]
@@ -51,18 +51,18 @@ struct MainHomeView: View {
                     Button {
                         print("aaaa")
                     } label: {
-                        Text("全てを表示").font(.system(size: 13)).foregroundColor(.blue.opacity(0.8)).bold().padding(.top, 16)
+                        Text("全てを表示").font(.system(size: 13)).foregroundColor(.customBlue).bold().padding(.top, 16)
                     }.padding(.trailing,20)
                 }
                 HStack {
                     ForEach(categories) { category in
                         NavigationLink {
                             switch category.category{
-                            case .english: SearchCategoryDetailView(detailCategories: englishDetails, lessonsData: lessonEnglishData, mainCategory: .english)
-                            case .computer: SearchCategoryDetailView(detailCategories: computerDetails, lessonsData: lessonComputerData, mainCategory: .computer)
-                            case .law: SearchCategoryDetailView(detailCategories: lawDetails, lessonsData: lessonLawData, mainCategory: .law)
-                            case .finance: SearchCategoryDetailView(detailCategories: financeDetails, lessonsData: lessonFinanceData, mainCategory: .finance)
-                            case .investment: SearchCategoryDetailView(detailCategories: investmentDetails, lessonsData: lessonInvestmentData, mainCategory: .investment)
+                            case .english: SearchCategoryDetailView(lessonsData: lessonEnglishData, detailCategories: englishDetails, mainCategory: .english)
+                            case .computer: SearchCategoryDetailView(lessonsData: lessonComputerData, detailCategories: computerDetails, mainCategory: .computer)
+                            case .law: SearchCategoryDetailView(lessonsData: lessonLawData, detailCategories: lawDetails, mainCategory: .law)
+                            case .finance: SearchCategoryDetailView(lessonsData: lessonFinanceData, detailCategories: financeDetails, mainCategory: .finance)
+                            case .investment: SearchCategoryDetailView(lessonsData: lessonInvestmentData, detailCategories: investmentDetails, mainCategory: .investment)
                             }
                         } label: {
                             Category(category: category)
@@ -100,7 +100,7 @@ struct MainHomeView: View {
     func lessonList(bigCategory: String, categoryLessonData: [LessonData], deatilCategories:[DetailCategory], categoryDetail: CategoryDetail) -> some View {
         VStack(spacing: 5){
             NavigationLink {
-                SearchCategoryDetailView(detailCategories: deatilCategories, lessonsData: categoryLessonData, mainCategory: categoryDetail)
+                SearchCategoryDetailView(lessonsData: categoryLessonData, detailCategories: deatilCategories, mainCategory: categoryDetail)
             } label: {
                 HStack{
                     Text(bigCategory).foregroundColor(.black).bold().font(.system(size: 18)).padding(.leading,16)
