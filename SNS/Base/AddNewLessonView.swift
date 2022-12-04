@@ -16,7 +16,6 @@ struct AddNewLessonView: View {
                     Circle().size(width: 200, height: 200).foregroundColor(.blue).padding(.top,-120)
                     Circle().size(width: 200, height: 200).foregroundColor(.orange).padding(.top,30)
                 }
-                BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).blur(radius: 40).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
             }.blur(radius: 40)
             VStack{
                Spacer()
