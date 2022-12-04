@@ -39,7 +39,7 @@ struct MoreQuestionView: View {
                 .frame(width: UIScreen.main.bounds.width-40, height: 40).background(.white).cornerRadius(10).background(RoundedRectangle(cornerRadius: 10).stroke(.black, lineWidth: 2)).padding(.bottom, 16)
             }
         }.sheet(isPresented: $openModal) {
-            MakeQuestionView(lessonImageURL: lessonImageURL, lessonTitle: lessonTitle, lessonID: lessonID, mentorIconImageURLString: mentorIcon, mentorName: mentorName)
+            MakeQuestionView(lessonImageURLString: lessonImageURL, lessonTitle: lessonTitle, lessonID: lessonID, mentorIconImageURLString: mentorIcon, mentorName: mentorName)
         }
     }
 }

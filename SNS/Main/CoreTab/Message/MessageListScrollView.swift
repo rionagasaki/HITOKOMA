@@ -15,8 +15,7 @@ struct MessageListScrollView: View {
         ScrollView{
             VStack(spacing: .zero){
                 ForEach(messageListDatas) { messageList in
-                    
-                    OneMessageListView(messageListStyle: messageListStyle, talkUserIconImageURLString: messageList.senderIconImage, talkUserName: messageList.senderName, lastMessage: messageList.lastMessage, lessonImageURLString: messageList.lessonImage, lessonName: messageList.lessonName, chatRoomData: chatRoomData)
+                    OneMessageListView(messageListStyle: messageListStyle, lastMessage: messageList.lastMessage, talkUserUid: messageList.senderUid, talkUserName: messageList.senderName, talkUserIconImageURLString: messageList.senderIconImage, lessonId: messageList.lessonID, lessonName: messageList.lessonName, lessonContents: messageList.lessonContents, lessonBudgets: messageList.lessonBudgets, lessonImageURLString: messageList.lessonImage, chatRoomData: $chatRoomData)
                 }
             }
         }

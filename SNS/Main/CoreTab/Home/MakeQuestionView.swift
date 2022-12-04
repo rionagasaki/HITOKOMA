@@ -6,12 +6,11 @@
 //
 
 import SwiftUI
-import SDWebImageSwiftUI
 import PKHUD
 
 struct MakeQuestionView: View {
     
-    let lessonImageURL:String
+    let lessonImageURLString:String
     let lessonTitle: String
     let lessonID: String
     let mentorIconImageURLString: String
@@ -21,18 +20,8 @@ struct MakeQuestionView: View {
     @FocusState var keyboardFocus
     var body: some View {
         VStack{
-            VStack(alignment: .leading,spacing: 0){
-                HStack(alignment: .top){
-                    WebImage(url: URL(string: lessonImageURL)).resizable().frame(width: 70, height: 70).padding(.leading, 16)
-                    VStack{
-                        Text(lessonTitle).font(.system(size: 15)).bold()
-                        HStack{
-                            WebImage(url: URL(string: mentorIconImageURLString)).resizable().frame(width:20, height: 20).clipShape(Circle())
-                            Text(mentorName)
-                        }
-                    }
-                    Spacer()
-                }.padding(.vertical, 20)
+            LessonSummaryView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
+            VStack(alignment: .leading, spacing: 0){
                 Divider()
                 Text("質問は他のユーザーに公開されます。").font(.caption).padding(.leading, 16).padding(.vertical, 16)
                 Divider()
@@ -64,6 +53,6 @@ struct MakeQuestionView: View {
 struct MakeQuestionView_Previews: PreviewProvider {
     @State static var closed = false
     static var previews: some View {
-        MakeQuestionView(lessonImageURL: "", lessonTitle: "", lessonID: "", mentorIconImageURLString: "", mentorName: "")
+        MakeQuestionView(lessonImageURLString: "rootImage", lessonTitle: "あああ", lessonID: "", mentorIconImageURLString: "suit", mentorName: "Rio")
     }
 }

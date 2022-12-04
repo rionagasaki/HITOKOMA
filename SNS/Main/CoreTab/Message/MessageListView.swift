@@ -8,11 +8,6 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
-enum MentorOrStudent: String, CaseIterable{
-    case mentor = "メンターへのチャット"
-    case student = "生徒へのチャット"
-}
-
 struct MessageListView: View {
     @State var searchWord: String = ""
     @State var selectPicker: MentorOrStudent = .mentor
@@ -20,8 +15,12 @@ struct MessageListView: View {
     @State var chatroomData:ChatRoomData?
     @State var selection: Int = 0
     let messageCategory = ["事前チャット", "やり取り中","完了した取引"]
+    
+    // ContentViewから渡ってくる。
     let mentorMessages: [MessageListData]
     let studentsMessages: [MessageListData]
+    let prePurchaseMentorMessages: [MessageListData]
+    let prePurchaseStudentsMessages: [MessageListData]
     
     private func selectionBarAlignment(selection: Int) -> Alignment {
         if selection == 0 {
@@ -50,14 +49,13 @@ struct MessageListView: View {
             
             TabBarSliderView(width: UIScreen.main.bounds.width/3, alignment: selectionBarAlignment(selection: selection))
             
-            TabView(selection: $selection){
-                MessageListScrollView(chatRoomData: $chatroomData, messageListDatas: selectPicker == .mentor ? mentorMessages: studentsMessages, messageListStyle: .beforePurchaseChat).tag(0)
-                MessageListScrollView(chatRoomData: $chatroomData, messageListDatas: selectPicker == .mentor ? mentorMessages: studentsMessages, messageListStyle: .normalChat).tag(1)
-                MessageListScrollView(chatRoomData: $chatroomData, messageListDatas: selectPicker == .mentor ? mentorMessages: studentsMessages, messageListStyle: .completion).tag(2)
-            }.tabViewStyle(PageTabViewStyle())
-                .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .never))
-        }.navigationTitle(selectPicker == .mentor ? "購入者":"出品者").navigationBarTitleDisplayMode(.inline).toolbar{
-            ToolbarItem(placement: .navigationBarLeading){
+            ZStack(alignment: .bottomTrailing){
+                TabView(selection: $selection){
+                    MessageListScrollView(chatRoomData: $preChatRoomData, messageListDatas: selectPicker == .mentor ? prePurchaseMentorMessages: prePurchaseStudentsMessages, messageListStyle: .beforePurchaseChat).tag(0)
+                    MessageListScrollView(chatRoomData: $chatroomData, messageListDatas: selectPicker == .mentor ? mentorMessages: studentsMessages, messageListStyle: .normalChat).tag(1)
+                    MessageListScrollView(chatRoomData: $chatroomData, messageListDatas: selectPicker == .mentor ? mentorMessages: studentsMessages, messageListStyle: .completion).tag(2)
+                }.tabViewStyle(PageTabViewStyle())
+                    .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .never))
                 Button {
                     switch selectPicker {
                     case .mentor:
@@ -67,12 +65,12 @@ struct MessageListView: View {
                     }
                 } label: {
                     VStack(spacing: .zero){
-                        Image(systemName: "arrow.triangle.2.circlepath.circle.fill").resizable().frame(width:24, height: 24).scaledToFit()
-                        Text(selectPicker == .mentor ? "購入者":"出品者").font(.caption).font(.system(size: 3))
+                        Text(selectPicker == .mentor ? "購入者":"出品者").font(.system(size: 17))
+                        Image(systemName: "arrow.triangle.2.circlepath.circle.fill").resizable().frame(width:50, height: 50).scaledToFit()
                     }
-                }
+                }.padding(.bottom, 30).padding(.trailing, 30).shadow(radius: 10)
             }
-        }
+        }.navigationTitle(selectPicker == .mentor ? "購入者メッセージ":"出品者メッセージ").navigationBarTitleDisplayMode(.inline)
     }
 }
 
