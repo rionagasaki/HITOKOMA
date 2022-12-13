@@ -19,6 +19,7 @@ struct RequestHomeView: View {
     var body: some View {
         ScrollView{
             VStack{
+                
                 requestList(bigCategory: "リクエスト一覧", detailsCategory: requestData)
                 requestList(bigCategory: "英語", detailsCategory: requestEnglishData)
                 requestList(bigCategory: "IT", detailsCategory: requestComputerData)

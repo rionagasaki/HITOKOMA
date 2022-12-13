@@ -22,6 +22,13 @@ extension View {
     }
 }
 
+extension View {
+
+    func backgroundClearSheet() -> some View {
+        background(BackgroundClearView())
+    }
+}
+
 struct HalfModalSheetViewController<Sheet: View>: UIViewControllerRepresentable {
   var sheet: Sheet
   @Binding var isShow: Bool

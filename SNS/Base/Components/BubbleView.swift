@@ -15,14 +15,14 @@ struct BubbleView: View {
                 HStack{
                     Spacer()
                     Text(chatData.messageDate).foregroundColor(Color.init(uiColor: .lightGray)).font(.footnote)
-                    Text(chatData.messageText).padding(.all,12).background(Color.customBlue).foregroundColor(.white).cornerRadius(15).textSelection(.enabled)
+                    Text(chatData.messageText ?? "").padding(.all,12).background(Color.customBlue).foregroundColor(.white).cornerRadius(15).textSelection(.enabled)
                 }.padding(.trailing,20)
             }else{
 //                Image(message.iconImage).resizable().frame(width: 40, height: 40).scaledToFit().mask {
 //                    Circle()
 //                }.padding(.leading,20)
                 HStack{
-                    Text(chatData.messageText).padding(.all,12).background(Color.init(uiColor: .white)).background(.ultraThinMaterial).cornerRadius(15).textSelection(.enabled)
+                    Text(chatData.messageText ?? "").padding(.all,12).background(Color.init(uiColor: .white)).background(.ultraThinMaterial).cornerRadius(15).textSelection(.enabled)
                     Text(chatData.messageDate).foregroundColor(Color.init(uiColor: .lightGray)).font(.system(size: 10)).padding(.bottom,3)
                     Spacer()
                 }.padding(.leading,20)
@@ -33,6 +33,6 @@ struct BubbleView: View {
 
 struct BubbleView_Previews: PreviewProvider {
     static var previews: some View {
-        BubbleView(chatData: Chat(messageText: "aaaaaaaaaaacaaaaaaaaaaaa", sender: true, messageDate: "10:04"))
+        BubbleView(chatData: Chat(messageText: "aaaaaaaaaaacaaaaaaaaaaaa", sender: true, messageDate: "10:04", messageType: .text))
     }
 }

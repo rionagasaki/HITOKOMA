@@ -10,17 +10,17 @@ import PKHUD
 
 struct MakeQuestionView: View {
     
-    let lessonImageURLString:String
-    let lessonTitle: String
-    let lessonID: String
+    let lessonImageURLString: String
+    let lessonName: String
     let mentorIconImageURLString: String
     let mentorName: String
+    let lessonID: String
     @State var questionText: String = ""
     @State var buttonEnabled: Bool = false
     @FocusState var keyboardFocus
     var body: some View {
         VStack{
-            LessonSummaryView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
+            LessonSummaryView(lessonImageURLString: lessonImageURLString, lessonName: lessonName, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
             VStack(alignment: .leading, spacing: 0){
                 Divider()
                 Text("質問は他のユーザーに公開されます。").font(.caption).padding(.leading, 16).padding(.vertical, 16)
@@ -47,12 +47,5 @@ struct MakeQuestionView: View {
         }.onTapGesture {
             self.keyboardFocus = false
         }
-    }
-}
-
-struct MakeQuestionView_Previews: PreviewProvider {
-    @State static var closed = false
-    static var previews: some View {
-        MakeQuestionView(lessonImageURLString: "rootImage", lessonTitle: "あああ", lessonID: "", mentorIconImageURLString: "suit", mentorName: "Rio")
     }
 }

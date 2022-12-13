@@ -1,10 +1,3 @@
-//
-//  MainHomeView.swift
-//  SNS
-//
-//  Created by Rio Nagasaki on 2022/11/22.
-//
-
 import SwiftUI
 
 struct MainHomeView: View {
@@ -33,20 +26,38 @@ struct MainHomeView: View {
     let lessonLawData: [LessonData]
     let lessonFinanceData: [LessonData]
     let lessonInvestmentData: [LessonData]
+    @State var timer: Timer?
+    @State var selection: Int = 0
+    
     
     var body: some View {
-        ZStack(alignment: .topLeading){
+        VStack{
             ScrollView {
                 VStack(alignment: .center){
-                    TabView {
-                        Image("header").resizable()
-                        Image("header").resizable()
-                    }.tabViewStyle(PageTabViewStyle())
-                        .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
-                }.frame(width: UIScreen.main.bounds.width-60,height:200).cornerRadius(15).padding(.top,15).shadow(radius: 10)
-                
+                    TabView(selection: $selection){
+                        Image("header1").resizable().frame(width: UIScreen.main.bounds.width-30,height:200).scaledToFill().tag(0)
+                        Image("headers2").resizable().frame(width: UIScreen.main.bounds.width-30,height:200).tag(1)
+                        Image("header").resizable().frame(width: UIScreen.main.bounds.width-30,height:200).tag(2)
+                        Image("ramen").resizable().frame(width: UIScreen.main.bounds.width-30,height:200).tag(3)
+                        Image("suit").resizable().frame(width: UIScreen.main.bounds.width-30,height:200).tag(4)
+                    }.onAppear{
+                        self.timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { _ in
+                            withAnimation {
+                                if selection >= 4 {
+                                    selection = 0
+                                } else {
+                                    selection += 1
+                                }
+                            }
+                        }
+                    }.onDisappear{
+                        self.timer?.invalidate()
+                        timer = nil
+                    }.frame(width: UIScreen.main.bounds.width-30,height:200)
+                }.cornerRadius(15).padding(.top,15)
+                Indicatorview(selection: selection)
                 HStack{
-                    Text("カテゴリー").foregroundColor(.black).bold().font(.system(size: 20)).padding(.top, 16).padding(.leading,16)
+                    Text("カテゴリー").foregroundColor(.black).bold().font(.system(size: 20)).padding(.leading,16)
                     Spacer()
                     Button {
                         print("aaaa")

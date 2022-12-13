@@ -57,7 +57,7 @@ struct ContentView: View {
                         SearchView()
                         Divider()
                         CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
-                    }
+                    }.ignoresSafeArea(.keyboard, edges: .bottom)
                 }.tag(Tab.search)
                 
                 
@@ -89,6 +89,7 @@ struct ContentView: View {
                 self.user.userID = doc.uid
                 self.user.username = doc.username
                 self.user.email = doc.email
+                self.user.customerId = doc.customerId
                 self.user.profileImage = doc.profileImage
                 self.user.purchasedLesson =  doc.purchasedLessons
             }
@@ -131,39 +132,39 @@ struct ContentView: View {
                 }
             }
             
-            // MARK: LoginUserがMentorモードの場合、自身の生徒とのチャット情報取得
+            // MARK: Mentorモードの場合、自身の生徒とのチャット情報取得
             FetchFromFirestore().fetchStudentMessageInfo(path: "Chat"){ studentChatRoom in
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: studentChatRoom.studentUid) { userInfo in
                     FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: studentChatRoom.lessonId) { lessonInfo in
-                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: studentChatRoom.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: studentChatRoom.lastMessageText, lastMessageDate: studentChatRoom.lastMessageDate)
+                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: studentChatRoom.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: studentChatRoom.lastMessageText, lastMessageDate: studentChatRoom.lastMessageDate, chatRoomData: studentChatRoom)
                         self.studentsMessages.append(messageData)
                     }
                     
                 }
             }
-            // MARK: LoginUserがMentorモードの場合、自身の生徒とのチャット情報取得
+            // MARK: (事前)Mentorモードの場合、自身の生徒とのチャット情報取得
             FetchFromFirestore().fetchStudentMessageInfo(path: "BeforePurchaseChat") { prePurchaseStudentChatRoom in
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: prePurchaseStudentChatRoom.studentUid) { userInfo in
                     FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: prePurchaseStudentChatRoom.lessonId) { lessonInfo in
-                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget,lessonID: prePurchaseStudentChatRoom.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: prePurchaseStudentChatRoom.lastMessageText, lastMessageDate: prePurchaseStudentChatRoom.lastMessageDate)
+                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget,lessonID: prePurchaseStudentChatRoom.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: prePurchaseStudentChatRoom.lastMessageText, lastMessageDate: prePurchaseStudentChatRoom.lastMessageDate, chatRoomData: prePurchaseStudentChatRoom)
                         self.prePurchaseStudentMessages.append(messageData)
                     }
                 }
             }
-            // MARK: (取引中のチャット)LoginUserがStudentモードの場合の、自身のメンターとのチャット情報取得
+            // MARK: Studentモードの場合の、自身のメンターとのチャット情報取得
             FetchFromFirestore().fetchMentorMessageInfo(path: "Chat") { mentorChatRoom in
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: mentorChatRoom.mentorUid) { userInfo in
                     FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: mentorChatRoom.lessonId) { lessonInfo in
-                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: mentorChatRoom.lastMessageText, lastMessageDate: mentorChatRoom.lastMessageDate)
+                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: mentorChatRoom.lastMessageText, lastMessageDate: mentorChatRoom.lastMessageDate, chatRoomData: mentorChatRoom)
                         self.mentorMessages.append(messageData)
                     }
                 }
             }
-            // MARK: (事前チャット)LoginUserがStudentモードの場合の、自身のメンターとのチャット情報取得
+            // MARK: (事前)Studentモードの場合の、自身のメンターとのチャット情報取得
             FetchFromFirestore().fetchMentorMessageInfo(path: "BeforePurchaseChat") { prePurchaseMentorChatRoom in
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: prePurchaseMentorChatRoom.mentorUid) { userInfo in
                     FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: prePurchaseMentorChatRoom.lessonId) { lessonInfo in
-                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: prePurchaseMentorChatRoom.lastMessageText, lastMessageDate: prePurchaseMentorChatRoom.lastMessageDate)
+                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: prePurchaseMentorChatRoom.lastMessageText, lastMessageDate: prePurchaseMentorChatRoom.lastMessageDate, chatRoomData: prePurchaseMentorChatRoom)
                         self.prePurchaseMentorMessages.append(messageData)
                     }
                 }

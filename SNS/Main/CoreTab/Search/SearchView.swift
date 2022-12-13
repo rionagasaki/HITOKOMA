@@ -27,9 +27,8 @@ struct SearchView:View {
             VStack {
                 if suggestion.filter{ $0.suggestionTitle.contains(serarchWord) || serarchWord == "" || $0.description.contains(serarchWord)}.count == 0{
                     VStack{
-                        Text("NOT FOUND").bold()
-                        Image("sorry").resizable().frame(width: 100, height: 100)
-                        Text("検索結果が見つかりませんでした。\n入力を変えて再度お試しください。")
+                        Image(systemName: "rectangle.and.text.magnifyingglass.rtl").resizable().scaledToFit().frame(width: 70, height: 70).foregroundColor(.init(uiColor: .lightGray))
+                        Text("検索結果が見つかりませんでした。\n入力を変えて再度お試しください。").fontWeight(.heavy).multilineTextAlignment(.center).font(.system(size: 15))
                     }
                 }else{
                     ForEach(suggestion.filter({ $0.suggestionTitle.contains(serarchWord) || serarchWord == "" || $0.description.contains(serarchWord)
@@ -48,7 +47,7 @@ struct SearchView:View {
         })).toolbar(content: {
             Picker("", selection: $selectedColorIndex) {
             }
-        }).navigationBarTitleDisplayMode(.inline).navigationTitle("探す").ignoresSafeArea(edges: .bottom)
+        }).navigationBarTitleDisplayMode(.inline).navigationTitle("探す").ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 

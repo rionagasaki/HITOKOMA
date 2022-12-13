@@ -128,14 +128,14 @@ struct MakeLessonView: View {
             ImagePicker(sourceType: .photoLibrary ,selectedImage: $lessonImage)
         }
         Button {
+            // 危ない
             if lessonName != "" && lessonContent != "" && lessonImage != nil && lessonCategory != ""  && period != ""{
-                RegisterStorage().refisterUserInfo(profileImage: self.lessonImage!) { imageURL in
+                RegisterStorage().refisterImageToStorage(folderName: "UserProfile", profileImage: self.lessonImage!){ imageURL in
                     let lessonImageURLString = imageURL.absoluteString
                     SetToFirestore().registerLessonInfoFirestore(lessonName: lessonName, lessonContents: lessonContent, lessonImageURLString: lessonImageURLString, bigCategory: bigCategory, lessonCategory: lessonCategory, budget: budget, period: period){ lessonId in
                         UpdateFirestore().updateUsersMakeLesson(lessonId: lessonId){
                             HUD.flash(.success, delay: 1.0)
                         }
-                        
                     }
                 }
             }

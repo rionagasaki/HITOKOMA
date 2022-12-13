@@ -18,10 +18,10 @@ struct CheckoutView: View {
         VStack(alignment: .center){
             if let paymentSheet = model.paymentSheet {
                 PaymentSheet.PaymentButton(paymentSheet: paymentSheet, onCompletion:model.onPaymentCompletion) {
-                    RichButton(buttonText: "注文する", buttonImage: "pc").shadow(color: .blue.opacity(0.1), radius: 10, x: 10, y: 10).shadow(color: .white, radius: 20, x: -5, y: -5)
+                    Text("購入する").foregroundColor(.white).font(.system(size: 17)).bold().frame(width: UIScreen.main.bounds.width-40, height: 50).background(Color.customBlue).cornerRadius(10)
                 }
             } else {
-                ProgressView()
+                ProgressView().frame(width: UIScreen.main.bounds.width-40, height: 50)
             }
             if let result = model.paymentResult {
                 switch result {
@@ -42,9 +42,7 @@ struct CheckoutView: View {
                 }
             }
         }.onAppear{
-            FetchFromFirestore().fetchUserInfoFromFirestore { result in
-                model.preparePaymentSheet(customerId: result.customerId, amount: amount)
-            }
+            model.preparePaymentSheet(customerId: user.customerId, amount: amount)
         }
     }
 }

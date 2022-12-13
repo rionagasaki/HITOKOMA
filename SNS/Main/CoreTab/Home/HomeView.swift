@@ -30,8 +30,8 @@ struct HomeView:View{
     let lessonInvestmentData: [LessonData]
     
     var body: some View {
-        VStack{
-            CustomScrollView(selection: $selection).frame(height: 30)
+        VStack(spacing: .zero){
+            CustomScrollView(selection: $selection).frame(height: 40)
             TabBarSliderView(width: 100.0, alignment: .top)
             TabView(selection: $selection) {
                 ForEach(0..<3, id: \.self){ index in
@@ -43,7 +43,7 @@ struct HomeView:View{
                         RequestHomeView(requestData: requestData, requestEnglishData: requestEnglishData, requestComputerData: requestComputerData, requestLawData: requestLawData, requestFinanceData: requestFinanceData, requestInvestmentData: requestInvestmentData)
                     }
                 }
-            }.tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            }.padding(.top, 16).tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }
     }
 }
@@ -111,19 +111,9 @@ struct CustomScrollView: View {
                     .frame(width: 24.0, height: 24.0)
                     .foregroundColor(.black)
             }.padding(.trailing,16)
-        }
+        }.background(.ultraThinMaterial)
     }
 }
-
-struct HomeHeaderView: View {
-    var body: some View{
-        ZStack{
-            Image("header").resizable().frame(width: UIScreen.main.bounds.width-20, height: 200).overlay(LinearGradient(colors: [.white.opacity(0), .white.opacity(0.5)], startPoint: .top, endPoint: .bottom).offset(y:30))
-            
-        }.padding(.top,50)
-    }
-}
-
 
 struct HomeView_Preview: PreviewProvider {
     static var previews: some View {

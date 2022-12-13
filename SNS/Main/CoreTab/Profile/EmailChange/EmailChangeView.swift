@@ -8,50 +8,33 @@
 import SwiftUI
 
 struct EmailChangeView: View {
-    
-    @State var oldEmailField: String
+    @Environment(\.dismiss) var dismiss
     @State var newEmailField: String
-    @State var newConfirmationEmailTextFIeld: String
-    
     var body: some View {
-            ZStack{
-                VStack(alignment:.leading ,spacing: 20){
-                    Circle().size(width: 200, height: 200).blur(radius: 80).foregroundColor(.yellow)
-                    HStack{
-                        Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.blue).padding(.top,-120)
-                        Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.orange).padding(.top,30)
-                    }
-                    Circle().size(width: 200, height: 200).blur(radius: 100).foregroundColor(.pink)
-                }
-                ScrollView {
+        ZStack(alignment: .bottomLeading){
+            ScrollView {
+                VStack{
+                    Text("📧メール設定").font(.system(size: 25)).bold().frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 16)
+                    
                     VStack{
-                        VStack{
-                            Image(systemName: "mail.fill").resizable().scaledToFit().frame(width:100, height: 50).foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
-                            Text("確認メールが送られます。")
-                        }.frame(width: UIScreen.main.bounds.width-100, height: 300).background(.white.opacity(0.1)).background(.ultraThinMaterial).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray.opacity(0.6), lineWidth: 0.5)).shadow(radius: 1)
-                        
-                        VStack(alignment: .leading){
-                            Text("古いメールアドレス").font(.system(size: 14)).fontWeight(.regular).padding(.leading, 20)
-                            TextField("", text: $oldEmailField).padding(.all, 7).background(.white).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke()).padding(.horizontal,16)
-                            Text("新しいメールアドレス").font(.system(size: 14)).fontWeight(.regular).padding(.leading, 20)
-                            TextField("", text: $newEmailField).padding(.all, 7).background(.white).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke()).padding(.horizontal,20)
-                            Text("新しいメールアドレス(確認)").font(.system(size: 14)).fontWeight(.regular).padding(.leading, 20)
-                            TextField("", text: $newConfirmationEmailTextFIeld).padding(.all, 7).background(.white).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke()).padding(.horizontal,20)
-                            Button {
-                                print("aaaa")
-                            } label: {
-                                Text("メールアドレスを変更する").bold().foregroundColor(.white)
-                            }.frame(width:UIScreen.main.bounds.width-40, height: 40).background(.blue).cornerRadius(10).padding(.horizontal,20).padding(.top, 16)
-                            Spacer()
+                        Text("メールアドレス変更").fontWeight(.light).font(.system(size: 23)).padding(.top, 20)
+                        Text("登録したいメールアドレスを入力し、確認メールを送信してください。").fontWeight(.light).font(.system(size: 14)).padding(.horizontal, 16).padding(.top, 5)
+                        TextField("", text: $newEmailField, prompt: Text("メールアドレス")).padding(.leading, 10).frame(height: 38).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2)).padding(.horizontal, 16).padding(.top, 5)
+                        Button {
+                            print("aaa")
+                        } label: {
+                            Text("確認メールを送信する").foregroundColor(.white).font(.system(size: 17)).bold().frame(width: UIScreen.main.bounds.width-40, height: 50).background(Color.customBlue).cornerRadius(10).padding(.top, 10).padding(.horizontal,10).padding(.bottom, 20)
                         }
-                    }.navigationTitle("メールアドレスを変更").navigationBarTitleDisplayMode(.inline)
+                    }.background(.white)
                 }
             }
+            DismissButtonView().padding(.leading, 40).padding(.bottom, 40)
+        }.background(.ultraThinMaterial)
     }
 }
 
 struct EmailChangeView_Previews: PreviewProvider {
     static var previews: some View {
-        EmailChangeView(oldEmailField: "", newEmailField: "", newConfirmationEmailTextFIeld: "")
+        EmailChangeView(newEmailField: "")
     }
 }

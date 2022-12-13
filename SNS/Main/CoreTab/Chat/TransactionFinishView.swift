@@ -8,24 +8,16 @@
 import SwiftUI
 
 struct TransactionFinishView: View {
-    
-    let lessonImageURLString: String
-    let lessonTitle: String
-    let mentorIconImageURLString: String
-    let mentorName: String
+    let messageListData: MessageListData
     
     var body: some View {
         VStack(spacing: 5){
-            LessonSummaryView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
-            Divider()
-            AfterLessonView(allSelection: -1, clearitySelection: -1, interestingSelection: -1)
-            Spacer()
+            ScrollView {
+                LessonSummaryView(lessonImageURLString: messageListData.lessonImage, lessonName: messageListData.lessonName, mentorIconImageURLString: messageListData.senderIconImage, mentorName: messageListData.senderName).padding(.horizontal, 16)
+                Divider()
+                AfterLessonView(allSelection: -1, clearitySelection: -1, interestingSelection: -1)
+                Spacer()
+            }
         }
-    }
-}
-
-struct TransactionFinishView_Previews: PreviewProvider {
-    static var previews: some View {
-        TransactionFinishView(lessonImageURLString: "", lessonTitle: "", mentorIconImageURLString: "", mentorName: "")
     }
 }

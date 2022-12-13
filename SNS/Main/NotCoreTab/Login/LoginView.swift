@@ -18,20 +18,13 @@ struct LoginView: View {
     @State private var rotationAngle = 0.0
     @State private var halfModal:Bool = false
     @State private var isLogin:Bool = true
+    @State private var validateAlert: Bool = false
     @State private var signInWithAppleObject = SignInWithAppleObject()
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         WithViewStore(self.store) { viewStore in
             ZStack{
                 Color.white
-//                VStack(alignment:.leading ,spacing: 20){
-//                    Circle().size(width: 200, height: 200).foregroundColor(.yellow)
-//                    HStack{
-//                        Circle().size(width: 200, height: 200).foregroundColor(.blue).padding(.top,-120)
-//                        Circle().size(width: 200, height: 200).foregroundColor(.orange).padding(.top,30)
-//                    }
-////                    BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).blur(radius: 40).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
-//                }.blur(radius: 100)
                 VStack{
                     VStack{
                         VStack(alignment: .leading, spacing: 16) {
@@ -71,7 +64,10 @@ struct LoginView: View {
                             Button {
                                 if isLogin{
                                     Auth.auth().signIn(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText){ authResult, error in
-                                        if error != nil { return }
+                                        if error != nil {
+                                            self._validateAlert.wrappedValue = true
+                                            return
+                                        }
                                         self.appState.isLogin = true
                                     }
                                 }else{
@@ -135,6 +131,10 @@ struct LoginView: View {
                 }.shadow(radius: 20, x: 0, y: 20)
             }.ignoresSafeArea().sheet(isPresented: $halfModal) {
                 LoginState.initial2
+            }.alert(isPresented: _validateAlert.projectedValue) {
+                Alert(title: Text("入力内容が間違っています"),
+                      message: Text("メールアドレス、またはパスワードが違います。再度正しく入力してください。"),
+                      dismissButton: .default(Text("閉じる")))
             }
         }
     }

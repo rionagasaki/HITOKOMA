@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SDWebImageSwiftUI
 
 struct RequestDetailView: View {
     @State var username: String
@@ -18,11 +19,7 @@ struct RequestDetailView: View {
             VStack{
                 HStack{
                     ZStack(alignment: .topLeading){
-                        AsyncImage(url: URL(string: profileImage)) { image in
-                            image.resizable().frame(width: 50, height: 50).clipShape(Circle())
-                        } placeholder: {
-                            ProgressView().frame(width: 50, height: 50).background(.gray.opacity(0.4)).clipShape(Circle())
-                        }
+                        WebImage(url: URL(string: profileImage)).resizable().frame(width: 50, height: 50).clipShape(Circle())
                         Image(systemName: "questionmark.circle.fill").resizable().frame(width: 20, height: 20).background(.white).foregroundColor(.black).cornerRadius(20)
                     }
                     Text(username).foregroundColor(.black).font(.system(size: 15))

@@ -152,22 +152,29 @@ class ChatData: Identifiable{
     var id = UUID()
     var chatId: String
     var messageText: String
+    var messageType: String
+    var messageImageURLString: String
     var messageDate: String
-    var senderUId: String
+    var senderUid: String
     
     init(document: QueryDocumentSnapshot){
         self.chatId = document.documentID
         let chatDic = document.data()
+        // TextかImageかのどちらかが入る。
         self.messageText = chatDic["messageText"] as? String ?? ""
+        self.messageImageURLString = chatDic["messageImageURLString"] as? String ?? ""
+        self.messageType = chatDic["messageType"] as? String ?? ""
         self.messageDate = chatDic["messageDate"] as? String ?? ""
-        self.senderUId = chatDic["senderUid"] as? String ?? ""
+        self.senderUid = chatDic["senderUid"] as? String ?? ""
     }
     init(document: DocumentSnapshot){
         self.chatId = document.documentID
         let chatDic = document.data()
         self.messageText = chatDic?["messageText"] as? String ?? ""
+        self.messageImageURLString = chatDic?["messageImageURLString"] as? String ?? ""
+        self.messageType = chatDic?["messageType"] as? String ?? ""
         self.messageDate = chatDic?["messageDate"] as? String ?? ""
-        self.senderUId = chatDic?["senderUid"] as? String ?? ""
+        self.senderUid = chatDic?["senderUid"] as? String ?? ""
     }
 }
 

@@ -17,7 +17,7 @@ struct AfterLessonView: View {
         VStack(alignment: .leading){
             HStack{
                 Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-                Text("評価・レビューをつけて、取引を終了してください。").font(.subheadline)
+                Text("評価・レビューをつけて、取引を終了してください。").font(.subheadline).font(.system(size: 13))
             }.padding(.top, 10).padding(.leading, 10)
             Divider()
             Text("評価").bold().font(.system(size: 17)).padding(.leading, 10)

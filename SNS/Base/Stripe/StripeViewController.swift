@@ -118,6 +118,7 @@ class MyBackendModel: ObservableObject {
             
             DispatchQueue.main.async {
                 self.paymentSheet = PaymentSheet(paymentIntentClientSecret: paymentIntent, configuration: configuration)
+                print("payment!!", self.paymentSheet)
             }
         }
     }

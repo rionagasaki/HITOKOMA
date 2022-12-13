@@ -10,7 +10,7 @@ import SDWebImageSwiftUI
 
 struct MoreQuestionView: View {
     let questionRecords: [QuestionRecords]
-    let mentorIcon: String
+    let mentorIconImageURLString: String
     let mentorName: String
     let lessonImageURL: String
     let lessonTitle: String
@@ -22,7 +22,7 @@ struct MoreQuestionView: View {
     var body: some View {
         VStack{
             List(questionRecords, id:\.self) { question in
-                QuestionAndAnswearView(questionRecord: question, mentorIcon: mentorIcon)
+                QuestionAndAnswearView(questionRecord: question, mentorIcon: mentorIconImageURLString)
             }
             Button {
                 self.openModal = true
@@ -39,7 +39,7 @@ struct MoreQuestionView: View {
                 .frame(width: UIScreen.main.bounds.width-40, height: 40).background(.white).cornerRadius(10).background(RoundedRectangle(cornerRadius: 10).stroke(.black, lineWidth: 2)).padding(.bottom, 16)
             }
         }.sheet(isPresented: $openModal) {
-            MakeQuestionView(lessonImageURLString: lessonImageURL, lessonTitle: lessonTitle, lessonID: lessonID, mentorIconImageURLString: mentorIcon, mentorName: mentorName)
+            MakeQuestionView(lessonImageURLString: lessonImageURL, lessonName: lessonTitle, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName, lessonID: lessonID)
         }
     }
 }
@@ -55,12 +55,5 @@ struct QuestionAndAnswearView: View {
                 Text(questionRecord.answerText).font(.caption)
             }
         }
-    }
-}
-
-struct MoreQuestionView_Previews: PreviewProvider {
-    @State static var dismiss = false
-    static var previews: some View {
-        MoreQuestionView(questionRecords: [], mentorIcon: "", mentorName: "", lessonImageURL: "", lessonTitle: "", lessonID: "", openModal: false, dismiss: $dismiss)
     }
 }

@@ -19,4 +19,5 @@ struct MessageListData: Identifiable{
     let senderUid: String
     let lastMessage: String
     let lastMessageDate: String
+    let chatRoomData: ChatRoomData?
 }

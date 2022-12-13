@@ -14,4 +14,8 @@ extension UIColor {
 
 extension Color {
     static let customBlue = Color("customBlue")
+    static let customRed1 = Color("customRed1")
+    static let customRed2 = Color("customRed2")
+    static let customGray = Color("customGray")
+    static let customLightGray = Color("customLightGray")
 }

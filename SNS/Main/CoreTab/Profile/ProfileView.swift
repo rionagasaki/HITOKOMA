@@ -17,7 +17,7 @@ struct ProfileView: View {
     @EnvironmentObject var user: User
     private let screenWidth = UIScreen.main.bounds.width
     
-    private let baseSettings = [ Setting(settingName: "会員情報", settingImage: "person", handler: AnyView(MemberInfoView(displayName: "", displayGender: "", displayAge: ""))), Setting(settingName: "パスワード変更", settingImage: "lock", handler:AnyView(PasswordChangeView(oldPasswordField: "", newPasswordField: "", newConfirmationPasswordTextFIeld: ""))), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: AnyView(EmailChangeView(oldEmailField: "", newEmailField: "", newConfirmationEmailTextFIeld: ""))), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: AnyView(MyListView()))
+    private let baseSettings = [ Setting(settingName: "会員情報", settingImage: "person", handler: AnyView(MemberInfoView(displayName: "", displayGender: "", displayAge: "", profileImageURLString: ""))), Setting(settingName: "パスワード変更", settingImage: "lock", handler:AnyView(PasswordChangeView(currentPasswordField: "", newPasswordField: "", newConfirmationPasswordTextFIeld: ""))), Setting(settingName: "メールアドレス変更", settingImage: "mail", handler: AnyView(EmailChangeView(newEmailField: ""))), Setting(settingName: "マイリスト", settingImage: "list.bullet", handler: AnyView(MyListView()))
     ]
     
     private let sellerSettings = [Setting(settingName: "売上管理", settingImage: "personalhotspot.circle", handler:AnyView(WrappaerDashBoardCall())),
