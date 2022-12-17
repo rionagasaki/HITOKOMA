@@ -18,7 +18,15 @@ struct OneClassView: View {
         ScrollView(.horizontal, showsIndicators: false){
             HStack(alignment: .top){
                     VStack(alignment: .leading, spacing: 0){
-                        WebImage(url: URL(string: lessonImageURLString)).resizable().scaledToFill().frame(width: 120, height: 90)
+                        WebImage(url: URL(string: lessonImageURLString)).resizable()
+                            .placeholder(Image(systemName: "photo"))
+                            .placeholder {
+                                Rectangle().frame(width: 120, height: 90).foregroundColor(.customLightGray)
+                                }
+                            .indicator(.activity(style: .large))
+                            .transition(.flipFromBottom(duration: 10))
+                            .scaledToFill()
+                            .frame(width: 120, height: 90)
                         HStack(alignment: .top){
                             Text(lessonName).font(.system(size: 10)).font(.subheadline).lineLimit(3).foregroundColor(.black).multilineTextAlignment(.leading).padding(.top,5)
                             Spacer()

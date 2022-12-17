@@ -51,6 +51,7 @@ class LessonData: Identifiable {
     var period: String
     var userImageIconURLString: String = ""
     var username : String = ""
+    var completionUser: [String]
     
     init(document: QueryDocumentSnapshot) {
         self.lessonId = document.documentID
@@ -63,6 +64,7 @@ class LessonData: Identifiable {
         self.category = lessonDic["category"] as? String ?? ""
         self.budget = lessonDic["budget"] as? Int ?? 0
         self.period = lessonDic["period"] as? String ?? ""
+        self.completionUser = lessonDic["completionUser"] as? [String] ?? []
     }
     
     init(document: DocumentSnapshot){
@@ -76,6 +78,7 @@ class LessonData: Identifiable {
         self.category = lessonDic?["category"] as? String ?? ""
         self.budget = lessonDic?["budget"] as? Int ?? 0
         self.period = lessonDic?["period"] as? String ?? ""
+        self.completionUser = lessonDic?["completionUser"] as? [String] ?? []
     }
 }
 

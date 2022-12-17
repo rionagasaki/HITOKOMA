@@ -18,4 +18,5 @@ extension Color {
     static let customRed2 = Color("customRed2")
     static let customGray = Color("customGray")
     static let customLightGray = Color("customLightGray")
+    static let customLoadingGray = Color("customLoadingGray")
 }

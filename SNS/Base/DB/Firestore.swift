@@ -298,7 +298,7 @@ class SetToFirestore{
         }
     }
     
-    func registerEvalutionToLesson(lessonId: String ,allEvalution: Int, easyToUnderstand: Int, interesting: Int, review: String, completion: @escaping () -> Void){
+    func registerEvalutionToLesson(lessonId: String ,allEvalution: Int, easyToUnderstand: Int, interesting: Int, review: String, completion: @escaping (String) -> Void){
         guard let uid = uid else { return }
         db.collection("Evalution").addDocument(data: [
             "lessonId": lessonId,
@@ -311,7 +311,7 @@ class SetToFirestore{
             if let error = error {
                print("Error=>registerEvalutionToLesson:\(error)")
             }else {
-                completion()
+                completion(lessonId)
             }
         }
     }
@@ -362,7 +362,7 @@ class UpdateFirestore{
         }
     }
     
-    func updateLessonCompletionUser(lessonId: String){
+    func updateLessonCompletionUser(lessonId: String, completion: @escaping ()-> Void){
         guard let uid = uid else { return }
         db.collection("Lesson").document(lessonId).updateData([
             "completionUser": FieldValue.arrayUnion([uid])
@@ -370,6 +370,8 @@ class UpdateFirestore{
             if let error = error {
                 print("Error \(error)")
                 return
+            } else {
+                completion()
             }
         }
     }

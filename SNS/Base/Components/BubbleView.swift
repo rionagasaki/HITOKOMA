@@ -12,17 +12,17 @@ struct BubbleView: View {
     var body: some View {
         HStack(alignment: .bottom){
             if chatData.sender {
-                HStack{
+                HStack(alignment: .bottom){
                     Spacer()
-                    Text(chatData.messageDate).foregroundColor(Color.init(uiColor: .lightGray)).font(.footnote)
+                    Text(chatData.messageDate).foregroundColor(Color.init(uiColor: .lightGray)).font(.system(size: 10))
                     Text(chatData.messageText ?? "").padding(.all,12).background(Color.customBlue).foregroundColor(.white).cornerRadius(15).textSelection(.enabled)
                 }.padding(.trailing,20)
             }else{
 //                Image(message.iconImage).resizable().frame(width: 40, height: 40).scaledToFit().mask {
 //                    Circle()
 //                }.padding(.leading,20)
-                HStack{
-                    Text(chatData.messageText ?? "").padding(.all,12).background(Color.init(uiColor: .white)).background(.ultraThinMaterial).cornerRadius(15).textSelection(.enabled)
+                HStack(alignment: .bottom){
+                    Text(chatData.messageText ?? "").padding(.all,12).background(.ultraThinMaterial).background(.ultraThinMaterial).cornerRadius(15).textSelection(.enabled)
                     Text(chatData.messageDate).foregroundColor(Color.init(uiColor: .lightGray)).font(.system(size: 10)).padding(.bottom,3)
                     Spacer()
                 }.padding(.leading,20)

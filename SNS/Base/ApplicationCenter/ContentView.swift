@@ -11,6 +11,8 @@ import Combine
 
 
 struct ContentView: View {
+    @EnvironmentObject var user: User
+    @EnvironmentObject var app: AppState
     @State var selectedTab: Tab = .home
     @State var navigationTitle:String = ""
     @State var navigationStyle:Bool = true
@@ -26,11 +28,12 @@ struct ContentView: View {
     @State var lawLessonData:[LessonData] = []
     @State var financeLessonData: [LessonData] = []
     @State var investmentLessonData: [LessonData] = []
-    @EnvironmentObject var user: User
     @State var mentorMessages:[MessageListData] = []
     @State var studentsMessages:[MessageListData] = []
     @State var prePurchaseMentorMessages: [MessageListData] = []
     @State var prePurchaseStudentMessages: [MessageListData] = []
+    @State var completionLessonAsMentorMessages: [MessageListData] = []
+    @State var completionLessonAsStudentMessages: [MessageListData] = []
     @State var searchWord = ""
     
     var loginUserIconURLString: String = ""
@@ -67,7 +70,9 @@ struct ContentView: View {
                             mentorMessages: mentorMessages,
                             studentsMessages: studentsMessages,
                             prePurchaseMentorMessages: prePurchaseMentorMessages,
-                            prePurchaseStudentsMessages: prePurchaseStudentMessages
+                            prePurchaseStudentsMessages: prePurchaseStudentMessages,
+                            completionLessonAsMentorMessages: completionLessonAsMentorMessages,
+                            completionLessonAsStudentMessages: completionLessonAsStudentMessages
                         )
                         Divider()
                         CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
@@ -82,6 +87,7 @@ struct ContentView: View {
                 }.tag(Tab.profile)
             }
         }.onAppear{
+            self.app.isLoading = true
             self.lessonData = []
             
             // MARK: User情報を取得
@@ -112,13 +118,13 @@ struct ContentView: View {
                     }
                 }
             }
-            
             // MARK: Lesson情報を取得、Categorize
             FetchFromFirestore().fetchLessonInfoFromFirestore { lesson in
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: lesson.mentorUid) { userInfo in
                     lesson.userImageIconURLString = userInfo.profileImage
                     lesson.username = userInfo.username
                     lessonData.append(lesson)
+                    app.isLoading = false
                     let bigCategory = CategoryDetail(rawValue: lesson.bigCategory)
                     switch bigCategory {
                     case .english: self.englishLessonData.append(lesson)
@@ -156,7 +162,11 @@ struct ContentView: View {
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: mentorChatRoom.mentorUid) { userInfo in
                     FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: mentorChatRoom.lessonId) { lessonInfo in
                         let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: mentorChatRoom.lastMessageText, lastMessageDate: mentorChatRoom.lastMessageDate, chatRoomData: mentorChatRoom)
-                        self.mentorMessages.append(messageData)
+                        if lessonInfo.completionUser.contains(userInfo.uid) {
+                            self.completionLessonAsStudentMessages.append(messageData)
+                        } else {
+                            self.mentorMessages.append(messageData)
+                        }
                     }
                 }
             }
@@ -165,7 +175,11 @@ struct ContentView: View {
                 FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: prePurchaseMentorChatRoom.mentorUid) { userInfo in
                     FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: prePurchaseMentorChatRoom.lessonId) { lessonInfo in
                         let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: prePurchaseMentorChatRoom.lastMessageText, lastMessageDate: prePurchaseMentorChatRoom.lastMessageDate, chatRoomData: prePurchaseMentorChatRoom)
-                        self.prePurchaseMentorMessages.append(messageData)
+                        if lessonInfo.completionUser.contains(userInfo.uid) {
+                            self.completionLessonAsMentorMessages.append(messageData)
+                        } else {
+                            self.studentsMessages.append(messageData)
+                        }
                     }
                 }
             }

@@ -35,7 +35,7 @@ struct LoginView: View {
                             if !isLogin{
                                 HStack {
                                     Spacer()
-                                    Image(systemName: "person").foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .trailing, endPoint: .leading)).padding(.all,5).background(Color.black.opacity(0.7)).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth:0.5))
+                                    Image(systemName: "person").foregroundStyle(.white).padding(.all,5).background(Color.black.opacity(0.7)).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth:0.5))
                                     TextField("Username", text: viewStore.binding(get: {
                                         $0.usernameText
                                     }, send: {
@@ -83,16 +83,10 @@ struct LoginView: View {
                                     }
                                 }
                             } label: {
-                                GeometryReader { geometry in
-                                    ZStack{
-                                        AngularGradient(gradient: Gradient(colors: [.red,.blue]), center: .center, angle: .degrees(0)).blendMode(.overlay).blur(radius: 8).mask(
-                                            RoundedRectangle(cornerRadius: 16).frame(height:45).frame(maxWidth:geometry.size.width - 16).blur(radius: 8.0))
-                                        Text(isLogin ? "Sign In":"アカウント作成").gradientForegroundColor().font(Font.body.bold()).frame(height:50).frame(width:geometry.size.width-20).background(.thickMaterial).cornerRadius(16).overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white, lineWidth: 1))
-                                    }
-                                }
-                            }.frame(height:50)
+                                Text(isLogin ? "Sign In":"アカウント作成").foregroundColor(.white).font(.system(size: 17)).bold().frame(width: UIScreen.main.bounds.width-40, height: 50).background(Color.customBlue).cornerRadius(10)
+                            }
                             
-                            HStack{
+                            HStack(spacing: .zero){
                                 Text(isLogin ? "新規登録は" : "すでにアカウントをお持ちの方").tint(Color.white).font(.footnote)
                                 Button{
                                     withAnimation(Animation.easeInOut(duration: 0.7)) {

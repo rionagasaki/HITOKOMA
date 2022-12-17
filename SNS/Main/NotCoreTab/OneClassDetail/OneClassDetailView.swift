@@ -66,7 +66,8 @@ struct OneClassDetailView: View {
                         }
                     }.padding(.leading,16)
                     Divider()
-                    PreLessonChatView(messageListData: MessageListData(lessonImage: lessonImageURLString, lessonName: lessonTitle, lessonContents: lessonContent, lessonBudgets: budgets, lessonID: lessonId, senderIconImage: mentorIconImageURLString, senderName: mentorName, senderUid: mentorUid, lastMessage: "", lastMessageDate: "", chatRoomData: preChatRoomData)).onAppear{
+                    PreLessonChatView(messageListData: MessageListData(lessonImage: lessonImageURLString, lessonName: lessonTitle, lessonContents: lessonContent, lessonBudgets: budgets, lessonID: lessonId, senderIconImage: mentorIconImageURLString, senderName: mentorName, senderUid: mentorUid, lastMessage: "", lastMessageDate: "", chatRoomData: preChatRoomData))
+                        .onAppear{
                         FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", lessonId: lessonId, mentorUid: mentorUid) { preChatroomData in
                             self.preChatRoomData = preChatroomData
                         }

@@ -9,17 +9,30 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct ImageBubbleView: View {
-    let message: Chat
+    let chatData: Chat
     @State var showFullImage: Bool = false
     var body: some View {
         HStack{
-            Spacer()
-            Button {
-                self.showFullImage = true
-            } label: {
-                WebImage(url: URL(string: message.massageImageURLString ?? "")).resizable().scaledToFit().frame(width: 250, height: 250).cornerRadius(10).padding(.trailing, 16)
-            }.sheet(isPresented: self.$showFullImage) {
-                FullImageView(messageImageURLString: message.massageImageURLString ?? "")
+            if chatData.sender {
+                Spacer()
+                Button {
+                    self.showFullImage = true
+                } label: {
+                    WebImage(url: URL(string: chatData.massageImageURLString ?? "")).resizable()
+                        .placeholder(Image(systemName: "photo"))
+                        .placeholder {
+                                Rectangle().foregroundColor(.gray)
+                            }
+                        .indicator(.activity)
+                        .transition(.fade(duration: 0.5))
+                        .scaledToFit().frame(height: 200)
+                        .background(Color.black).cornerRadius(10)
+                        .padding(.trailing, 16)
+                }.sheet(isPresented: self.$showFullImage) {
+                    FullImageView(messageImageURLString: chatData.massageImageURLString ?? "")
+                }
+            } else {
+                
             }
         }
     }
