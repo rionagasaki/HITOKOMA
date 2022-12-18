@@ -18,20 +18,13 @@ struct LoginView: View {
     @State private var rotationAngle = 0.0
     @State private var halfModal:Bool = false
     @State private var isLogin:Bool = true
+    @State private var validateAlert: Bool = false
     @State private var signInWithAppleObject = SignInWithAppleObject()
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         WithViewStore(self.store) { viewStore in
             ZStack{
                 Color.white
-//                VStack(alignment:.leading ,spacing: 20){
-//                    Circle().size(width: 200, height: 200).foregroundColor(.yellow)
-//                    HStack{
-//                        Circle().size(width: 200, height: 200).foregroundColor(.blue).padding(.top,-120)
-//                        Circle().size(width: 200, height: 200).foregroundColor(.orange).padding(.top,30)
-//                    }
-////                    BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).blur(radius: 40).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
-//                }.blur(radius: 100)
                 VStack{
                     VStack{
                         VStack(alignment: .leading, spacing: 16) {
@@ -42,7 +35,7 @@ struct LoginView: View {
                             if !isLogin{
                                 HStack {
                                     Spacer()
-                                    Image(systemName: "person").foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .trailing, endPoint: .leading)).padding(.all,5).background(Color.black.opacity(0.7)).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth:0.5))
+                                    Image(systemName: "person").foregroundStyle(.white).padding(.all,5).background(Color.black.opacity(0.7)).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 10).stroke(.white, lineWidth:0.5))
                                     TextField("Username", text: viewStore.binding(get: {
                                         $0.usernameText
                                     }, send: {
@@ -71,7 +64,10 @@ struct LoginView: View {
                             Button {
                                 if isLogin{
                                     Auth.auth().signIn(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText){ authResult, error in
-                                        if error != nil { return }
+                                        if error != nil {
+                                            self._validateAlert.wrappedValue = true
+                                            return
+                                        }
                                         self.appState.isLogin = true
                                     }
                                 }else{
@@ -87,16 +83,10 @@ struct LoginView: View {
                                     }
                                 }
                             } label: {
-                                GeometryReader { geometry in
-                                    ZStack{
-                                        AngularGradient(gradient: Gradient(colors: [.red,.blue]), center: .center, angle: .degrees(0)).blendMode(.overlay).blur(radius: 8).mask(
-                                            RoundedRectangle(cornerRadius: 16).frame(height:45).frame(maxWidth:geometry.size.width - 16).blur(radius: 8.0))
-                                        Text(isLogin ? "Sign In":"アカウント作成").gradientForegroundColor().font(Font.body.bold()).frame(height:50).frame(width:geometry.size.width-20).background(.thickMaterial).cornerRadius(16).overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white, lineWidth: 1))
-                                    }
-                                }
-                            }.frame(height:50)
+                                Text(isLogin ? "Sign In":"アカウント作成").foregroundColor(.white).font(.system(size: 17)).bold().frame(width: UIScreen.main.bounds.width-40, height: 50).background(Color.customBlue).cornerRadius(10)
+                            }
                             
-                            HStack{
+                            HStack(spacing: .zero){
                                 Text(isLogin ? "新規登録は" : "すでにアカウントをお持ちの方").tint(Color.white).font(.footnote)
                                 Button{
                                     withAnimation(Animation.easeInOut(duration: 0.7)) {
@@ -135,6 +125,10 @@ struct LoginView: View {
                 }.shadow(radius: 20, x: 0, y: 20)
             }.ignoresSafeArea().sheet(isPresented: $halfModal) {
                 LoginState.initial2
+            }.alert(isPresented: _validateAlert.projectedValue) {
+                Alert(title: Text("入力内容が間違っています"),
+                      message: Text("メールアドレス、またはパスワードが違います。再度正しく入力してください。"),
+                      dismissButton: .default(Text("閉じる")))
             }
         }
     }

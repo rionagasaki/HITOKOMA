@@ -11,19 +11,15 @@ struct IntroView: View {
     @State var shouldOpenPage:Bool
     var body: some View {
         ZStack{
-            ZStack{
-                VStack(alignment:.leading ,spacing: 20){
-                    Circle().size(width: 200, height: 200).foregroundColor(.yellow)
-                    HStack{
-                        Circle().size(width: 200, height: 200).foregroundColor(.blue).padding(.top,-120)
-                        Circle().size(width: 200, height: 200).foregroundColor(.orange).padding(.top,30)
-                    }
-//                    BackgroundView(startColor: .purple, endColor: .orange).frame(width: 300, height: 300).blur(radius: 0).rotation3DEffect(.degrees(Double(180)), axis: (x:0,y:0,z:1))
-                }.blur(radius: 0)
+            VStack(alignment:.leading ,spacing: 20){
+                Circle().size(width: 200, height: 200).foregroundColor(.yellow)
+                HStack{
+                    Circle().size(width: 200, height: 200).foregroundColor(.blue).padding(.top,-120)
+                    Circle().size(width: 200, height: 200).foregroundColor(.orange).padding(.top,30)
+                }
             }.ignoresSafeArea()
             VStack{
                 TabView{
-//                    IntroduceView(mainTitle: "学び始めよう。\n60分から。", describeText: "", describeImage: "ORI").tag(1)
                     VStack{
                         Text("学び始めよう。\n60分から。").bold().font(.system(size: 30))
                         Image("ORI").resizable().frame(width: 300, height:300)
@@ -32,19 +28,16 @@ struct IntroView: View {
                         Text("あなたの知識が\n報酬に。").bold().font(.system(size: 30))
                         Image("money").resizable().frame(width: 300, height:300)
                     }.tag(2)
-//                    IntroduceView(mainTitle: "あなたの知識が\n報酬に。", describeText: "ここにテキストここにテキストここにテキストここにテキストここにテキストここにテキストここにテキストここにテキストここにテキストここにテキスト", describeImage: "money").tag(2)
                     VStack{
                         Text("ひとこまを\n始めましょう！").bold().font(.system(size: 30))
                         Image("talk").resizable().frame(width: 300, height:300)
                     }.tag(3)
-//                    IntroduceView(mainTitle: "ひとこまを\n始めましょう！", describeText: "ここにテキストここにテキストここにテキストここにテキストここにテキストここにテキストここにテキストここにテキストここにテキストここにテキスト", describeImage: "talk").tag(2)
                 }.tabViewStyle(PageTabViewStyle()).indexViewStyle(.page(backgroundDisplayMode: .always))
-                
                 Spacer()
                 Button {
                     self.shouldOpenPage = true
                 } label: {
-                    RichButton(buttonText: "Get Started", buttonImage: "arrowshape.turn.up.right.fill").padding().shadow(radius: 20, x: 20, y: 20).shadow(color: .white, radius: 20, x: -10, y: -10)
+                    Text("Get Started").foregroundColor(.white).font(.system(size: 17)).bold().frame(width: UIScreen.main.bounds.width-40, height: 50).background(Color.customBlue).cornerRadius(10).padding(.bottom, 16)
                 }
             }
         }.sheet(isPresented: $shouldOpenPage) {

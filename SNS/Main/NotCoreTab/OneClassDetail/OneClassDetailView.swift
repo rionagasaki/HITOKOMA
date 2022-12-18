@@ -6,15 +6,18 @@
 //
 
 import SwiftUI
-import FirebaseFunctions
 import SDWebImageSwiftUI
 
 struct OneClassDetailView: View {
     @EnvironmentObject var user:User
     @State private var openCharge: Bool = false
     @State var alreadyChat: Bool = false
-    @State var preChatRoomData: ChatRoomData?
-    @State var chatroomData:ChatRoomData?
+    @State var preChatRoomData: ChatRoomData? = nil
+    @State var chatroomData:ChatRoomData? = nil
+    @State var paymentSheet: Bool = false
+    @State var underBarOffset: CGFloat = 100
+    @State var purchasedLabelOffset: CGFloat = -170
+    @ObservedObject var chatRoomType = ChatRoomType(chatMode: .student, messageListStyle: .normalChat)
     let lessonImageURLString: String
     let mentorIconImageURLString: String
     let lessonId: String
@@ -23,94 +26,164 @@ struct OneClassDetailView: View {
     let lessonTitle: String
     let lessonContent: String
     let budgets: Int
-
+    
     var body: some View {
         VStack{
             ScrollView {
                 VStack{
-                    WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: UIScreen.main.bounds.width, height: 250)
-                    Text(lessonTitle).font(.system(size: 25)).fontWeight(.bold)
+                    ZStack(alignment: .topLeading){
+                        WebImage(url: URL(string: lessonImageURLString))
+                            .resizable()
+                            .frame(width: UIScreen.main.bounds.width, height: 250)
+                        
+                        if user.purchasedLesson.contains(lessonId) {
+                            HStack(spacing:3){
+                                Image(systemName: "checkmark.circle.fill").foregroundColor(.green).background(.white).clipShape(Circle())
+                                Text("やり取り中")
+                                    .fontWeight(.semibold)
+                                    .font(.system(size: 15))
+                                    .foregroundColor(.white)
+                                
+                            }.padding().background(LinearGradient(colors: [.customRed1, .customRed2], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                .font(.system(size: 15))
+                                .cornerRadius(7)
+                                .padding(.top, 5)
+                                .padding(.leading, 5)
+                                .offset(x: purchasedLabelOffset)
+                                .onAppear{
+                                withAnimation(Animation.easeIn(duration: 0.5)){
+                                    purchasedLabelOffset = 0
+                                }
+                            }
+                        }
+                    }
+                    Text(lessonTitle)
+                        .font(.system(size: 25))
+                        .fontWeight(.bold)
                     Divider()
                     NavigationLink {
                         UserProfileView(username: mentorName, userProfileImageURL: mentorIconImageURLString, usersLessonData: [], usersRequestData: [])
                     } label: {
                         HStack{
-                            WebImage(url: URL(string: mentorIconImageURLString)).resizable().frame(width: 40, height: 40).clipShape(Circle())
+                            WebImage(url: URL(string: mentorIconImageURLString))
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .clipShape(Circle())
+                            
                             VStack(alignment: .leading){
-                                Text(mentorName).bold().foregroundColor(.black)
-                                Text("男性").font(.caption).foregroundColor(.black)
-                                Text("20代前半").font(.caption).foregroundColor(.black)
+                                Text(mentorName)
+                                    .bold()
+                                    .foregroundColor(.black)
+                                Text("男性")
+                                    .font(.caption)
+                                    .foregroundColor(.black)
+                                Text("20代前半")
+                                    .font(.caption)
+                                    .foregroundColor(.black)
                                 HStack{
                                     Text("機密保持契約(NDA)").foregroundColor(.black)
-                                    Image(systemName: "checkmark").foregroundColor(.green)
-                                }.font(.caption)
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.green)
+                                }
+                                .font(.caption)
                                 
                             }
                             Spacer()
                         }
-                    }.padding(.leading,16)
-                    Divider()
-                    PreLessonChatView(mentorName: mentorName, mentorUid: mentorUid, mentorIconImageURLString: mentorIconImageURLString, lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, preChatRoomData: preChatRoomData)
-                    LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
-                    EvaluationView()
-                    // AfterLessonView(allSelection: -1, clearitySelection: -1).pa
-                    VStack(alignment: .leading){
-                        HStack{
-                            Text("レッスン内容").bold()
-                            Spacer()
-                        }.padding(.leading, 16)
-                        HStack{
-                            Text(lessonContent)
-                            Spacer()
-                        }.padding(.leading, 16)
                     }
+                    .padding(.leading,16)
+                    
+                    Divider()
+                    PreLessonChatView(messageListData: MessageListData(lessonImage: lessonImageURLString, lessonName: lessonTitle, lessonContents: lessonContent, lessonBudgets: budgets, lessonID: lessonId, senderIconImage: mentorIconImageURLString, senderName: mentorName, senderUid: mentorUid, lastMessage: "", lastMessageDate: "", chatRoomData: preChatRoomData))
+                        .onAppear{
+                        FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", lessonId: lessonId, mentorUid: mentorUid) { preChatroomData in
+                            self.preChatRoomData = preChatroomData
+                        }
+                    }
+                }
+                LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
+                EvaluationView()
+                // AfterLessonView(allSelection: -1, clearitySelection: -1).pa
+                VStack(alignment: .leading){
+                    HStack{
+                        Text("レッスン内容")
+                            .bold()
+                        Spacer()
+                    }
+                    .padding(.leading, 16)
+                    HStack{
+                        Text(lessonContent)
+                        Spacer()
+                    }.padding(.leading, 16)
                 }
             }
-            if self.user.purchasedLesson.contains(lessonId) {
-                HStack(alignment: .bottom){
-                    Text("\(budgets)円/h").padding(.all,10).foregroundColor(.white).background(.black).cornerRadius(20).padding(.leading,16)
-                    Spacer()
-                    VStack{
-                        Divider()
-                        HStack{
-                            Image(systemName: "checkmark.circle.fill").foregroundColor(.green)
-                            Text("購入済み")
-                        }
-                        NavigationLink {
-                            ChatView(chatUserName: mentorName, chatUserUid: mentorUid, mentorIconImageURLString: mentorIconImageURLString, lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, chatData: chatroomData, messageListStyle: .normalChat)
-                        } label: {
-                            RichButton(buttonText: "やり取りをする", buttonImage: "bird.fill")
+            VStack(spacing: .zero){
+                GeometryReader { geometryProxy in
+                    Divider()
+                    HStack(alignment: .bottom){
+                        DismissButtonView()
+                            .padding(.leading, 16)
+                        
+                        Text("\(budgets)円/h")
+                            .foregroundColor(.white)
+                            .bold()
+                            .padding(.horizontal, 10)
+                            .frame(width: geometryProxy.size.width/3,height: 50)
+                            .background(.black)
+                            .cornerRadius(10)
+                            .padding(.leading,16)
+                        Spacer()
+                        if user.purchasedLesson.contains(lessonId) {
+                            VStack(spacing: .zero){
+                                NavigationLink {
+                                    ChatView(messageListData: MessageListData(lessonImage: lessonImageURLString, lessonName: lessonTitle, lessonContents: lessonContent, lessonBudgets: budgets, lessonID: lessonId, senderIconImage: mentorIconImageURLString, senderName: mentorName, senderUid: mentorUid, lastMessage: "", lastMessageDate: "", chatRoomData: chatroomData), chatRoomType: chatRoomType).onAppear{
+                                        chatRoomType.messageListStyle = .normalChat
+                                        chatRoomType.chatMode = .student
+                                    }
+                                } label: {
+                                    Text("やり取りする")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .frame(width: geometryProxy.size.width/3,height: 50)
+                                        .background(Color.customBlue)
+                                        .cornerRadius(10)
+                                        .padding(.trailing, 16)
+                                }.onAppear{
+                                    FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "Chat", lessonId: lessonId, mentorUid: mentorUid) { chatroomData in
+                                        self.chatroomData = chatroomData
+                                    }
+                                }
+                            }
+                        } else {
+                            VStack(spacing: .zero){
+                                NavigationLink {
+                                    PurchaseView(lessonId: lessonId, amount: budgets, lessonImageURLString: lessonImageURLString, lessonName: lessonTitle, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
+                                } label: {
+                                    Text("購入画面へ")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .frame(width:geometryProxy.size.width/3, height: 50)
+                                        .background(Color.customBlue)
+                                        .cornerRadius(10)
+                                        .padding(.trailing, 16)
+                                }
+                            }
                         }
                     }
-                }.background(.ultraThinMaterial).onAppear{
-                    FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "Chat", lessonId: lessonId, mentorUid: mentorUid) { chatroomData in
-                        self.chatroomData = chatroomData
-                    }
+                    .padding(.top,20)
+                    .background(.ultraThinMaterial)
                 }
-            }else{
-                HStack {
-                    Text("\(budgets)円/h").padding(.all,10).foregroundColor(.white).background(.green).cornerRadius(20).padding(.leading,16)
-                    Spacer()
-                    VStack{
-                        Divider()
-                        CheckoutView(model: MyBackendModel(), amount: budgets, lessonId: lessonId).frame(height: 100)
-                    }
-                }.background(.ultraThinMaterial)
+                .frame(height: 70)
+            }
+            .offset(y: self.underBarOffset)
+            .onAppear{
+                withAnimation(Animation.easeIn(duration: 0.5)) {
+                    underBarOffset = 0
+                }
             }
         }.onAppear{
             UITabBar.appearance().isHidden = true
-            // lessonIDはまだChatRoomがない際に、登録する情報に使う。ChatRoomが存在するときは使わない。
-            FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", lessonId: lessonId, mentorUid: mentorUid) { preChatRoom in
-                self.preChatRoomData = preChatRoom
-            }
-        }.navigationTitle("レッスン詳細").navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-
-struct OneClassDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        OneClassDetailView(lessonImageURLString: "", mentorIconImageURLString: "", lessonId: "", mentorName: "Rio", mentorUid: "", lessonTitle: "", lessonContent: "", budgets: 0).environmentObject(User())
+        }.navigationBarHidden(true)
     }
 }
 
@@ -119,15 +192,22 @@ struct EvaluationView:View {
         Divider()
         HStack{
             VStack(alignment: .leading){
-                Text("評価とレビュー").bold()
-                HStack{
-                    Text("総評価").font(.caption)
+                Text("評価とレビュー")
+                    .bold()
+                HStack(spacing: 3){
+                    Text("総評価")
+                        .font(.caption)
                     ForEach(0..<5){ _ in
-                        Image(systemName: "star.fill").resizable().frame(width: 20, height: 20).foregroundColor(.orange)
+                        Image(systemName: "star.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.orange)
                     }
                     Text("(3)")
-                }.padding(.leading, 16)
-            }.padding(.leading, 16)
+                }
+                .padding(.leading, 16)
+            }
+            .padding(.leading, 16)
             Spacer()
         }
         Divider()
@@ -142,24 +222,28 @@ enum QuestionNextScereen: String ,Identifiable {
 
 
 struct PreLessonChatView: View {
-    
-    let mentorName: String
-    let mentorUid: String
-    let mentorIconImageURLString: String
-    let lessonImageURLString: String
-    let lessonTitle: String
-    let preChatRoomData: ChatRoomData?
+    let messageListData: MessageListData
+    @ObservedObject var chatRoomType = ChatRoomType(chatMode: .student, messageListStyle: .beforePurchaseChat)
     
     var body: some View {
         VStack(alignment: .leading){
-            Text("*この講座は購入前に事前チャットする必要があります。").font(.caption).padding(.leading, 16)
+            Text("購入前チャット")
+                .bold()
+                .padding(.leading, 16)
+            Text("*この講座は購入前に事前チャットする必要があります。")
+                .font(.caption)
+                .padding(.leading, 16)
             NavigationLink {
-                ChatView(chatUserName: mentorName, chatUserUid: mentorUid, mentorIconImageURLString: mentorIconImageURLString, lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, chatData: preChatRoomData, messageListStyle: .beforePurchaseChat)
+                ChatView(messageListData: messageListData, chatRoomType: chatRoomType)
             } label: {
                 HStack{
-                    Text("購入前チャットはこちら").font(.system(size: 13)).foregroundColor(.blue.opacity(0.8)).bold()
+                    Text("購入前チャットはこちら")
+                        .font(.system(size: 13))
+                        .foregroundColor(Color.customBlue)
+                        .bold()
                     Spacer()
-                }.padding(.leading, 16)
+                }
+                .padding(.leading, 16)
             }
         }
     }
@@ -177,50 +261,65 @@ struct LessonQuestionView: View {
     let lessonId: String
     let mentorIconImageURLString: String
     let mentorName: String
-    
     var body: some View{
         VStack{
             Divider()
             VStack {
                 VStack(alignment: .leading){
                     HStack{
-                        Text("講座に関する質問").bold()
+                        Text("講座に関する質問")
+                            .bold()
                         Spacer()
                         if lessonQuestions.count != 0 {
                             Button {
-                                self.shouldOpenMoreQuestionScreen = true
+                                withAnimation {
+                                    shouldOpenMoreQuestionScreen = true
+                                }
                             } label: {
-                                Text("詳細を見る").font(.system(size: 13)).foregroundColor(.blue.opacity(0.8)).bold().padding(.trailing, 16)
+                                Text("詳細を見る")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(Color.customBlue)
+                                    .bold()
+                                    .padding(.trailing, 16)
                             }
                         }else{
                             Button {
-                                self.shouldOpenMakeQuestionScreen = true
+                                shouldOpenMakeQuestionScreen = true
                             } label: {
-                                Text("質問をする").font(.system(size: 13)).foregroundColor(.blue.opacity(0.8)).bold().padding(.trailing, 16)
+                                Text("質問をする")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.customBlue)
+                                    .bold()
+                                    .padding(.trailing, 16)
                             }
                         }
-                    }.padding(.leading,16)
+                    }
+                    .padding(.leading,16)
                     if lessonQuestions.count == 0 {
-                        Text("この講座にはまだ質問がありません。質問してみましょう。").font(.caption).padding(.leading, 16)
+                        Text("この講座にはまだ質問がありません。質問してみましょう。")
+                            .font(.caption)
+                            .padding(.leading, 16)
                     } else {
                         ForEach(lessonQuestions, id: \.self) { question in
                             HStack{
-                                Text("Q:").foregroundColor(.gray)
-                                Text(question.questionText).font(.caption)
+                                Text("Q:")
+                                    .foregroundColor(.gray)
+                                Text(question.questionText)
+                                    .font(.caption)
                             }
-                        }.padding(.leading,16)
+                        }
+                        .padding(.leading,16)
                     }
                 }
             }
         }
-        .fullScreenCover(isPresented: self.$shouldOpenMoreQuestionScreen, content: {
-            MoreQuestionView(questionRecords:lessonQuestions, mentorIcon: mentorIconImageURLString, mentorName: mentorName, lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId, dismiss: $shouldOpenMoreQuestionScreen)
+        .fullScreenCover(isPresented: $shouldOpenMoreQuestionScreen, content: {
+            MoreQuestionView(questionRecords: lessonQuestions, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName, lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId, dismiss: $shouldOpenMoreQuestionScreen).transition(.scale)
         })
-        .sheet(isPresented: self.$shouldOpenMakeQuestionScreen, content: {
-            MakeQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
-        })
-        .onAppear{
-            self.lessonQuestions = []
+        .sheet(isPresented: $shouldOpenMakeQuestionScreen, content: {
+            MakeQuestionView(lessonImageURLString: lessonImageURLString, lessonName: lessonTitle, mentorIconImageURLString: lessonImageURLString, mentorName: mentorName, lessonID: lessonId)
+        }).onAppear{
+            lessonQuestions = []
             SearchByAlgolia().searchQuestionData(keyword: lessonId) { result in
                 self.lessonQuestions.append(result)
             }
