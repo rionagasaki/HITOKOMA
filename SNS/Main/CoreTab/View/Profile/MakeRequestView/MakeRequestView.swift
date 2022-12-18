@@ -10,26 +10,30 @@ import PKHUD
 
 struct MakeRequestView: View {
     @State var value = ""
-    @State var requestTitle: String
-    @State var requestContents: String
+    @State var requestTitle: String = ""
+    @State var requestContents: String = ""
     @State var showImageModal:Bool = false
-    @State var requestImageURL:String?
-    @State var selectedDate: Date?
+    @State var requestImageURL:String? = ""
+    @State var selectedDate: Date? = Date()
     @State var numberPicker:Int = 1500
-    @State var period: String
+    @State var period: String = ""
     @State var shouldValidate: Bool = false
     @State var requestImage: UIImage?
-    @State var bigCategory: String
-    @State var selectedCategory: String
+    @State var bigCategory: String = ""
+    @State var selectedCategory: String = ""
     var dropDownList = ["PSO", "PFA", "AIR", "HOT"]
     var hourCategories = ["30分","60分","90分","120分","150分","180分"]
-
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading){
                 VStack(alignment: .leading){
-                    Text("Step. 1").bold().font(.system(size: 25)).foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
-                    Text("どんなことを教えて欲しいですか？").bold()
+                    Text("Step. 1")
+                        .bold()
+                        .font(.system(size: 25))
+                        .foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
+                    Text("どんなことを教えて欲しいですか？")
+                        .bold()
                     Menu {
                         selectCategory(bigCategory: "英語", detailCategories: englishCategories)
                         selectCategory(bigCategory: "IT", detailCategories: computerCategories)
@@ -39,8 +43,8 @@ struct MakeRequestView: View {
                     } label: {
                         VStack(spacing: 5){
                             HStack{
-                                Text(self.selectedCategory == "" ? "カテゴリー": self.selectedCategory)
-                                    .foregroundColor(self.selectedCategory == "" ? .gray: .black)
+                                Text(selectedCategory == "" ? "カテゴリー": selectedCategory)
+                                    .foregroundColor(selectedCategory == "" ? .gray: .black)
                                 Spacer()
                                 Image(systemName: "chevron.down")
                                     .foregroundColor(Color.customBlue)
@@ -49,36 +53,70 @@ struct MakeRequestView: View {
                             Rectangle()
                                 .fill(Color.customBlue)
                                 .frame(height: 2)
-                        }.padding(.vertical,16).padding(.trailing,20)
+                        }
+                        .padding(.vertical,16).padding(.trailing,20)
                     }
-                }.padding(.leading,20)
+                }
+                .padding(.leading,20)
                 
                 VStack(alignment: .leading){
-                    Text("Step. 2").bold().font(.system(size: 25)).foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
+                    Text("Step. 2")
+                        .bold()
+                        .font(.system(size: 25))
+                        .foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
                     Text("教わりたいことの詳細を教えてください。\n(画像は任意です。)").bold()
                     Button {
-                        self.showImageModal = true
+                        showImageModal = true
                     } label: {
-                        ZStack{
-                            Image("noImage").resizable().frame(width: 70, height: 70).clipShape(Circle())
-                        }.frame(width: UIScreen.main.bounds.width-40, height: 200).background(.gray.opacity(0.3)).background(.ultraThinMaterial)
+                        if let requestImage = requestImage  {
+                            Image(uiImage: requestImage)
+                                .resizable()
+                                .frame(height: 200)
+                                .scaledToFill()
+                        } else {
+                            Image("noImage")
+                                .resizable()
+                                .frame(width: 70, height: 70)
+                                .clipShape(Circle())
+                                .frame(width: UIScreen.main.bounds.width-40, height: 200)
+                                .background(.gray.opacity(0.3))
+                                .background(.ultraThinMaterial)
+                        }
                     }
                     Text("タイトル")
-                    TextField("タイトル", text: $requestTitle).padding(.all, 8).frame(width: UIScreen.main.bounds.width-40).overlay(RoundedRectangle(cornerRadius: 10).stroke(.black, lineWidth: 1))
+                    TextField("タイトル", text: $requestTitle)
+                        .padding(.all, 8)
+                        .frame(width: UIScreen.main.bounds.width-40)
+                        .overlay(RoundedRectangle(cornerRadius: 10)
+                            .stroke(.black, lineWidth: 1))
                     Text("詳細")
-                    TextEditor(text: $requestContents).frame(width: UIScreen.main.bounds.width-40, height: 200).overlay(RoundedRectangle(cornerRadius: 10).stroke(.black, lineWidth: 1))
-
-                }.padding(.leading,20).padding(.top, 25)
+                    TextEditor(text: $requestContents)
+                        .frame(width: UIScreen.main.bounds.width-40, height: 200)
+                        .overlay(RoundedRectangle(cornerRadius: 10).stroke(.black, lineWidth: 1))
+                    
+                }
+                .padding(.leading,20)
+                .padding(.top, 25)
+                
                 VStack(alignment: .leading){
-                    Text("Step. 3").bold().font(.system(size: 25)).foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
+                    Text("Step. 3")
+                        .bold()
+                        .font(.system(size: 25))
+                        .foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
                     Text("最後に条件を教えてください。").bold()
                     VStack{
                         HStack{
-                            Image(systemName: "checkmark.square.fill").resizable().foregroundColor(.green).frame(width:20, height:20)
+                            Image(systemName: "checkmark.square.fill")
+                                .resizable()
+                                .foregroundColor(.green)
+                                .frame(width:20, height:20)
                             Text("予算")
                             Spacer()
                             TextField("予算", value: $numberPicker, formatter: NumberFormatter())
-                                .keyboardType(.numberPad).padding(.all, 7).frame(width:200).overlay(RoundedRectangle(cornerRadius: 10).stroke(.gray, lineWidth: 1))
+                                .keyboardType(.numberPad)
+                                .padding(.all, 7)
+                                .frame(width:200)
+                                .overlay(RoundedRectangle(cornerRadius: 10).stroke(.gray, lineWidth: 1))
                             Text("円")
                         }.padding(.leading, 5)
                         HStack{
@@ -89,11 +127,14 @@ struct MakeRequestView: View {
                             Text("~ ").padding(.trailing,3)
                         }.padding(.leading, 5)
                         HStack{
-                            Image(systemName: "timer").resizable().foregroundColor(.orange).frame(width:20, height:20)
+                            Image(systemName: "timer")
+                                .resizable()
+                                .foregroundColor(.orange)
+                                .frame(width:20, height:20)
                             Text("時間")
                             Spacer()
                             Menu {
-                                ForEach(self.hourCategories, id: \.self) { hour in
+                                ForEach(hourCategories, id: \.self) { hour in
                                     Button {
                                         print("aaa")
                                         self.period = hour
@@ -104,7 +145,7 @@ struct MakeRequestView: View {
                             } label: {
                                 VStack(spacing: 5){
                                     HStack{
-                                        Text(self.period != "" ? self.period :"時間")
+                                        Text(period != "" ? period :"時間")
                                             .foregroundColor(value.isEmpty ? .gray : .black)
                                         Spacer()
                                         Image(systemName: "chevron.down")
@@ -116,29 +157,53 @@ struct MakeRequestView: View {
                                         .frame(height: 2)
                                 }.padding(.vertical,16)
                             }.frame(width:200)
-
-                        }.padding(.leading, 5)
-                    }.frame(width: UIScreen.main.bounds.width-40).padding(.all,7).background(.white.opacity(0.3)).background(.ultraThinMaterial).padding(.top,10)
-                }.padding(.leading,13).padding(.top, 25)
+                            
+                        }
+                        .padding(.leading, 5)
+                    }
+                    .frame(width: UIScreen.main.bounds.width-40)
+                    .padding(.all,7)
+                    .background(.white.opacity(0.3))
+                    .background(.ultraThinMaterial)
+                    .padding(.top,10)
+                }
+                .padding(.leading,13).padding(.top, 25)
             }
             VStack{
                 if shouldValidate {
                     Text("未入力の項目があります。").foregroundColor(.red)
                 }
                 Button {
-                    if requestTitle != "" && requestContents != "" && selectedDate != nil && period != "" && selectedCategory != ""{
-                        self.shouldValidate = false
-                        SetToFirestore().registerRequestInfoFirestore(requestName: requestTitle, requestContents: requestContents, bigCategory: bigCategory, selectedCategory: selectedCategory, requestImageURL: requestImageURL, budget: numberPicker, date: selectedDate!, period: period) {
-                            HUD.flash(.success, delay: 1.0)
+                    if requestTitle != ""
+                        && requestContents != ""
+                        && requestImage != nil
+                        && selectedDate != nil
+                        && period != ""
+                        && selectedCategory != "" {
+                        shouldValidate = false
+                        RegisterStorage().refisterImageToStorage(folderName: "RequestImage", profileImage: requestImage!){ imageURL in
+                            let requestImageURLString = imageURL.absoluteString
+                            SetToFirestore().registerRequestInfoFirestore(requestName: requestTitle, requestContents: requestContents, bigCategory: bigCategory, selectedCategory: selectedCategory, requestImageURL: requestImageURLString, budget: numberPicker, date: selectedDate!, period: period) {
+                                HUD.flash(.success, delay: 1.0)
+                            }
                         }
                     }else{
-                        self.shouldValidate = true
+                        shouldValidate = true
                     }
                 } label: {
-                    Text("リクエストする").foregroundColor(.white).font(.system(size: 17)).bold().frame(width: UIScreen.main.bounds.width-40, height: 50).background(Color.customBlue).cornerRadius(10)
+                    Text("確認画面へ")
+                        .foregroundColor(.white)
+                        .font(.system(size: 17))
+                        .bold()
+                        .frame(width: UIScreen.main.bounds.width-40, height: 50)
+                        .background(Color.customBlue)
+                        .cornerRadius(10)
                 }
-            }.padding(.top, 16)
-        }.navigationTitle("依頼を作成する").sheet(isPresented: $showImageModal) {
+            }
+            .padding(.top, 16)
+        }
+        .navigationTitle("依頼を作成する")
+        .sheet(isPresented: $showImageModal) {
             ImagePicker(sourceType: .photoLibrary,selectedImage: $requestImage)
         }
     }
@@ -147,7 +212,7 @@ struct MakeRequestView: View {
         Menu {
             ForEach(detailCategories, id: \.self) { category in
                 Button {
-                    self.selectedCategory = category
+                    selectedCategory = category
                     self.bigCategory = bigCategory
                 } label: {
                     Text(category)

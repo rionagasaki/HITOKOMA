@@ -16,18 +16,6 @@ struct ContentView: View {
     @State var selectedTab: Tab = .home
     @State var navigationTitle:String = ""
     @State var navigationStyle:Bool = true
-    @State var requestData: [RequestData] = []
-    @State var englishRequestData: [RequestData] = []
-    @State var computerRequestData: [RequestData] = []
-    @State var lawRequestData: [RequestData] = []
-    @State var financeRequestData: [RequestData] = []
-    @State var investmentRequestData: [RequestData] = []
-    @State var lessonData:[LessonData] = []
-    @State var englishLessonData: [LessonData] = []
-    @State var computerLessonData: [LessonData] = []
-    @State var lawLessonData:[LessonData] = []
-    @State var financeLessonData: [LessonData] = []
-    @State var investmentLessonData: [LessonData] = []
     @State var mentorMessages:[MessageListData] = []
     @State var studentsMessages:[MessageListData] = []
     @State var prePurchaseMentorMessages: [MessageListData] = []
@@ -48,8 +36,7 @@ struct ContentView: View {
             TabView(selection: $selectedTab){
                 NavigationView {
                     VStack{
-                        HomeView(requestData: requestData, requestEnglishData: englishRequestData, requestComputerData: computerRequestData, requestLawData: lawRequestData, requestFinanceData: financeRequestData, requestInvestmentData: investmentRequestData, lessonData: lessonData, lessonEnglishData: englishLessonData, lessonComputerData: computerLessonData, lessonLawData: lawLessonData, lessonFinanceData: financeLessonData, lessonInvestmentData: investmentLessonData
-                        )
+                        HomeView()
                         Divider()
                         CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
                     }.navigationBarTitleDisplayMode(.inline)
@@ -88,7 +75,6 @@ struct ContentView: View {
             }
         }.onAppear{
             self.app.isLoading = true
-            self.lessonData = []
             
             // MARK: User情報を取得
             FetchFromFirestore().fetchUserInfoFromFirestore { doc in
@@ -98,44 +84,6 @@ struct ContentView: View {
                 self.user.customerId = doc.customerId
                 self.user.profileImage = doc.profileImage
                 self.user.purchasedLesson =  doc.purchasedLessons
-            }
-            
-            // MARK: Request情報を取得、Categorize
-            FetchFromFirestore().fetchRequestInfoFromFirestore { request in
-                FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: request.requestUserUid) { userInfo in
-                    request.userImageIconURL = userInfo.profileImage
-                    request.username = userInfo.username
-                    requestData.append(request)
-                    let bigCategory = CategoryDetail(rawValue: request.bigCategory)
-                    switch bigCategory {
-                    case .english: self.englishRequestData.append(request)
-                    case .computer: self.computerRequestData.append(request)
-                    case .law: self.lawRequestData.append(request)
-                    case .finance: self.financeRequestData.append(request)
-                    case .investment: self.investmentRequestData.append(request)
-                    case .none:
-                        print("Error_NoCategory")
-                    }
-                }
-            }
-            // MARK: Lesson情報を取得、Categorize
-            FetchFromFirestore().fetchLessonInfoFromFirestore { lesson in
-                FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: lesson.mentorUid) { userInfo in
-                    lesson.userImageIconURLString = userInfo.profileImage
-                    lesson.username = userInfo.username
-                    lessonData.append(lesson)
-                    app.isLoading = false
-                    let bigCategory = CategoryDetail(rawValue: lesson.bigCategory)
-                    switch bigCategory {
-                    case .english: self.englishLessonData.append(lesson)
-                    case .computer: self.computerLessonData.append(lesson)
-                    case .law: self.lawLessonData.append(lesson)
-                    case .finance: self.financeLessonData.append(lesson)
-                    case .investment: self.investmentLessonData.append(lesson)
-                    case .none:
-                        print("Error_NoCategory")
-                    }
-                }
             }
             
             // MARK: Mentorモードの場合、自身の生徒とのチャット情報取得

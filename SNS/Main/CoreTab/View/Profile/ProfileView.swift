@@ -118,7 +118,7 @@ struct ProfileView: View {
                     try? Auth.auth().signOut()
                     self.appState.isLogin = false
                 } label: {
-                    Text("ログアウト").foregroundColor(.red).padding(.leading, 115)
+                    Text("ログアウト").foregroundColor(.red).frame(maxWidth: .infinity, alignment: .center)
                 }
             }.onAppear{
                 UITableView.appearance().backgroundColor = .clear

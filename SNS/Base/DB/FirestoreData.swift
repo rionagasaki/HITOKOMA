@@ -91,6 +91,8 @@ class RequestData: Identifiable {
     var requestUserUid: String
     var bigCategory: String
     var category: String
+    var period: String
+    var budget: Int
     var userImageIconURL: String = ""
     var username : String = ""
     init(document: QueryDocumentSnapshot){
@@ -101,6 +103,8 @@ class RequestData: Identifiable {
         self.requestImage = requestDic["requestImage"] as? [String] ?? []
         self.bigCategory = requestDic["bigCategory"] as? String ?? ""
         self.category = requestDic["selectedCategory"] as? String ?? ""
+        self.period = requestDic["period"] as? String ?? ""
+        self.budget = requestDic["budget"] as? Int ?? 0
         self.requestUserUid = requestDic["menteeUid"] as? String ?? ""
     }
     
@@ -112,6 +116,8 @@ class RequestData: Identifiable {
         self.requestImage = requestDic?["requestImage"] as? [String] ?? []
         self.bigCategory = requestDic?["bigCategory"] as? String ?? ""
         self.category = requestDic?["selectedCategory"] as? String ?? ""
+        self.period = requestDic?["period"] as? String ?? ""
+        self.budget = requestDic?["budget"] as? Int ?? 0
         self.requestUserUid = requestDic?["menteeUid"] as? String ?? ""
     }
 }

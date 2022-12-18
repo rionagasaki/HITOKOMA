@@ -19,11 +19,9 @@ struct OneClassView: View {
             HStack(alignment: .top){
                     VStack(alignment: .leading, spacing: 0){
                         WebImage(url: URL(string: lessonImageURLString)).resizable()
-                            .placeholder(Image(systemName: "photo"))
                             .placeholder {
                                 Rectangle().frame(width: 120, height: 90).foregroundColor(.customLightGray)
                                 }
-                            .indicator(.activity(style: .large))
                             .transition(.flipFromBottom(duration: 10))
                             .scaledToFill()
                             .frame(width: 120, height: 90)

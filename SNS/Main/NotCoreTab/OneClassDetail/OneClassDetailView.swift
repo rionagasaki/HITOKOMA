@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import FirebaseFunctions
 import SDWebImageSwiftUI
 
 struct OneClassDetailView: View {
@@ -33,38 +32,67 @@ struct OneClassDetailView: View {
             ScrollView {
                 VStack{
                     ZStack(alignment: .topLeading){
-                        WebImage(url: URL(string: lessonImageURLString)).resizable().frame(width: UIScreen.main.bounds.width, height: 250)
-                        if self.user.purchasedLesson.contains(lessonId) {
+                        WebImage(url: URL(string: lessonImageURLString))
+                            .resizable()
+                            .frame(width: UIScreen.main.bounds.width, height: 250)
+                        
+                        if user.purchasedLesson.contains(lessonId) {
                             HStack(spacing:3){
                                 Image(systemName: "checkmark.circle.fill").foregroundColor(.green).background(.white).clipShape(Circle())
-                                Text("やり取り中").fontWeight(.semibold).font(.system(size: 15)).foregroundColor(.white)
-                            }.padding().background(LinearGradient(colors: [.customRed1, .customRed2], startPoint: .topLeading, endPoint: .bottomTrailing)).font(.system(size: 15)).cornerRadius(7).padding(.top, 5).padding(.leading, 5).offset(x: purchasedLabelOffset).onAppear{
+                                Text("やり取り中")
+                                    .fontWeight(.semibold)
+                                    .font(.system(size: 15))
+                                    .foregroundColor(.white)
+                                
+                            }.padding().background(LinearGradient(colors: [.customRed1, .customRed2], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                .font(.system(size: 15))
+                                .cornerRadius(7)
+                                .padding(.top, 5)
+                                .padding(.leading, 5)
+                                .offset(x: purchasedLabelOffset)
+                                .onAppear{
                                 withAnimation(Animation.easeIn(duration: 0.5)){
-                                    self.purchasedLabelOffset = 0
+                                    purchasedLabelOffset = 0
                                 }
                             }
                         }
                     }
-                    Text(lessonTitle).font(.system(size: 25)).fontWeight(.bold)
+                    Text(lessonTitle)
+                        .font(.system(size: 25))
+                        .fontWeight(.bold)
                     Divider()
                     NavigationLink {
                         UserProfileView(username: mentorName, userProfileImageURL: mentorIconImageURLString, usersLessonData: [], usersRequestData: [])
                     } label: {
                         HStack{
-                            WebImage(url: URL(string: mentorIconImageURLString)).resizable().frame(width: 40, height: 40).clipShape(Circle())
+                            WebImage(url: URL(string: mentorIconImageURLString))
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .clipShape(Circle())
+                            
                             VStack(alignment: .leading){
-                                Text(mentorName).bold().foregroundColor(.black)
-                                Text("男性").font(.caption).foregroundColor(.black)
-                                Text("20代前半").font(.caption).foregroundColor(.black)
+                                Text(mentorName)
+                                    .bold()
+                                    .foregroundColor(.black)
+                                Text("男性")
+                                    .font(.caption)
+                                    .foregroundColor(.black)
+                                Text("20代前半")
+                                    .font(.caption)
+                                    .foregroundColor(.black)
                                 HStack{
                                     Text("機密保持契約(NDA)").foregroundColor(.black)
-                                    Image(systemName: "checkmark").foregroundColor(.green)
-                                }.font(.caption)
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.green)
+                                }
+                                .font(.caption)
                                 
                             }
                             Spacer()
                         }
-                    }.padding(.leading,16)
+                    }
+                    .padding(.leading,16)
+                    
                     Divider()
                     PreLessonChatView(messageListData: MessageListData(lessonImage: lessonImageURLString, lessonName: lessonTitle, lessonContents: lessonContent, lessonBudgets: budgets, lessonID: lessonId, senderIconImage: mentorIconImageURLString, senderName: mentorName, senderUid: mentorUid, lastMessage: "", lastMessageDate: "", chatRoomData: preChatRoomData))
                         .onAppear{
@@ -78,9 +106,11 @@ struct OneClassDetailView: View {
                 // AfterLessonView(allSelection: -1, clearitySelection: -1).pa
                 VStack(alignment: .leading){
                     HStack{
-                        Text("レッスン内容").bold()
+                        Text("レッスン内容")
+                            .bold()
                         Spacer()
-                    }.padding(.leading, 16)
+                    }
+                    .padding(.leading, 16)
                     HStack{
                         Text(lessonContent)
                         Spacer()
@@ -91,10 +121,19 @@ struct OneClassDetailView: View {
                 GeometryReader { geometryProxy in
                     Divider()
                     HStack(alignment: .bottom){
-                        DismissButtonView().padding(.leading, 16)
-                        Text("\(budgets)円/h").foregroundColor(.white).bold().padding(.horizontal, 10).frame(width: geometryProxy.size.width/3,height: 50).background(.black).cornerRadius(10).padding(.leading,16)
+                        DismissButtonView()
+                            .padding(.leading, 16)
+                        
+                        Text("\(budgets)円/h")
+                            .foregroundColor(.white)
+                            .bold()
+                            .padding(.horizontal, 10)
+                            .frame(width: geometryProxy.size.width/3,height: 50)
+                            .background(.black)
+                            .cornerRadius(10)
+                            .padding(.leading,16)
                         Spacer()
-                        if self.user.purchasedLesson.contains(lessonId) {
+                        if user.purchasedLesson.contains(lessonId) {
                             VStack(spacing: .zero){
                                 NavigationLink {
                                     ChatView(messageListData: MessageListData(lessonImage: lessonImageURLString, lessonName: lessonTitle, lessonContents: lessonContent, lessonBudgets: budgets, lessonID: lessonId, senderIconImage: mentorIconImageURLString, senderName: mentorName, senderUid: mentorUid, lastMessage: "", lastMessageDate: "", chatRoomData: chatroomData), chatRoomType: chatRoomType).onAppear{
@@ -102,7 +141,13 @@ struct OneClassDetailView: View {
                                         chatRoomType.chatMode = .student
                                     }
                                 } label: {
-                                    Text("やり取りする").foregroundColor(.white).bold().frame(width: geometryProxy.size.width/3,height: 50).background(Color.customBlue).cornerRadius(10).padding(.trailing, 16)
+                                    Text("やり取りする")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .frame(width: geometryProxy.size.width/3,height: 50)
+                                        .background(Color.customBlue)
+                                        .cornerRadius(10)
+                                        .padding(.trailing, 16)
                                 }.onAppear{
                                     FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "Chat", lessonId: lessonId, mentorUid: mentorUid) { chatroomData in
                                         self.chatroomData = chatroomData
@@ -114,13 +159,24 @@ struct OneClassDetailView: View {
                                 NavigationLink {
                                     PurchaseView(lessonId: lessonId, amount: budgets, lessonImageURLString: lessonImageURLString, lessonName: lessonTitle, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
                                 } label: {
-                                    Text("購入画面へ").foregroundColor(.white).bold().frame(width:geometryProxy.size.width/3, height: 50).background(Color.customBlue).cornerRadius(10).padding(.trailing, 16)
+                                    Text("購入画面へ")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .frame(width:geometryProxy.size.width/3, height: 50)
+                                        .background(Color.customBlue)
+                                        .cornerRadius(10)
+                                        .padding(.trailing, 16)
                                 }
                             }
                         }
-                    }.padding(.top,20).background(.ultraThinMaterial)
-                }.frame(height: 70)
-            }.offset(y: self.underBarOffset).onAppear{
+                    }
+                    .padding(.top,20)
+                    .background(.ultraThinMaterial)
+                }
+                .frame(height: 70)
+            }
+            .offset(y: self.underBarOffset)
+            .onAppear{
                 withAnimation(Animation.easeIn(duration: 0.5)) {
                     underBarOffset = 0
                 }
@@ -136,15 +192,22 @@ struct EvaluationView:View {
         Divider()
         HStack{
             VStack(alignment: .leading){
-                Text("評価とレビュー").bold()
+                Text("評価とレビュー")
+                    .bold()
                 HStack(spacing: 3){
-                    Text("総評価").font(.caption)
+                    Text("総評価")
+                        .font(.caption)
                     ForEach(0..<5){ _ in
-                        Image(systemName: "star.fill").resizable().frame(width: 20, height: 20).foregroundColor(.orange)
+                        Image(systemName: "star.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .foregroundColor(.orange)
                     }
                     Text("(3)")
-                }.padding(.leading, 16)
-            }.padding(.leading, 16)
+                }
+                .padding(.leading, 16)
+            }
+            .padding(.leading, 16)
             Spacer()
         }
         Divider()
@@ -164,15 +227,23 @@ struct PreLessonChatView: View {
     
     var body: some View {
         VStack(alignment: .leading){
-            Text("購入前チャット").bold().padding(.leading, 16)
-            Text("*この講座は購入前に事前チャットする必要があります。").font(.caption).padding(.leading, 16)
+            Text("購入前チャット")
+                .bold()
+                .padding(.leading, 16)
+            Text("*この講座は購入前に事前チャットする必要があります。")
+                .font(.caption)
+                .padding(.leading, 16)
             NavigationLink {
                 ChatView(messageListData: messageListData, chatRoomType: chatRoomType)
             } label: {
                 HStack{
-                    Text("購入前チャットはこちら").font(.system(size: 13)).foregroundColor(Color.customBlue).bold()
+                    Text("購入前チャットはこちら")
+                        .font(.system(size: 13))
+                        .foregroundColor(Color.customBlue)
+                        .bold()
                     Spacer()
-                }.padding(.leading, 16)
+                }
+                .padding(.leading, 16)
             }
         }
     }
@@ -196,44 +267,59 @@ struct LessonQuestionView: View {
             VStack {
                 VStack(alignment: .leading){
                     HStack{
-                        Text("講座に関する質問").bold()
+                        Text("講座に関する質問")
+                            .bold()
                         Spacer()
                         if lessonQuestions.count != 0 {
                             Button {
                                 withAnimation {
-                                    self.shouldOpenMoreQuestionScreen = true
+                                    shouldOpenMoreQuestionScreen = true
                                 }
                             } label: {
-                                Text("詳細を見る").font(.system(size: 13)).foregroundColor(Color.customBlue).bold().padding(.trailing, 16)
+                                Text("詳細を見る")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(Color.customBlue)
+                                    .bold()
+                                    .padding(.trailing, 16)
                             }
                         }else{
                             Button {
-                                self.shouldOpenMakeQuestionScreen = true
+                                shouldOpenMakeQuestionScreen = true
                             } label: {
-                                Text("質問をする").font(.system(size: 13)).foregroundColor(.customBlue).bold().padding(.trailing, 16)
+                                Text("質問をする")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(.customBlue)
+                                    .bold()
+                                    .padding(.trailing, 16)
                             }
                         }
-                    }.padding(.leading,16)
+                    }
+                    .padding(.leading,16)
                     if lessonQuestions.count == 0 {
-                        Text("この講座にはまだ質問がありません。質問してみましょう。").font(.caption).padding(.leading, 16)
+                        Text("この講座にはまだ質問がありません。質問してみましょう。")
+                            .font(.caption)
+                            .padding(.leading, 16)
                     } else {
                         ForEach(lessonQuestions, id: \.self) { question in
                             HStack{
-                                Text("Q:").foregroundColor(.gray)
-                                Text(question.questionText).font(.caption)
+                                Text("Q:")
+                                    .foregroundColor(.gray)
+                                Text(question.questionText)
+                                    .font(.caption)
                             }
-                        }.padding(.leading,16)
+                        }
+                        .padding(.leading,16)
                     }
                 }
             }
         }
-        .fullScreenCover(isPresented: self.$shouldOpenMoreQuestionScreen, content: {
+        .fullScreenCover(isPresented: $shouldOpenMoreQuestionScreen, content: {
             MoreQuestionView(questionRecords: lessonQuestions, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName, lessonImageURL: lessonImageURLString, lessonTitle: lessonTitle, lessonID: lessonId, dismiss: $shouldOpenMoreQuestionScreen).transition(.scale)
         })
-        .sheet(isPresented: self.$shouldOpenMakeQuestionScreen, content: {
+        .sheet(isPresented: $shouldOpenMakeQuestionScreen, content: {
             MakeQuestionView(lessonImageURLString: lessonImageURLString, lessonName: lessonTitle, mentorIconImageURLString: lessonImageURLString, mentorName: mentorName, lessonID: lessonId)
         }).onAppear{
-            self.lessonQuestions = []
+            lessonQuestions = []
             SearchByAlgolia().searchQuestionData(keyword: lessonId) { result in
                 self.lessonQuestions.append(result)
             }

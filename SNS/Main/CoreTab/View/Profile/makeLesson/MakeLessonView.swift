@@ -10,17 +10,12 @@ import FirebaseFirestore
 import PKHUD
 
 struct MakeLessonView: View {
-    
-    @State var lessonImage: UIImage?
-    @State var lessonImageURLString: String = ""
-    @State var lessonName: String = ""
-    @State var lessonContent: String = ""
+
+    @StateObject var viewModel = MakeLessonViewModel()
     @State var showingImagePicker = false
     @State var period: String = ""
-    @State var budget = 0
     @State var selectedDate = Date()
-    @State var bigCategory: String = ""
-    @State var lessonCategory: String = ""
+    
     var hourCategories = ["30分","60分","90分","120分","150分","180分"]
     
     var body: some View {
@@ -30,9 +25,9 @@ struct MakeLessonView: View {
                     Text("Step. 1").bold().font(.system(size: 25)).foregroundColor(.init(uiColor: .darkGray).opacity(0.8)).padding(.leading,10)
                     Text("レッスンの基本情報を記述してください。").bold().padding(.leading,10)
                     VStack{
-                        if lessonImage == nil {
+                        if viewModel.lessonImage == nil {
                             Button {
-                                self.showingImagePicker = true
+                                showingImagePicker = true
                             } label: {
                                 ZStack{
                                     Image("noImage").resizable().frame(width: 100, height:100).clipShape(Circle())
@@ -40,9 +35,9 @@ struct MakeLessonView: View {
                             }
                         }else{
                             Button {
-                                self.showingImagePicker = true
+                                showingImagePicker = true
                             } label: {
-                                    Image(uiImage: lessonImage!).resizable().frame(width: UIScreen.main.bounds.width, height:300 ).background(.white.opacity(0.1)).background(.ultraThinMaterial).overlay(RoundedRectangle(cornerRadius: 0).stroke(.gray.opacity(0.6), lineWidth: 0.5)).shadow(radius: 1)
+                                Image(uiImage: viewModel.lessonImage!).resizable().frame(width: UIScreen.main.bounds.width, height:300 ).background(.white.opacity(0.1)).background(.ultraThinMaterial).overlay(RoundedRectangle(cornerRadius: 0).stroke(.gray.opacity(0.6), lineWidth: 0.5)).shadow(radius: 1)
                             }
                         }
                     }.frame(width: UIScreen.main.bounds.width ,height: 300)
@@ -61,8 +56,8 @@ struct MakeLessonView: View {
                         } label: {
                             VStack(spacing: 5){
                                 HStack{
-                                    Text(self.lessonCategory != "" ? self.lessonCategory :"カテゴリー")
-                                        .foregroundColor(self.lessonCategory != "" ? .black: .gray)
+                                    Text(viewModel.lessonCategory != "" ? viewModel.lessonCategory :"カテゴリー")
+                                        .foregroundColor(viewModel.lessonCategory != "" ? .black: .gray)
                                     Spacer()
                                     Image(systemName: "chevron.down")
                                         .foregroundColor(Color.customBlue)
@@ -74,7 +69,7 @@ struct MakeLessonView: View {
                             }.padding(.vertical,16)
                         }.padding(.trailing,16).frame(width:200)
                     }
-                    TextField("レッスンタイトル", text: $lessonName).padding().frame(width: UIScreen.main.bounds.width-30, height:50).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2)).padding(.bottom, 10).padding(.leading,10)
+                    TextField("レッスンタイトル", text: $viewModel.lessonName).padding().frame(width: UIScreen.main.bounds.width-30, height:50).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2)).padding(.bottom, 10).padding(.leading,10)
                     Text("Step. 2").bold().font(.system(size: 25)).foregroundColor(.init(uiColor: .darkGray).opacity(0.8)).padding(.leading,10).padding(.top, 16)
                     Text("レッスンの値段、時間を教えてください。").bold().padding(.leading,10)
                     VStack{
@@ -82,7 +77,7 @@ struct MakeLessonView: View {
                             Image(systemName: "checkmark.square.fill").resizable().foregroundColor(.green).frame(width:20, height:20)
                             Text("予算")
                             Spacer()
-                            TextField("予算", value: $budget, formatter: NumberFormatter())
+                            TextField("予算", value: $viewModel.budget, formatter: NumberFormatter())
                                 .keyboardType(.numberPad).padding(.all, 7).frame(width:200).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2))
                             Text("円")
                         }.padding(.horizontal,10)
@@ -94,8 +89,7 @@ struct MakeLessonView: View {
                         Menu {
                             ForEach(self.hourCategories, id: \.self) { hour in
                                 Button {
-                                    print("aaa")
-                                    self.period = hour
+                                    period = hour
                                 } label: {
                                     Text(hour)
                                 }
@@ -103,7 +97,7 @@ struct MakeLessonView: View {
                         } label: {
                             VStack(spacing: 5){
                                 HStack{
-                                    Text(self.period != "" ? self.period :"時間")
+                                    Text(period != "" ? period :"時間")
                                         .foregroundColor(.black)
                                     Spacer()
                                     Image(systemName: "chevron.down")
@@ -120,25 +114,15 @@ struct MakeLessonView: View {
                 VStack(alignment: .leading){
                     Text("Step. 3").bold().font(.system(size: 25)).foregroundColor(.init(uiColor: .darkGray).opacity(0.8)).padding(.top,16)
                     Text("レッスンの詳細を記述してください。").bold()
-                    TextEditor(text: $lessonContent).padding().frame(width: UIScreen.main.bounds.width-30, height:500).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2)).padding(.top, 10)
+                    TextEditor(text: $viewModel.lessonContent).padding().frame(width: UIScreen.main.bounds.width-30, height:500).cornerRadius(10).overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2)).padding(.top, 10)
                 }
                 Spacer()
             }
         }.navigationTitle("ひとこまを作成する").navigationBarTitleDisplayMode(.inline).sheet(isPresented: $showingImagePicker) {
-            ImagePicker(sourceType: .photoLibrary ,selectedImage: $lessonImage)
+            ImagePicker(sourceType: .photoLibrary ,selectedImage: $viewModel.lessonImage)
         }
         Button {
-            // 危ない
-            if lessonName != "" && lessonContent != "" && lessonImage != nil && lessonCategory != ""  && period != ""{
-                RegisterStorage().refisterImageToStorage(folderName: "UserProfile", profileImage: self.lessonImage!){ imageURL in
-                    let lessonImageURLString = imageURL.absoluteString
-                    SetToFirestore().registerLessonInfoFirestore(lessonName: lessonName, lessonContents: lessonContent, lessonImageURLString: lessonImageURLString, bigCategory: bigCategory, lessonCategory: lessonCategory, budget: budget, period: period){ lessonId in
-                        UpdateFirestore().updateUsersMakeLesson(lessonId: lessonId){
-                            HUD.flash(.success, delay: 1.0)
-                        }
-                    }
-                }
-            }
+            
         } label: {
             Text("作成する").foregroundColor(.white).font(.system(size: 17)).bold().frame(width: UIScreen.main.bounds.width-40, height: 50).background(Color.customBlue).cornerRadius(10)
         }.frame(width: UIScreen.main.bounds.width, height: 70).background(.ultraThinMaterial)
@@ -148,8 +132,8 @@ struct MakeLessonView: View {
         Menu {
             ForEach(detailCategories, id: \.self) { category in
                 Button {
-                    self.lessonCategory = category
-                    self.bigCategory = bigCategory
+                    viewModel.lessonCategory = category
+                    viewModel.bigCategory = bigCategory
                 } label: {
                     Text(category)
                 }

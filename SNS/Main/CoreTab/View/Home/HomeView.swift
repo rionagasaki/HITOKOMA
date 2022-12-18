@@ -16,19 +16,6 @@ struct HomeView:View{
     @EnvironmentObject var app: AppState
     @State private var selection = 1
     @State private var items = ["レッスン","ホーム","リクエスト"]
-    @State var searchWord: String = ""
-    let requestData: [RequestData]
-    let requestEnglishData: [RequestData]
-    let requestComputerData: [RequestData]
-    let requestLawData: [RequestData]
-    let requestFinanceData: [RequestData]
-    let requestInvestmentData: [RequestData]
-    let lessonData: [LessonData]
-    let lessonEnglishData: [LessonData]
-    let lessonComputerData: [LessonData]
-    let lessonLawData: [LessonData]
-    let lessonFinanceData: [LessonData]
-    let lessonInvestmentData: [LessonData]
     
     var body: some View {
         VStack(spacing: .zero){
@@ -39,12 +26,14 @@ struct HomeView:View{
                     if index == 0 {
                         Text("aa")
                     }else if index == 1{
-                        MainHomeView(lessonData: lessonData, lessonEnglishData: lessonEnglishData, lessonComputerData: lessonComputerData, lessonLawData: lessonLawData, lessonFinanceData: lessonFinanceData, lessonInvestmentData: lessonInvestmentData)
+                        MainHomeView()
                     }else if index == 2{
-                        RequestHomeView(requestData: requestData, requestEnglishData: requestEnglishData, requestComputerData: requestComputerData, requestLawData: requestLawData, requestFinanceData: requestFinanceData, requestInvestmentData: requestInvestmentData)
+                        RequestHomeView()
                     }
                 }
-            }.padding(.top, 16).tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            }
+            .padding(.top, 16)
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }
     }
 }
@@ -52,9 +41,9 @@ struct HomeView:View{
 struct CustomScrollView: View {
     let menus = ["レッスン","ホーム","リクエスト"]
     @Binding var selection: Int
+    @State var openNotification: Bool = false
+    
     private let tabButtonSize: CGSize = CGSize(width: 100.0, height: 44.0)
-    
-    
     private func spacerWidth(_ viewOriginX: CGFloat) -> CGFloat {
         return (UIScreen.main.bounds.width - (viewOriginX * 2) - tabButtonSize.width) / 2
     }
@@ -105,6 +94,7 @@ struct CustomScrollView: View {
                 }
             }
             Button {
+                openNotification = true
             } label: {
                 Image(systemName: "bell.fill")
                     .resizable()
@@ -112,12 +102,16 @@ struct CustomScrollView: View {
                     .frame(width: 24.0, height: 24.0)
                     .foregroundColor(.black)
             }.padding(.trailing,16)
-        }.background(.ultraThinMaterial)
+        }
+        .background(.ultraThinMaterial)
+        .fullScreenCover(isPresented: $openNotification) {
+            NotificationView()
+        }
     }
 }
 
 struct HomeView_Preview: PreviewProvider {
     static var previews: some View {
-        HomeView(requestData: [], requestEnglishData: [], requestComputerData: [], requestLawData: [], requestFinanceData: [], requestInvestmentData: [], lessonData: [], lessonEnglishData: [], lessonComputerData: [], lessonLawData: [], lessonFinanceData: [], lessonInvestmentData: [])
+        HomeView()
     }
 }

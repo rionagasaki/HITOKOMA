@@ -9,29 +9,27 @@ import SwiftUI
 
 struct SettingNotificationView: View {
     var body: some View {
-        ZStack{
-            VStack(alignment:.leading ,spacing: 20){
-                Circle().size(width: 200, height: 200).blur(radius: 80).foregroundColor(.yellow)
-                HStack{
-                    Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.blue).padding(.top,-120)
-                    Circle().size(width: 200, height: 200).blur(radius: 40).foregroundColor(.orange).padding(.top,30)
-                }
-                Circle().size(width: 200, height: 200).blur(radius: 100).foregroundColor(.pink)
-            }
+        ZStack(alignment: .bottomLeading){
             ScrollView {
                 VStack{
+                    Text("🔔通知設定").font(.system(size: 25)).bold().frame(maxWidth: .infinity, alignment: .leading).padding(.leading, 16)
+                    
                     VStack{
-                        Image(systemName: "bell.fill").resizable().scaledToFit().frame(width:100, height: 50).foregroundStyle(LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing))
-                        Text("通知設定の手順は以下の通りです。")
-                    }.frame(width: UIScreen.main.bounds.width-100, height: 300).background(.white.opacity(0.1)).background(.ultraThinMaterial).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray.opacity(0.6), lineWidth: 0.5)).shadow(radius: 1)
-                    Button {
-                        print("aaaa")
-                    } label: {
-                        Text("設定を開く").bold().foregroundColor(.white)
-                    }.frame(width:UIScreen.main.bounds.width-40, height: 40).background(.blue).cornerRadius(10).padding(.horizontal,20).padding(.top, 16)
-                }.navigationTitle("通知設定").navigationBarTitleDisplayMode(.inline)
+                        Text("通知変更").fontWeight(.light).font(.system(size: 23)).padding(.top, 20)
+                        Text("講座の受講情報、メッセージ情報のために、プッシュ通知の設定をオンにしてください。").fontWeight(.light).font(.system(size: 14)).padding(.horizontal, 16).padding(.top, 5)
+                        
+                        Button {
+                            if let url = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(url) {
+                               UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                            }
+                        } label: {
+                            Text("設定を開く").foregroundColor(.white).font(.system(size: 17)).bold().frame(width: UIScreen.main.bounds.width-40, height: 50).background(Color.customBlue).cornerRadius(10).padding(.top, 10).padding(.horizontal,10).padding(.bottom, 20)
+                        }
+                    }.background(.white)
+                }
             }
-        }
+            DismissButtonView().padding(.leading, 40).padding(.bottom, 40)
+        }.background(.ultraThinMaterial)
     }
 }
 
