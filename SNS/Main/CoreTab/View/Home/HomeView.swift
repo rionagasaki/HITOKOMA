@@ -24,11 +24,11 @@ struct HomeView:View{
             TabView(selection: $selection) {
                 ForEach(0..<3, id: \.self){ index in
                     if index == 0 {
-                        Text("aa")
+                        LessonHomeView()
                     }else if index == 1{
                         MainHomeView()
                     }else if index == 2{
-                        RequestHomeView()
+                       RequestHomeView()
                     }
                 }
             }

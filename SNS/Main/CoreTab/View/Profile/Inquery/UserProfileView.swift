@@ -21,7 +21,7 @@ struct UserProfileView: View {
             VStack(alignment: .leading, spacing: .zero){
                 UserBaseProfileView(userProfileImageURL: userProfileImageURL, username: username)
                 Divider().padding(.bottom, 10)
-                Text("ここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキスト").font(.caption).padding(.horizontal,16)
+                Text("ここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テO紹介テキスト").font(.caption).padding(.horizontal,16)
                 Divider().padding(.vertical, 10)
                 UserSubBaseProfileView()
                 Spacer()
@@ -60,9 +60,14 @@ struct UserBaseProfileView: View {
 
 struct UserSubBaseProfileView: View {
     var body: some View{
-        Text("得意分野").font(.system(size: 18)).bold().padding(.leading, 16)
-        Divider().padding(.vertical, 10)
-        Text("経歴・資格等").font(.system(size: 18)).bold().padding(.leading, 16)
+        Text("得意分野")
+            .font(.system(size: 18))
+            .bold()
+            .padding(.leading, 16)
+        Divider()
+            .padding(.vertical, 10)
+        Text("経歴・資格等")
+            .font(.system(size: 18)).bold().padding(.leading, 16)
         Divider().padding(.vertical, 10)
         Text("公開済みのレッスン").font(.system(size: 18)).bold().padding(.leading, 16)
         Divider().padding(.vertical, 10)

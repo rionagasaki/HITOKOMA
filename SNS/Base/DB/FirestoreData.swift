@@ -139,7 +139,10 @@ class ChatRoomData: Identifiable{
     init(document: QueryDocumentSnapshot){
         self.chatroomId = document.documentID
         let messageDic = document.data()
-        self.lessonId = messageDic["lessonId"] as? String ?? ""
+        self.lessonId = messageDic["lessonId"] as? String ?? {
+           assertionFailure("String に落とし込めませんでした。")
+            return ""
+        }()
         self.mentorUid = messageDic["mentorUid"] as? String ?? ""
         self.studentUid = messageDic["studentUid"] as? String ?? ""
         self.lastMessageText = messageDic["lastMessageText"] as? String ?? ""

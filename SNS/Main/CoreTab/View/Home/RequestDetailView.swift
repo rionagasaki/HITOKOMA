@@ -27,43 +27,61 @@ struct RequestDetailView: View {
                     .indexViewStyle(.page(backgroundDisplayMode: .never))
                     .frame(height: 250)
                     
-                    HStack{
-                        WebImage(url: URL(string: request.userImageIconURL))
-                            .resizable()
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
-                        
-                        Text(request.username)
-                            .foregroundColor(.black)
-                            .font(.system(size: 15))
-                        Spacer()
-                        Text("2022/11/7 13:00に作成")
-                            .fontWeight(.light)
-                            .foregroundColor(.init(uiColor: .lightGray))
-                            .font(.system(size: 12))
-                            .padding(.trailing, 16)
-                    }
-                    .padding(.leading, 16)
-                    
-                    VStack(alignment: .center, spacing: .zero){
+                    VStack(alignment: .leading, spacing: .zero){
                         Text(request.requestName)
                             .bold()
                             .foregroundColor(.black)
                             .font(.system(size: 25))
                             .padding(.horizontal,8)
+                            .padding(.bottom, 8)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                        Divider()
+                        
+                        HStack{
+                            WebImage(url: URL(string: request.userImageIconURL))
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                                .clipShape(Circle())
+                            
+                            Text(request.username)
+                                .bold()
+                                .foregroundColor(.black)
+                            Spacer()
+                            Text("2022/11/7 13:00に作成")
+                                .fontWeight(.light)
+                                .foregroundColor(.init(uiColor: .lightGray))
+                                .font(.system(size: 12))
+                                .padding(.trailing, 16)
+                        }
+                        .padding(.leading, 16)
+                        .padding(.vertical, 8)
+                        
+                        Divider()
+                        
+                        Text("希望条件")
+                            .bold()
+                            .padding(.leading, 16)
+                            .padding(.top, 8)
                         
                         RequestInfoView(request: request)
-                        
+                            .padding()
+                        Divider()
+                        Text("質問内容")
+                            .bold()
+                            .padding(.leading, 16)
+                            .padding(.top, 8)
                         Text(request.requestContent)
                             .foregroundColor(.black.opacity(0.8))
                             .font(.system(size: 15))
-                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.top, 16)
+                            .padding(.bottom, 8)
                     }
                     Spacer()
                 }
                 
             }.sheet(isPresented: $shouldShowModal) {
-                AdjustmentView()
+                SuggestOnRequestView(viewModel: SuggestOnRequestViewModel(requestData: request))
             }
             Button {
                 self.shouldShowModal = true
@@ -88,10 +106,10 @@ struct RequestInfoView:View {
             requestInfoFactory(systemImage: "calendar.badge.clock.rtl", title: "日時:", info: request.period, color: .customBlue)
             requestInfoFactory(systemImage: "timer", title: "時間:", info: request.period, color: .customRed2)
         }
-        .frame(width: UIScreen.main.bounds.width-80, height: 100)
+        .frame(width: UIScreen.main.bounds.width-200, height: 100)
         .background(.white.opacity(0.1))
         .background(.ultraThinMaterial)
-        .cornerRadius(20)
+        .cornerRadius(10)
     }
     
     private func requestInfoFactory(systemImage: String, title: String, info: String, color: Color) -> some View {

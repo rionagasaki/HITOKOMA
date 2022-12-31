@@ -161,5 +161,3 @@ exports.createNotification = functions.firestore.document("Chat/{chatId}/Message
   // const messageRef = db.collection("Chat").doc(chatId).collection("Message");
   admin.messaging().sendToDevice(fcmToken, payload, options);
 });
-
-exports.create

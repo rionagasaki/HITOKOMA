@@ -16,7 +16,7 @@ struct RootView: View {
             if appState.isLogin == true {
                 ContentView()
             }else{
-                IntroView(shouldOpenPage: false)
+                OnboardingView()
             }
         }.onAppear {
         //MARK: からのユーザーを登録してしまったとき。

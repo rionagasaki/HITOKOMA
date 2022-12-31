@@ -10,13 +10,13 @@ import SDWebImageSwiftUI
 
 struct ImageBubbleView: View {
     let chatData: Chat
-    @State var showFullImage: Bool = false
+    @State private var isPresentingFullImageView: Bool = false
     var body: some View {
         HStack{
             if chatData.sender {
                 Spacer()
                 Button {
-                    self.showFullImage = true
+                    self.isPresentingFullImageView = true
                 } label: {
                     WebImage(url: URL(string: chatData.massageImageURLString ?? "")).resizable()
                         .placeholder(Image(systemName: "photo"))
@@ -28,7 +28,7 @@ struct ImageBubbleView: View {
                         .scaledToFit().frame(height: 200)
                         .background(Color.black).cornerRadius(10)
                         .padding(.trailing, 16)
-                }.sheet(isPresented: self.$showFullImage) {
+                }.sheet(isPresented: self.$isPresentingFullImageView) {
                     FullImageView(messageImageURLString: chatData.massageImageURLString ?? "")
                 }
             } else {

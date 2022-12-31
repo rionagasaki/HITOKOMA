@@ -10,14 +10,12 @@ import SDWebImageSwiftUI
 
 struct OneClassDetailView: View {
     @EnvironmentObject var user:User
-    @State private var openCharge: Bool = false
-    @State var alreadyChat: Bool = false
-    @State var preChatRoomData: ChatRoomData? = nil
-    @State var chatroomData:ChatRoomData? = nil
-    @State var paymentSheet: Bool = false
-    @State var underBarOffset: CGFloat = 100
-    @State var purchasedLabelOffset: CGFloat = -170
-    @ObservedObject var chatRoomType = ChatRoomType(chatMode: .student, messageListStyle: .normalChat)
+    @State private var preChatRoomData: ChatRoomData? = nil
+    @State private var chatroomData:ChatRoomData? = nil
+    @State private var underBarOffset: CGFloat = 100
+    @State private var purchasedLabelOffset: CGFloat = -170
+    @State private var visiblePriceBubble: Bool = false
+    @ObservedObject private var chatRoomType = ChatRoomType(chatMode: .student, messageListStyle: .normalChat)
     let lessonImageURLString: String
     let mentorIconImageURLString: String
     let lessonId: String
@@ -29,92 +27,100 @@ struct OneClassDetailView: View {
     
     var body: some View {
         VStack{
-            ScrollView {
-                VStack{
-                    ZStack(alignment: .topLeading){
-                        WebImage(url: URL(string: lessonImageURLString))
-                            .resizable()
-                            .frame(width: UIScreen.main.bounds.width, height: 250)
-                        
-                        if user.purchasedLesson.contains(lessonId) {
-                            HStack(spacing:3){
-                                Image(systemName: "checkmark.circle.fill").foregroundColor(.green).background(.white).clipShape(Circle())
-                                Text("やり取り中")
-                                    .fontWeight(.semibold)
+            ZStack(alignment: .bottomLeading){
+                ScrollView {
+                    VStack{
+                        ZStack(alignment: .topLeading){
+                            WebImage(url: URL(string: lessonImageURLString))
+                                .resizable()
+                                .frame(width: UIScreen.main.bounds.width, height: 250)
+                            
+                            if user.purchasedLesson.contains(lessonId) {
+                                HStack(spacing:3){
+                                    Image(systemName: "checkmark.circle.fill").foregroundColor(.green).background(.white).clipShape(Circle())
+                                    Text("やり取り中")
+                                        .fontWeight(.semibold)
+                                        .font(.system(size: 15))
+                                        .foregroundColor(.white)
+                                    
+                                }.padding().background(LinearGradient(colors: [.customRed1, .customRed2], startPoint: .topLeading, endPoint: .bottomTrailing))
                                     .font(.system(size: 15))
-                                    .foregroundColor(.white)
-                                
-                            }.padding().background(LinearGradient(colors: [.customRed1, .customRed2], startPoint: .topLeading, endPoint: .bottomTrailing))
-                                .font(.system(size: 15))
-                                .cornerRadius(7)
-                                .padding(.top, 5)
-                                .padding(.leading, 5)
-                                .offset(x: purchasedLabelOffset)
-                                .onAppear{
-                                withAnimation(Animation.easeIn(duration: 0.5)){
-                                    purchasedLabelOffset = 0
+                                    .cornerRadius(7)
+                                    .padding(.top, 5)
+                                    .padding(.leading, 5)
+                                    .offset(x: purchasedLabelOffset)
+                                    .onAppear{
+                                    withAnimation(Animation.easeIn(duration: 0.5)){
+                                        purchasedLabelOffset = 0
+                                    }
                                 }
                             }
                         }
-                    }
-                    Text(lessonTitle)
-                        .font(.system(size: 25))
-                        .fontWeight(.bold)
-                    Divider()
-                    NavigationLink {
-                        UserProfileView(username: mentorName, userProfileImageURL: mentorIconImageURLString, usersLessonData: [], usersRequestData: [])
-                    } label: {
-                        HStack{
-                            WebImage(url: URL(string: mentorIconImageURLString))
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                                .clipShape(Circle())
-                            
-                            VStack(alignment: .leading){
-                                Text(mentorName)
-                                    .bold()
-                                    .foregroundColor(.black)
-                                Text("男性")
-                                    .font(.caption)
-                                    .foregroundColor(.black)
-                                Text("20代前半")
-                                    .font(.caption)
-                                    .foregroundColor(.black)
-                                HStack{
-                                    Text("機密保持契約(NDA)").foregroundColor(.black)
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(.green)
-                                }
-                                .font(.caption)
+                        Text(lessonTitle)
+                            .font(.system(size: 25))
+                            .fontWeight(.bold)
+                        Divider()
+                        NavigationLink {
+                            UserProfileView(username: mentorName, userProfileImageURL: mentorIconImageURLString, usersLessonData: [], usersRequestData: [])
+                        } label: {
+                            HStack{
+                                WebImage(url: URL(string: mentorIconImageURLString))
+                                    .resizable()
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(Circle())
                                 
+                                VStack(alignment: .leading){
+                                    Text(mentorName)
+                                        .bold()
+                                        .foregroundColor(.black)
+                                    Text("男性")
+                                        .font(.caption)
+                                        .foregroundColor(.black)
+                                    Text("20代前半")
+                                        .font(.caption)
+                                        .foregroundColor(.black)
+                                    HStack{
+                                        Text("機密保持契約(NDA)").foregroundColor(.black)
+                                        Image(systemName: "checkmark")
+                                            .foregroundColor(.green)
+                                    }
+                                    .font(.caption)
+                                    
+                                }
+                                Spacer()
                             }
+                        }
+                        .padding(.leading,16)
+                        
+                        Divider()
+                        PreLessonChatView(messageListData: MessageListData(lessonImage: lessonImageURLString, lessonName: lessonTitle, lessonContents: lessonContent, lessonBudgets: budgets, lessonID: lessonId, senderIconImage: mentorIconImageURLString, senderName: mentorName, senderUid: mentorUid, lastMessage: "", lastMessageDate: "", chatRoomData: preChatRoomData))
+                            .onAppear{
+                            FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", lessonId: lessonId, mentorUid: mentorUid) { preChatroomData in
+                                self.preChatRoomData = preChatroomData
+                            }
+                        }
+                    }
+                    LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
+                    EvaluationView()
+                    // AfterLessonView(allSelection: -1, clearitySelection: -1).pa
+                    VStack(alignment: .leading){
+                        HStack{
+                            Text("レッスン内容")
+                                .bold()
                             Spacer()
                         }
-                    }
-                    .padding(.leading,16)
-                    
-                    Divider()
-                    PreLessonChatView(messageListData: MessageListData(lessonImage: lessonImageURLString, lessonName: lessonTitle, lessonContents: lessonContent, lessonBudgets: budgets, lessonID: lessonId, senderIconImage: mentorIconImageURLString, senderName: mentorName, senderUid: mentorUid, lastMessage: "", lastMessageDate: "", chatRoomData: preChatRoomData))
-                        .onAppear{
-                        FetchFromFirestore().fetchChatRoomInfoFromFirestore(path: "BeforePurchaseChat", lessonId: lessonId, mentorUid: mentorUid) { preChatroomData in
-                            self.preChatRoomData = preChatroomData
-                        }
+                        .padding(.leading, 16)
+                        HStack{
+                            Text(lessonContent)
+                            Spacer()
+                        }.padding(.leading, 16)
                     }
                 }
-                LessonQuestionView(lessonImageURLString: lessonImageURLString, lessonTitle: lessonTitle, lessonId: lessonId, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
-                EvaluationView()
-                // AfterLessonView(allSelection: -1, clearitySelection: -1).pa
-                VStack(alignment: .leading){
-                    HStack{
-                        Text("レッスン内容")
-                            .bold()
-                        Spacer()
-                    }
-                    .padding(.leading, 16)
-                    HStack{
-                        Text(lessonContent)
-                        Spacer()
-                    }.padding(.leading, 16)
+                if visiblePriceBubble {
+                    PriceBubble(visiblePriceBubble: $visiblePriceBubble)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(width: 150)
+                        .padding(.leading, 16)
                 }
             }
             VStack(spacing: .zero){
@@ -124,14 +130,19 @@ struct OneClassDetailView: View {
                         DismissButtonView()
                             .padding(.leading, 16)
                         
-                        Text("\(budgets)円/h")
-                            .foregroundColor(.white)
-                            .bold()
-                            .padding(.horizontal, 10)
-                            .frame(width: geometryProxy.size.width/3,height: 50)
-                            .background(.black)
-                            .cornerRadius(10)
-                            .padding(.leading,16)
+                        ZStack(alignment: .topLeading){
+                            Text("\(budgets)円/h")
+                                .foregroundColor(.white)
+                                .bold()
+                                .padding(.horizontal, 10)
+                                .frame(width: geometryProxy.size.width/3,height: 50)
+                                 .background(.black)
+                                .cornerRadius(10)
+                                .onTapGesture {
+                                    visiblePriceBubble = true
+                                }
+                                .padding(.leading,16)
+                        }
                         Spacer()
                         if user.purchasedLesson.contains(lessonId) {
                             VStack(spacing: .zero){

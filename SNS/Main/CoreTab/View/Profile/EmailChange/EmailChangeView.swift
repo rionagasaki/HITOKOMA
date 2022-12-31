@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct EmailChangeView: View {
+    @StateObject private var viewModel = EmailChangeViewModel()
     @Environment(\.dismiss) var dismiss
-    @State var newEmailField: String
     var body: some View {
         ZStack(alignment: .bottomLeading){
             ScrollView {
@@ -25,19 +25,31 @@ struct EmailChangeView: View {
                             .fontWeight(.light)
                             .font(.system(size: 23))
                             .padding(.top, 20)
+                        
                         Text("登録したいメールアドレスを入力し、確認メールを送信してください。")
                             .fontWeight(.light)
                             .font(.system(size: 14))
                             .padding(.horizontal, 16)
                             .padding(.top, 5)
-                        TextField("", text: $newEmailField, prompt: Text("メールアドレス"))
+                        
+                        if viewModel.validateFailure {
+                            Text("⚠️メールアドレスの形式で入力してください。")
+                                .fontWeight(.medium)
+                                .foregroundColor(.customRed2)
+                                .font(.system(size: 14))
+                                .padding(.horizontal, 16)
+                                .padding(.top, 5)
+                        }
+                        
+                        TextField("", text: $viewModel.newEmailField, prompt: Text("メールアドレス"))
                             .padding(.leading, 10)
                             .frame(height: 38)
                             .overlay(RoundedRectangle(cornerRadius: 3)
                             .stroke(Color.customLightGray, lineWidth: 2))
-                            .padding(.horizontal, 16).padding(.top, 5)
+                            .padding(.horizontal, 16)
+                            .padding(.top, 5)
                         Button {
-                            print("aaa")
+                            viewModel.sendChackingEmailButtonTapped()
                         } label: {
                             Text("確認メールを送信する")
                                 .foregroundColor(.white)
@@ -60,6 +72,6 @@ struct EmailChangeView: View {
 
 struct EmailChangeView_Previews: PreviewProvider {
     static var previews: some View {
-        EmailChangeView(newEmailField: "")
+        EmailChangeView()
     }
 }
