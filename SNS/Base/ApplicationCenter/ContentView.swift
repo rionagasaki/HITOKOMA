@@ -11,6 +11,7 @@ import Combine
 
 
 struct ContentView: View {
+    let algoliaController = AlgoliaController()
     @EnvironmentObject var user: User
     @EnvironmentObject var app: AppState
     @State private var selectedTab: Tab = .home
@@ -32,15 +33,35 @@ struct ContentView: View {
                     VStack{
                         HomeView()
                         Divider()
-                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                        CustomTabView(
+                            selectedTab: $selectedTab,
+                            navigationTitle: $navigationTitle
+                        )
                     }.navigationBarTitleDisplayMode(.inline)
                 }.tag(Tab.home)
                 
                 NavigationView {
                     VStack{
-                        SearchView()
+                        SearchView(
+                            hitsController: algoliaController.hitsController,
+                            searchBoxController: algoliaController.searchBoxController,
+                            statsController: algoliaController.statsController,
+                            facetListController: algoliaController.facetListController,
+                            loadingController: algoliaController.loadingController
+                        )
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity
+                            
+                        )
+                        .onAppear{
+                            algoliaController.searcher.search()
+                        }
                         Divider()
-                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                        CustomTabView(
+                            selectedTab: $selectedTab,
+                            navigationTitle: $navigationTitle
+                        )
                     }.ignoresSafeArea(.keyboard, edges: .bottom)
                 }.tag(Tab.search)
                 
@@ -49,14 +70,24 @@ struct ContentView: View {
                     VStack{
                         MessageListView()
                         Divider()
-                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                        CustomTabView(
+                            selectedTab: $selectedTab,
+                            navigationTitle: $navigationTitle
+                        )
                     }
                 }.tag(Tab.message)
                 
                 NavigationView {
                     VStack{
-                        ProfileView(username: user.username, email: user.email, profileImage: user.profileImage)
-                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                        ProfileView(
+                            username: user.username,
+                            email: user.email,
+                            profileImage: user.profileImage
+                        )
+                        CustomTabView(
+                            selectedTab: $selectedTab,
+                            navigationTitle: $navigationTitle
+                        )
                     }
                 }.tag(Tab.profile)
             }
@@ -72,7 +103,9 @@ struct ContentView: View {
                 self.user.profileImage = doc.profileImage
                 self.user.purchasedLesson =  doc.purchasedLessons
             }
-        }.accentColor(.black).background(.ultraThinMaterial)
+        }
+        .accentColor(.black)
+        .background(.ultraThinMaterial)
     }
 }
 

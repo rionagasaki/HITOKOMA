@@ -10,6 +10,7 @@ import FirebaseCore
 import Stripe
 import FirebaseMessaging
 import UserNotifications
+import PartialSheet
 
 @main
 struct SNSApp: App {
@@ -21,6 +22,7 @@ struct SNSApp: App {
             RootView()
                 .environmentObject(AppState())
                 .environmentObject(User())
+                .attachPartialSheetToRoot()
         }
     }
 }

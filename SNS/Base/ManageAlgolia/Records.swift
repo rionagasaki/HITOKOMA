@@ -15,11 +15,17 @@ struct QuestionRecords: Decodable, Hashable {
     let questionText: String
     let answerText: String
     let questionUserUid: String
-    
 }
 
-struct LessonRecords {
-    
+struct LessonRecords: Codable {
+    let objectID: String
+    let lessonName: String
+    let lessonImageURLString: String
+    let bigCategory: String
+    let category: String
+    let lessonContent: String
+    let mentorUid: String
+    let budget: Int
 }
 
 struct RequestRecords {

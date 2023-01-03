@@ -11,6 +11,7 @@ struct SearchCategoryDetailView: View {
     @State private var searchText = ""
     @State private var selectoion = 0
     @State private var searchableLesson:[LessonData] = []
+    @Namespace var namespace
     let lessonsData: [LessonData]
     let detailCategories:[DetailCategory]
     
@@ -22,7 +23,7 @@ struct SearchCategoryDetailView: View {
                 VStack(alignment:.leading){
                     VStack(alignment: .leading){
                         Text("詳細なカテゴリー").bold().font(.system(size: 20)).padding(.leading,16)
-                        DetailCategoryView(detailCategory: detailCategories, lessonData: lessonsData, searchableLessonData: $searchableLesson, selection: $selectoion)
+                        DetailCategoryView(detailCategory: detailCategories, lessonData: lessonsData, searchableLessonData: $searchableLesson, selection: $selectoion, namespace: namespace)
                     }
                     Text("検索結果").bold().font(.system(size: 20)).padding(.leading,16).padding(.top, 10)
                     if searchableLesson.count != 0 {
@@ -39,10 +40,24 @@ struct SearchCategoryDetailView: View {
                             }.padding(.horizontal, 16)
                         }
                     } else {
-                        VStack{
-                            Text("Sorry...\n条件に一致するレッスンがありませんでした。")
-                            Image("sorry").resizable().frame(width: 100, height: 100)
-                        }.padding(.leading, 16)
+                        VStack {
+                            Spacer()
+                            Image(systemName: "magnifyingglass")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 70, height: 70)
+                                .foregroundColor(.init(uiColor: .lightGray))
+                            
+                            Text("申し訳ありません。\n指定されたレッスンは現在ありません。")
+                                .fontWeight(.light)
+                                .multilineTextAlignment(.center)
+                                .font(.system(size: 15))
+                            Spacer()
+                        }
+                        .frame(
+                            maxWidth: .infinity,
+                            alignment: .center
+                        )
                     }
                     Spacer()
                 }

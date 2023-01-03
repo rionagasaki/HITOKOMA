@@ -49,8 +49,15 @@ struct MessageListView: View {
             
             ZStack(alignment: .bottomTrailing){
                 TabView(selection: $viewModel.selection){
-                    MessageListScrollView(chatRoomType: chatRoomType, messageListDatas: chatRoomType.chatMode == .mentor ? viewModel.prePurchaseMentorMessages: viewModel.prePurchaseStudentsMessages).tag(0)
-                    MessageListScrollView(chatRoomType: chatRoomType ,messageListDatas: chatRoomType.chatMode == .mentor ? viewModel.mentorMessages: viewModel.studentsMessages).tag(1)
+                    MessageListScrollView(
+                        chatRoomType: chatRoomType,
+                        messageListDatas: chatRoomType.chatMode == .mentor ? viewModel.prePurchaseMentorMessages: viewModel.prePurchaseStudentsMessages
+                    )
+                    .tag(0)
+                    MessageListScrollView(
+                        chatRoomType: chatRoomType ,
+                        messageListDatas: chatRoomType.chatMode == .mentor ? viewModel.mentorMessages: viewModel.studentsMessages
+                    ).tag(1)
                     MessageListScrollView(chatRoomType: chatRoomType ,messageListDatas: chatRoomType.chatMode == .mentor ? viewModel.completionLessonAsStudentMessages: viewModel.completionLessonAsMentorMessages).tag(2)
                 }
                 .onChange(of: viewModel.selection, perform: { selection in

@@ -22,24 +22,45 @@ struct MoreQuestionView: View {
     var body: some View {
         VStack{
             List(questionRecords, id:\.self) { question in
-                QuestionAndAnswearView(questionRecord: question, mentorIcon: mentorIconImageURLString)
+                QuestionAndAnswearView(
+                    questionRecord: question,
+                    mentorIcon: mentorIconImageURLString
+                )
             }
             Button {
-                self.openModal = true
+                openModal = true
             } label: {
-                Text("出品者に質問する").foregroundColor(.white).bold().frame(width: UIScreen.main.bounds.width-40, height: 40).background(.black).cornerRadius(10).padding(.top, 16)
+                Text("出品者に質問する")
+                    .foregroundColor(.white)
+                    .bold()
+                    .frame(width: UIScreen.main.bounds.width-40, height: 40)
+                    .background(.black)
+                    .cornerRadius(10)
+                    .padding(.top, 16)
             }
             Button {
-                self.dismiss = false
+                dismiss = false
             } label: {
                 HStack{
-                    Image(systemName: "xmark.app").foregroundColor(.red)
-                    Text("閉じる").foregroundColor(.black)
+                    Image(systemName: "xmark.app")
+                        .foregroundColor(.red)
+                    Text("閉じる")
+                        .foregroundColor(.black)
                 }
-                .frame(width: UIScreen.main.bounds.width-40, height: 40).background(.white).cornerRadius(10).background(RoundedRectangle(cornerRadius: 10).stroke(.black, lineWidth: 2)).padding(.bottom, 16)
+                .frame(width: UIScreen.main.bounds.width-40, height: 40)
+                .background(.white)
+                .cornerRadius(10)
+                .background(RoundedRectangle(cornerRadius: 10).stroke(.black, lineWidth: 2))
+                .padding(.bottom, 16)
             }
         }.sheet(isPresented: $openModal) {
-            MakeQuestionView(lessonImageURLString: lessonImageURL, lessonName: lessonTitle, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName, lessonID: lessonID)
+            MakeQuestionView(
+                lessonImageURLString: lessonImageURL,
+                lessonName: lessonTitle,
+                mentorIconImageURLString: mentorIconImageURLString,
+                mentorName: mentorName,
+                lessonID: lessonID
+            )
         }
     }
 }
@@ -49,10 +70,15 @@ struct QuestionAndAnswearView: View {
     let mentorIcon: String
     var body: some View {
         VStack(alignment: .leading){
-            Text("Q.\(questionRecord.questionText)").bold()
+            Text("Q.\(questionRecord.questionText)")
+                .bold()
             HStack{
-                WebImage(url: URL(string: mentorIcon)).resizable().frame(width: 15, height: 15).clipShape(Circle())
-                Text(questionRecord.answerText).font(.caption)
+                WebImage(url: URL(string: mentorIcon))
+                    .resizable()
+                    .frame(width: 15, height: 15)
+                    .clipShape(Circle())
+                Text(questionRecord.answerText)
+                    .font(.caption)
             }
         }
     }

@@ -15,18 +15,35 @@ struct HeaderView: View {
         
         VStack{
             HStack{
-                WebImage(url: URL(string: userProfileImage)).resizable().placeholder(Image(systemName: "photo"))
-                .placeholder {
-                    Rectangle().foregroundColor(.gray.opacity(0.2))
+                WebImage(url: URL(string: userProfileImage))
+                    .resizable()
+                    .placeholder(Image(systemName: "photo"))
+                    .placeholder {
+                    Rectangle()
+                        .foregroundColor(.gray.opacity(0.2))
                 }
                 .indicator(.activity)
-                .transition(.fade(duration: 0.5)) .background(Color.gray.opacity(0.2)).frame(width: 100, height: 100).cornerRadius(100)
+                .transition(.fade(duration: 0.5))
+                .background(Color.gray.opacity(0.2))
+                .frame(width: 100, height: 100)
+                .cornerRadius(100)
+                
                 VStack(alignment: .leading){
-                    Text(username).bold().font(.system(size: 24)).padding(.trailing,100)
+                    Text(username)
+                        .bold()
+                        .font(.system(size: 24))
+                        .padding(.trailing,100)
+                    
                     NavigationLink {
                         ConnectAccountView()
                     } label: {
-                        Text("ひとこまを販売する").bold().font(.subheadline).foregroundColor(Color.white).frame(width: 190,height: 30).background(Color.customBlue).cornerRadius(15)
+                        Text("ひとこまを販売する")
+                            .bold()
+                            .font(.subheadline)
+                            .foregroundColor(Color.white)
+                            .frame(width: 190,height: 30)
+                            .background(Color.customBlue)
+                            .cornerRadius(15)
                     }
                 }
             }

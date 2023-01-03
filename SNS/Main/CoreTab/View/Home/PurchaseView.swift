@@ -18,25 +18,53 @@ struct PurchaseView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: .zero){
                 HStack{
-                    Text("お支払い金額").bold().padding(.leading, 16)
+                    Text("お支払い金額")
+                        .bold()
+                        .padding(.leading, 16)
                     Spacer()
-                    Text("\(amount + (amount/10))円").bold().padding(.trailing, 16)
-                }.frame(height: 50).background(.ultraThinMaterial)
+                    Text("\(amount + (amount/10))円")
+                        .bold()
+                        .padding(.trailing, 16)
+                }
+                .frame(height: 50)
+                .background(.ultraThinMaterial)
                 Divider()
                 HStack{
-                    Text("購入内容").padding(.leading, 16)
+                    Text("購入内容")
+                        .padding(.leading, 16)
                     Spacer()
-                    Text("\(amount)円").bold().padding(.trailing, 16)
+                    Text("\(amount)円")
+                        .bold()
+                        .padding(.trailing, 16)
                 }.padding(.top, 10)
-                LessonSummaryView(lessonImageURLString: lessonImageURLString, lessonName: lessonName, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName).padding(.top, 10)
-                Divider().padding(.top, 10)
+                LessonSummaryView(
+                    lessonImageURLString: lessonImageURLString,
+                    lessonName: lessonName,
+                    mentorIconImageURLString: mentorIconImageURLString,
+                    mentorName: mentorName
+                )
+                .padding(.top, 10)
+                
+                Divider()
+                    .padding(.top, 10)
                 HStack{
-                    Text("サービス手数料").padding(.leading, 16)
+                    Text("サービス手数料")
+                        .padding(.leading, 16)
                     Spacer()
-                    Text("\(amount/10)円").bold().padding(.trailing, 16)
-                }.padding(.top, 10)
-                Divider().padding(.top, 10)
-                CheckoutView(model: MyBackendModel(), amount: amount, lessonId: lessonId).padding(.leading, 20).padding(.top, 10)
+                    Text("\(amount/10)円")
+                        .bold()
+                        .padding(.trailing, 16)
+                }
+                .padding(.top, 10)
+                Divider()
+                    .padding(.top, 10)
+                CheckoutView(
+                    model: MyBackendModel(),
+                    amount: amount,
+                    lessonId: lessonId
+                )
+                .padding(.leading, 20)
+                .padding(.top, 10)
             }
         }.navigationTitle("購入手続き")
     }

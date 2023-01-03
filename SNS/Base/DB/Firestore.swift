@@ -33,6 +33,7 @@ class FetchFromFirestore{
             completion(docRef)
         }
     }
+    
     func fetchOtherUserInfoFromFirestore(uid: String,completion: @escaping (UserData)-> Void){
         db.collection(userPath).document(uid).getDocument { document, error in
             if let error = error {
@@ -146,7 +147,7 @@ class FetchFromFirestore{
     }
 }
 
-class SetToFirestore{
+class SetToFirestore {
     
     let uid = Auth.auth().currentUser?.uid
     @EnvironmentObject var user: User

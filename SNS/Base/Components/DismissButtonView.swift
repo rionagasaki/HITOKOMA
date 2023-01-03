@@ -13,7 +13,13 @@ struct DismissButtonView: View {
         Button {
             dismiss()
         } label: {
-            Image(systemName: "arrow.left").resizable().frame(width:20, height: 20).padding().background(Color.customGray).foregroundColor(.white).clipShape(Circle())
+            Image(systemName: "arrow.left")
+                .resizable()
+                .frame(width:20, height: 20)
+                .padding()
+                .background(Color.customGray)
+                .foregroundColor(.white)
+                .clipShape(Circle())
         }
     }
 }

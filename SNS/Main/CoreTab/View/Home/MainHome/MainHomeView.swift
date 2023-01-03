@@ -35,25 +35,41 @@ struct MainHomeView: View {
                         .font(.system(size: 20))
                         .padding(.leading,16)
                     Spacer()
-                    Button {
-                        print("aaaa")
-                    } label: {
-                        Text("全てを表示")
-                            .font(.system(size: 13))
-                            .foregroundColor(.customBlue)
-                            .bold()
-                            .padding(.top, 16)
-                    }.padding(.trailing,20)
                 }
                 HStack {
                     ForEach(allCategories) { category in
                         NavigationLink {
                             switch category.category{
-                            case .english: SearchCategoryDetailView(lessonsData: viewModel.lessonEnglishData, detailCategories: englishDetails, mainCategory: .english)
-                            case .computer: SearchCategoryDetailView(lessonsData: viewModel.lessonComputerData, detailCategories: computerDetails, mainCategory: .computer)
-                            case .law: SearchCategoryDetailView(lessonsData: viewModel.lessonLawData, detailCategories: lawDetails, mainCategory: .law)
-                            case .finance: SearchCategoryDetailView(lessonsData: viewModel.lessonFinanceData, detailCategories: financeDetails, mainCategory: .finance)
-                            case .investment: SearchCategoryDetailView(lessonsData: viewModel.lessonInvestmentData, detailCategories: investmentDetails, mainCategory: .investment)
+                            case .english:
+                                SearchCategoryDetailView(
+                                    lessonsData: viewModel.lessonEnglishData,
+                                    detailCategories: englishDetails,
+                                    mainCategory: .english
+                                )
+                            case .computer:
+                                SearchCategoryDetailView(
+                                    lessonsData: viewModel.lessonComputerData,
+                                    detailCategories: computerDetails,
+                                    mainCategory: .computer
+                                )
+                            case .law:
+                                SearchCategoryDetailView(
+                                    lessonsData: viewModel.lessonLawData,
+                                    detailCategories: lawDetails,
+                                    mainCategory: .law
+                                )
+                            case .finance:
+                                SearchCategoryDetailView(
+                                    lessonsData: viewModel.lessonFinanceData,
+                                    detailCategories: financeDetails,
+                                    mainCategory: .finance
+                                )
+                            case .investment:
+                                SearchCategoryDetailView(
+                                    lessonsData: viewModel.lessonInvestmentData,
+                                    detailCategories: investmentDetails,
+                                    mainCategory: .investment
+                                )
                             }
                         } label: {
                             if viewModel.isRefreshing {
@@ -116,9 +132,16 @@ struct MainHomeView: View {
                                 } else {
                                     ForEach(viewModel.lessonData) { lesson in
                                         NavigationLink {
-                                            OneClassDetailView(lessonImageURLString: lesson.lessonImageURLString, mentorIconImageURLString: lesson.userImageIconURLString, lessonId: lesson.lessonId, mentorName: lesson.username, mentorUid: lesson.mentorUid, lessonTitle: lesson.lessonName, lessonContent: lesson.lessonContent, budgets: lesson.budget)
+                                            OneClassDetailView(
+                                                viewModel: OneClassDetailViewModel(lessonId: lesson.lessonId)
+                                            )
                                         } label: {
-                                            OneClassView(lessonImageURLString: lesson.lessonImageURLString, lessonName: lesson.lessonName, userIconURLString: lesson.userImageIconURLString, lessonBudgets: lesson.budget)
+                                            OneClassView(
+                                                lessonImageURLString: lesson.lessonImageURLString,
+                                                lessonName: lesson.lessonName,
+                                                userIconURLString: lesson.userImageIconURLString,
+                                                lessonBudgets: lesson.budget
+                                            )
                                         }
                                     }
                                 }
@@ -126,20 +149,63 @@ struct MainHomeView: View {
                         }.padding(.horizontal, 16)
                     }
                     Group{
-                        requestList(bigCategory: "リクエスト一覧", detailsCategory: viewModel.requestData)
-                        lessonList(bigCategory: "英語", categoryLessonData: viewModel.lessonEnglishData, deatilCategories: englishDetails, categoryDetail: .english)
-                        lessonList(bigCategory: "IT", categoryLessonData: viewModel.lessonComputerData, deatilCategories: computerDetails, categoryDetail: .computer)
-                        lessonList(bigCategory: "法律", categoryLessonData: viewModel.lessonLawData, deatilCategories: lawDetails, categoryDetail: .law)
-                        lessonList(bigCategory: "ファイナンス", categoryLessonData: viewModel.lessonFinanceData, deatilCategories: financeDetails, categoryDetail: .finance)
-                        lessonList(bigCategory: "投資", categoryLessonData: viewModel.lessonInvestmentData, deatilCategories: investmentDetails, categoryDetail: .investment)
+                        requestList(
+                            bigCategory: "リクエスト一覧",
+                            detailsCategory: viewModel.requestData
+                        )
+                        lessonList(
+                            bigCategory: "英語",
+                            categoryLessonData: viewModel.lessonEnglishData,
+                            deatilCategories: englishDetails,
+                            categoryDetail: .english
+                        )
+                        lessonList(
+                            bigCategory: "IT",
+                            categoryLessonData: viewModel.lessonComputerData,
+                            deatilCategories: computerDetails,
+                            categoryDetail: .computer
+                        )
+                        lessonList(
+                            bigCategory: "法律",
+                            categoryLessonData: viewModel.lessonLawData,
+                            deatilCategories: lawDetails,
+                            categoryDetail: .law
+                        )
+                        lessonList(
+                            bigCategory: "ファイナンス",
+                            categoryLessonData: viewModel.lessonFinanceData,
+                            deatilCategories: financeDetails,
+                            categoryDetail: .finance
+                        )
+                        lessonList(
+                            bigCategory: "投資",
+                            categoryLessonData: viewModel.lessonInvestmentData,
+                            deatilCategories: investmentDetails,
+                            categoryDetail: .investment
+                        )
                         
                     }
                     Group{
-                        requestList(bigCategory: "英語", detailsCategory: viewModel.requestEnglishData)
-                        requestList(bigCategory: "IT", detailsCategory: viewModel.requestComputerData)
-                        requestList(bigCategory: "法律", detailsCategory: viewModel.requestLawData)
-                        requestList(bigCategory: "ファイナンス", detailsCategory: viewModel.requestFinanceData)
-                        requestList(bigCategory: "投資", detailsCategory: viewModel.requestInvestmentData)
+                        requestList(
+                            bigCategory: "英語",
+                            detailsCategory: viewModel.requestEnglishData
+                        )
+                        requestList(
+                            bigCategory: "IT",
+                            detailsCategory: viewModel.requestComputerData
+                        )
+                        requestList(
+                            bigCategory: "法律",
+                            detailsCategory: viewModel.requestLawData
+                        )
+                        requestList(
+                            bigCategory: "ファイナンス",
+                            detailsCategory: viewModel.requestFinanceData
+                        )
+                        requestList(
+                            bigCategory: "投資",
+                            detailsCategory: viewModel.requestInvestmentData
+                        )
                     }
                 }
             }
@@ -148,7 +214,11 @@ struct MainHomeView: View {
     }
     
     private func makeHeader(headerTitle: String, contentImage: Image) -> some View{
-        return contentImage.resizable().frame(width: UIScreen.main.bounds.width-30,height:200).scaledToFill().modifier(headerImageModifier(headerTitle: headerTitle))
+        return contentImage
+            .resizable()
+            .frame(width: UIScreen.main.bounds.width-30,height:200)
+            .scaledToFill()
+            .modifier(headerImageModifier(headerTitle: headerTitle))
     }
     
     private func lessonList(bigCategory: String, categoryLessonData: [LessonData], deatilCategories:[DetailCategory], categoryDetail: CategoryDetail) -> some View {
@@ -174,9 +244,15 @@ struct MainHomeView: View {
                 HStack{
                     ForEach(categoryLessonData) { lesson in
                         NavigationLink {
-                            OneClassDetailView(lessonImageURLString: lesson.lessonImageURLString, mentorIconImageURLString: lesson.userImageIconURLString, lessonId: lesson.lessonId, mentorName: lesson.username, mentorUid: lesson.mentorUid, lessonTitle: lesson.lessonName, lessonContent: lesson.lessonContent, budgets: lesson.budget)
+                            OneClassDetailView(
+                                viewModel: OneClassDetailViewModel(lessonId: lesson.lessonId))
                         } label: {
-                            OneClassView(lessonImageURLString: lesson.lessonImageURLString, lessonName: lesson.lessonName, userIconURLString: lesson.userImageIconURLString, lessonBudgets: lesson.budget)
+                            OneClassView(
+                                lessonImageURLString: lesson.lessonImageURLString,
+                                lessonName: lesson.lessonName,
+                                userIconURLString: lesson.userImageIconURLString,
+                                lessonBudgets: lesson.budget
+                            )
                         }
                     }
                 }

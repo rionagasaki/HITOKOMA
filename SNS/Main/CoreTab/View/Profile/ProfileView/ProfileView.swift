@@ -107,7 +107,7 @@ struct ProfileView: View {
             settingName: "サービス内容",
             settingImage: "questionmark.circle",
             handler: AnyView(
-                InquiryView()
+                AboutServiceView()
             )
         ),
         Setting(
@@ -128,7 +128,7 @@ struct ProfileView: View {
             settingName: "オープンソースライセンス",
             settingImage: "lock.square.stack",
             handler: AnyView(
-                InquiryView()
+                OpenSourceLicenSeView()
             )
         ),
         Setting(
