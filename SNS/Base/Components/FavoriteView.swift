@@ -12,7 +12,7 @@ struct FavoriteView: View {
         ScrollView(.horizontal, showsIndicators: false){
             HStack{
                 VStack{
-                    Image("rootImage").resizable().frame(width: 80, height: 80).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray, lineWidth: 0.5))
+                    Image("").resizable().frame(width: 80, height: 80).cornerRadius(20).overlay(RoundedRectangle(cornerRadius: 20).stroke(.gray, lineWidth: 0.5))
                     Text("英語").foregroundColor(Color(uiColor: .darkGray)).font(.system(size: 13))
                 }
                 VStack{

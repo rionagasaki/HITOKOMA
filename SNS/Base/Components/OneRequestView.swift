@@ -26,6 +26,11 @@ struct OneRequestView: View {
                                 .resizable()
                                 .frame(width: 30, height: 30)
                                 .clipShape(Circle())
+                                .background {
+                                    Circle()
+                                        .fill(.white)
+                                        .frame(width: 40)
+                                }
                                 
                             Image(systemName: "questionmark.circle.fill")
                                 .resizable()

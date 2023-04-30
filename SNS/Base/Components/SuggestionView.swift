@@ -14,10 +14,18 @@ struct SuggestionView: View {
     
     var body: some View {
         HStack(alignment: .top){
-            Image(classImage).resizable().frame(width: 80, height: 80).cornerRadius(5).padding(.leading,16).padding(.vertical,5)
+            Image(classImage)
+                .resizable()
+                .frame(width: 80, height: 80)
+                .cornerRadius(5)
+                .padding(.leading,16)
+                .padding(.vertical,5)
             VStack(alignment: .leading ,spacing:7){
-                Text(classTitle).bold()
-                Text(classDescription).font(.footnote).foregroundColor(.secondary)
+                Text(classTitle)
+                    .bold()
+                Text(classDescription)
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
             }
             Spacer()
         }

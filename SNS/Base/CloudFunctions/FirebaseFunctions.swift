@@ -9,10 +9,11 @@ import Foundation
 import FirebaseFunctions
 
 class CallCloudFunctions{
-    lazy var functions = Functions.functions()
-    private let createCustomerRequest = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createCustomer")
+    lazy private var functions = Functions.functions()
+    
     func setFunctions(email: String ,completion: @escaping (String) -> Void){
-        functions.httpsCallable(createCustomerRequest!).call(["email": email]){ result, error in
+        guard let createCustomerRequest = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createCustomer") else { return }
+        functions.httpsCallable(createCustomerRequest).call(["email": email]){ result, error in
             if let error = error {
                 print("ERROR=>setFunctions\(error)")
                 return

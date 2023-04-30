@@ -2,88 +2,116 @@
 //  RegisterView.swift
 //  SNS
 //
-//  Created by Rio Nagasaki on 2022/10/14.
+//  Created by Rio Nagasaki on 2022/12/29.
 //
 
 import SwiftUI
-import ComposableArchitecture
-import FirebaseAuth
-import FirebaseFunctions
 
 struct RegisterView: View {
-    @State var email:String = ""
-    let store:Store<LoginState,LoginAction>
-    lazy var functions = Functions.functions()
-    var body: some View{
-        WithViewStore(self.store) { viewStore in
-            ZStack{
-                Color.white
-                VStack(alignment:.leading ,spacing: 20){
-                    Circle().size(width: 200, height: 200).foregroundColor(.yellow)
-                    HStack{
-                        Circle().size(width: 200, height: 200).foregroundColor(.blue).padding(.top,-120)
-                        Circle().size(width: 200, height: 200).foregroundColor(.orange).padding(.top,30)
-                    }
-                }.blur(radius: 40)
-                VStack{
-                    VStack{
-                        VStack(alignment: .leading, spacing: 16) {
-                            HStack{
-                                Image(systemName: "key")
-                                Text("Sign Up").font(Font.largeTitle.bold()).foregroundColor(.white)
-                            }
-                            HStack {
-                                Spacer()
-                                Image(systemName: "envelope.open.fill").tint(Color.white)
-                                TextField("Email", text: viewStore.binding(get: {
-                                    $0.emailText
-                                }, send: {
-                                    .enterEmailText($0)
-                                })).preferredColorScheme(.dark).foregroundColor(Color.white).textInputAutocapitalization(.none).textContentType(.emailAddress)
-                            }.frame(height:52).overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white, lineWidth: 1)).background(Color.purple.opacity(0.1)).cornerRadius(16)
-                            HStack {
-                                Spacer()
-                                Image(systemName:"key").foregroundColor(Color.white)
-                                SecureField("Password",text:viewStore.binding(get: {
-                                    $0.passwordText
-                                }, send: {
-                                    .enterPasswordText($0)
-                                })).preferredColorScheme(.dark).foregroundColor(Color.white.opacity(0.9)).textInputAutocapitalization(.none).textContentType(.password)
-                            }.frame(height:52).overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white, lineWidth: 1)).background(Color.purple.opacity(0.1)).cornerRadius(16)
-                            Button{
-                                print("aaa")
-                            } label: {
-                                Text("すでにアカウントをお持ちの方").underline().tint(Color.white).font(.footnote)
-                            }.padding(.leading, 70)
-                            
-                            Button {
-                                Auth.auth().createUser(withEmail: viewStore.state.emailText, password: viewStore.state.passwordText) { authResult, error in
-                                    let url = URL(string: "https://asia-northeast1-marketsns.cloudfunctions.net/createCustomer")
-                                    CallCloudFunctions().setFunctions(email: authResult?.user.email ?? "") { customerId in
-                                        SetToFirestore().registerUserInfoFirestore(uid: authResult!.user.uid, username: "", email: "", customerId: customerId) {
-                                            
-                                        }
-                                    }
-                                }
-                            } label: {
-                                GeometryReader { geometry in
-                                    ZStack{
-                                        AngularGradient(gradient: Gradient(colors: [.red,.blue]), center: .center, angle: .degrees(0)).blendMode(.overlay).blur(radius: 8).mask(
-                                            RoundedRectangle(cornerRadius: 16).frame(height:50).frame(maxWidth:geometry.size.width - 16).blur(radius: 8.0))
-                                        Text("").gradientForegroundColor().font(Font.body.bold()).frame(height:45).frame(width:geometry.size.width-20).background(Color.black.opacity(0.8)).cornerRadius(16).overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white, lineWidth: 1))
-                                    }
-                                }
-                            }.frame(height:50)
-                        }.padding()
-                    }.overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.white, lineWidth: 1)).background(.regularMaterial).cornerRadius(20).padding()
-                }.rotation3DEffect(Angle(degrees: 180), axis: (x:0, y:1, z:0)).shadow(radius: 20, x: 0, y: 20)
-            }.ignoresSafeArea()
+    @StateObject private var viewModel = RegisterViewModel()
+    
+    var body: some View {
+        ScrollView {
+            VStack {
+                TextField("",
+                          text: $viewModel.usernameText ,
+                          prompt:
+                            Text("ユーザーネーム")
+                )
+                    .padding(.leading, 10)
+                    .frame(height: 38)
+                    .overlay(RoundedRectangle(cornerRadius: 3)
+                        .stroke(Color.customLightGray, lineWidth: 2))
+                    .onChange(of: viewModel.usernameText, perform: { _ in
+                        viewModel.validateUsername()
+                    })
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                
+                TextField("",
+                          text: $viewModel.emailText ,
+                          prompt:
+                            Text("メールアドレス")
+                )
+                    .padding(.leading, 10)
+                    .frame(height: 38)
+                    .overlay(RoundedRectangle(cornerRadius: 3)
+                        .stroke(Color.customLightGray, lineWidth: 2))
+                    .onChange(of: viewModel.emailText, perform: { _ in
+                        viewModel.validateEmail()
+                    })
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                if !viewModel.isCurrentEmail && viewModel.emailText != "" {
+                    Text("メールアドレスの形式で入力してください。")
+                        .fontWeight(.light)
+                        .font(.system(size: 12))
+                        .foregroundColor(.customRed2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 16)
+                }
+                
+                SecureField("",
+                          text: $viewModel.passwordText ,
+                          prompt:
+                            Text("パスワード")
+                )
+                    .padding(.leading, 10)
+                    .frame(height: 38)
+                    .overlay(RoundedRectangle(cornerRadius: 3)
+                        .stroke(Color.customLightGray, lineWidth: 2))
+                    .onChange(of: viewModel.passwordText, perform: { _ in
+                        viewModel.validatePassword()
+                    })
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                
+                if !viewModel.isCurrentPassword && viewModel.passwordText != "" {
+                    Text("パスワードは8文字以上かつ英数字それぞれ1文字以上含む必要があります。")
+                        .fontWeight(.light)
+                        .font(.system(size: 12))
+                        .foregroundColor(.customRed2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 16)
+                }
+                
+                Button {
+                    viewModel.signUp()
+                } label: {
+                    Text("新規登録")
+                        .foregroundColor(.white)
+                        .font(.system(size: 17))
+                        .bold()
+                        .frame(width: UIScreen.main.bounds.width-40, height: 50)
+                        .background(viewModel.isEnabledTappedRegisterButton ? Color.customBlue: Color.customBlue.opacity(0.2))
+                        .cornerRadius(32)
+                        .padding(.top, 8)
+                        .padding(.horizontal,16)
+                }
+                .disabled(!viewModel.isEnabledTappedRegisterButton)
+                Text("または")
+                    .foregroundColor(.gray)
+                    .font(.system(size: 17))
+                    .bold()
+                    .padding(.vertical, 16)
+                
+                Button {
+                    viewModel
+                        .signUp()
+                } label: {
+                    SignUpWithAppleButton()
+                        .frame(height:50)
+                        .cornerRadius(32)
+                }.frame(width: UIScreen.main.bounds.width-32,height:50)
+            }
         }
+        .navigationTitle("新規登録")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 struct RegisterView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginState.initial2
+        RegisterView()
     }
 }

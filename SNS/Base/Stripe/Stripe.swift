@@ -14,7 +14,7 @@ class MyAPIClient: NSObject, STPCustomerEphemeralKeyProvider {
     private var baseURL = URL(string: "")!
     
     func createCustomerKey(withAPIVersion apiVersion: String, completion: @escaping STPJSONResponseCompletionBlock) {
-        let url = self.baseURL.appendingPathComponent("")
+        let url = baseURL.appendingPathComponent("")
         var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [URLQueryItem(name: "api_version", value: apiVersion)]
         var request = URLRequest(url: urlComponents.url!)

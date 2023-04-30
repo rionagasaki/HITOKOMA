@@ -12,24 +12,37 @@ struct DetailCategoryView: View {
     let lessonData: [LessonData]
     @Binding var searchableLessonData: [LessonData]
     @Binding var selection: Int
+    var namespace: Namespace.ID
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false){
             HStack{
                 ForEach(detailCategory.indices, id: \.self) { index in
                     Button {
-                        selection = index
+                        withAnimation {
+                            selection = index
+                        }
                         if selection == 0 {
-                            self.searchableLessonData = self.lessonData
-                        }else{
-                            self.searchableLessonData = self.lessonData.filter({ 
+                            searchableLessonData = lessonData
+                        }else {
+                            searchableLessonData = lessonData.filter({
                                 $0.category == detailCategory[selection].categoryName
                             })
                         }
                     } label: {
-                        VStack{
-                            Image(detailCategory[index].categoryImage).resizable().scaledToFit().frame(width: 120, height: 50)
-                            Text(detailCategory[index].categoryName).foregroundColor(.black).bold()
-                        }.frame(width:140, height: 90).background(RoundedRectangle(cornerRadius: 8).stroke(selection == index ? .green: .black, lineWidth: selection == index ? 3 : 1.5)).cornerRadius(8)
+                        ZStack {
+                            OneDetailCategoryView(
+                                categoryImage: detailCategory[index].categoryImage,
+                                categoryName: detailCategory[index].categoryName)
+                            .frame(width:140, height: 90)
+                            
+                            if selection == index {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(Color.customBlue, lineWidth: 3)
+                                    .cornerRadius(8)
+                                    .matchedGeometryEffect(id: "CustomButton", in: namespace)
+                            }
+                        }
                     }
                 }
             }.padding(.horizontal,16)
@@ -39,9 +52,10 @@ struct DetailCategoryView: View {
 
 struct DetailCategoryView_Previews: PreviewProvider {
     @State static var selection = 0
+    @Namespace static var namespace
     @State static var lessonData: [LessonData] = []
     static var previews: some View {
-        DetailCategoryView(detailCategory: [], lessonData: [], searchableLessonData: $lessonData, selection: $selection)
+        DetailCategoryView(detailCategory: [], lessonData: [], searchableLessonData: $lessonData, selection: $selection, namespace: namespace)
     }
 }
 
@@ -49,4 +63,18 @@ struct DetailCategory: Identifiable{
     let id = UUID()
     let categoryName: String
     let categoryImage: String
+}
+
+
+struct OneDetailCategoryView: View {
+    
+    let categoryImage: String
+    let categoryName: String
+    
+    var body: some View {
+        VStack{
+            Image(categoryImage).resizable().scaledToFit().frame(width: 120, height: 50)
+            Text(categoryName).foregroundColor(.black).bold()
+        }
+    }
 }

@@ -11,18 +11,13 @@ import Combine
 
 
 struct ContentView: View {
+    let algoliaController = AlgoliaController()
     @EnvironmentObject var user: User
     @EnvironmentObject var app: AppState
-    @State var selectedTab: Tab = .home
-    @State var navigationTitle:String = ""
-    @State var navigationStyle:Bool = true
-    @State var mentorMessages:[MessageListData] = []
-    @State var studentsMessages:[MessageListData] = []
-    @State var prePurchaseMentorMessages: [MessageListData] = []
-    @State var prePurchaseStudentMessages: [MessageListData] = []
-    @State var completionLessonAsMentorMessages: [MessageListData] = []
-    @State var completionLessonAsStudentMessages: [MessageListData] = []
-    @State var searchWord = ""
+    @State private var selectedTab: Tab = .home
+    @State private var navigationTitle:String = ""
+    @State private var navigationStyle:Bool = true
+    @State private var searchWord = ""
     
     var loginUserIconURLString: String = ""
     var loginUsername: String = ""
@@ -38,38 +33,61 @@ struct ContentView: View {
                     VStack{
                         HomeView()
                         Divider()
-                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                        CustomTabView(
+                            selectedTab: $selectedTab,
+                            navigationTitle: $navigationTitle
+                        )
                     }.navigationBarTitleDisplayMode(.inline)
                 }.tag(Tab.home)
                 
                 NavigationView {
                     VStack{
-                        SearchView()
+                        SearchView(
+                            hitsController: algoliaController.hitsController,
+                            searchBoxController: algoliaController.searchBoxController,
+                            statsController: algoliaController.statsController,
+                            facetListController: algoliaController.facetListController,
+                            loadingController: algoliaController.loadingController
+                        )
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity
+                            
+                        )
+                        .onAppear{
+                            algoliaController.searcher.search()
+                        }
                         Divider()
-                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                        CustomTabView(
+                            selectedTab: $selectedTab,
+                            navigationTitle: $navigationTitle
+                        )
                     }.ignoresSafeArea(.keyboard, edges: .bottom)
                 }.tag(Tab.search)
                 
                 
                 NavigationView {
                     VStack{
-                        MessageListView(
-                            mentorMessages: mentorMessages,
-                            studentsMessages: studentsMessages,
-                            prePurchaseMentorMessages: prePurchaseMentorMessages,
-                            prePurchaseStudentsMessages: prePurchaseStudentMessages,
-                            completionLessonAsMentorMessages: completionLessonAsMentorMessages,
-                            completionLessonAsStudentMessages: completionLessonAsStudentMessages
-                        )
+                        MessageListView()
                         Divider()
-                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                        CustomTabView(
+                            selectedTab: $selectedTab,
+                            navigationTitle: $navigationTitle
+                        )
                     }
                 }.tag(Tab.message)
                 
                 NavigationView {
                     VStack{
-                        ProfileView(username: user.username, email: user.email, profileImage: user.profileImage)
-                        CustomTabView(selectedTab: $selectedTab, navigationTitle: $navigationTitle)
+                        ProfileView(
+                            username: user.username,
+                            email: user.email,
+                            profileImage: user.profileImage
+                        )
+                        CustomTabView(
+                            selectedTab: $selectedTab,
+                            navigationTitle: $navigationTitle
+                        )
                     }
                 }.tag(Tab.profile)
             }
@@ -85,53 +103,9 @@ struct ContentView: View {
                 self.user.profileImage = doc.profileImage
                 self.user.purchasedLesson =  doc.purchasedLessons
             }
-            
-            // MARK: Mentorモードの場合、自身の生徒とのチャット情報取得
-            FetchFromFirestore().fetchStudentMessageInfo(path: "Chat"){ studentChatRoom in
-                FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: studentChatRoom.studentUid) { userInfo in
-                    FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: studentChatRoom.lessonId) { lessonInfo in
-                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: studentChatRoom.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: studentChatRoom.lastMessageText, lastMessageDate: studentChatRoom.lastMessageDate, chatRoomData: studentChatRoom)
-                        self.studentsMessages.append(messageData)
-                    }
-                    
-                }
-            }
-            // MARK: (事前)Mentorモードの場合、自身の生徒とのチャット情報取得
-            FetchFromFirestore().fetchStudentMessageInfo(path: "BeforePurchaseChat") { prePurchaseStudentChatRoom in
-                FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: prePurchaseStudentChatRoom.studentUid) { userInfo in
-                    FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: prePurchaseStudentChatRoom.lessonId) { lessonInfo in
-                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget,lessonID: prePurchaseStudentChatRoom.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: prePurchaseStudentChatRoom.lastMessageText, lastMessageDate: prePurchaseStudentChatRoom.lastMessageDate, chatRoomData: prePurchaseStudentChatRoom)
-                        self.prePurchaseStudentMessages.append(messageData)
-                    }
-                }
-            }
-            // MARK: Studentモードの場合の、自身のメンターとのチャット情報取得
-            FetchFromFirestore().fetchMentorMessageInfo(path: "Chat") { mentorChatRoom in
-                FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: mentorChatRoom.mentorUid) { userInfo in
-                    FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: mentorChatRoom.lessonId) { lessonInfo in
-                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: mentorChatRoom.lastMessageText, lastMessageDate: mentorChatRoom.lastMessageDate, chatRoomData: mentorChatRoom)
-                        if lessonInfo.completionUser.contains(userInfo.uid) {
-                            self.completionLessonAsStudentMessages.append(messageData)
-                        } else {
-                            self.mentorMessages.append(messageData)
-                        }
-                    }
-                }
-            }
-            // MARK: (事前)Studentモードの場合の、自身のメンターとのチャット情報取得
-            FetchFromFirestore().fetchMentorMessageInfo(path: "BeforePurchaseChat") { prePurchaseMentorChatRoom in
-                FetchFromFirestore().fetchOtherUserInfoFromFirestore(uid: prePurchaseMentorChatRoom.mentorUid) { userInfo in
-                    FetchFromFirestore().fetchOneLessonInfoFromFirestore(lessonId: prePurchaseMentorChatRoom.lessonId) { lessonInfo in
-                        let messageData = MessageListData(lessonImage: lessonInfo.lessonImageURLString, lessonName: lessonInfo.lessonName,lessonContents: lessonInfo.lessonContent, lessonBudgets: lessonInfo.budget, lessonID: lessonInfo.lessonId, senderIconImage: userInfo.profileImage, senderName: userInfo.username, senderUid: userInfo.uid, lastMessage: prePurchaseMentorChatRoom.lastMessageText, lastMessageDate: prePurchaseMentorChatRoom.lastMessageDate, chatRoomData: prePurchaseMentorChatRoom)
-                        if lessonInfo.completionUser.contains(userInfo.uid) {
-                            self.completionLessonAsMentorMessages.append(messageData)
-                        } else {
-                            self.studentsMessages.append(messageData)
-                        }
-                    }
-                }
-            }
-        }.accentColor(.black).background(.ultraThinMaterial)
+        }
+        .accentColor(.black)
+        .background(.ultraThinMaterial)
     }
 }
 
