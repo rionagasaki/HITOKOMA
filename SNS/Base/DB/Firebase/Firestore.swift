@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseFirestore
 import FirebaseAuth
+import FirebaseFirestoreSwift
 
 import SwiftUI
 
@@ -42,6 +43,7 @@ class FetchFromFirestore{
             }
             guard let document = document else { return }
             let docRef = UserData(document: document)
+            
             completion(docRef)
         }
     }
@@ -196,7 +198,7 @@ class SetToFirestore {
             "requestContents": requestContents,
             "bigCategory": bigCategory,
             "selectedCategory": selectedCategory,
-            "requestImage": requestImageURL ?? "",
+            "requestImage": requestImageURL.orEmpty,
             "budget": budget,
             "date": date,
             "period": period
@@ -311,8 +313,23 @@ class SetToFirestore {
         ]){ error in
             if let error = error {
                print("Error=>registerEvalutionToLesson:\(error)")
-            }else {
+            } else {
                 completion(lessonId)
+            }
+        }
+    }
+    
+    func registerSuggestionToRequest(requestId: String, requestMentorUid:String, suggestBudget: String, suggestContents:String, completion: @escaping () -> Void){
+        db.collection("Suggestion").addDocument(data: [
+            "requestId": requestId,
+            "requestMentorUid": requestMentorUid,
+            "suggestBudget": suggestBudget,
+            "suggestContents": suggestContents
+        ]){ error in
+            if let error = error {
+                print("Error=>registerSuggestionToRequest:\(error)")
+            } else {
+                completion()
             }
         }
     }
@@ -335,6 +352,8 @@ class UpdateFirestore{
         }
     }
     
+    
+    
     func updateUsersMakeLesson(lessonId: String, completion: @escaping()->Void){
         guard let uid = uid else { return }
         db.collection("User").document(uid).updateData([
@@ -348,11 +367,18 @@ class UpdateFirestore{
         }
     }
     
-    func updateUserInfoFirestore(profileImageURL: String, completion: @escaping () -> Void){
-        
+    func updateUserInfoFirestore(username: String,gender: String,generation: String,singleIntroduction: String,profileImageURL: String, headerImageURL: String, career: String, skills:Skills, completion: @escaping () -> Void) {
+        let encodeSkill = try! Firestore.Encoder().encode(skills)
         guard let uid = uid else { return }
         db.collection("User").document(uid).updateData([
-            "profileImageURL": profileImageURL
+            "username": username,
+            "generation": generation,
+            "gender": gender,
+            "profileImageURL": profileImageURL,
+            "headerImageURL": headerImageURL,
+            "singleIntroduction": singleIntroduction,
+            "career": career,
+            "skills": encodeSkill
         ]){ err in
             if let err = err {
                 print("Error updating document: \(err)")

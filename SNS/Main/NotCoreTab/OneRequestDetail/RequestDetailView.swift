@@ -137,7 +137,10 @@ struct PreRequestChatView: View {
                 .font(.caption)
                 .padding(.leading, 16)
             NavigationLink {
-                ChatView(messageListData: messageListData, chatRoomType: chatRoomType)
+                ChatView(
+                    viewModel: ChatViewModel(
+                        chatRoomId: <#T##String#>,
+                        chatRoomType: .init(chatMode: .mentor, messageListStyle: .beforePurchaseChat)))
             } label: {
                 HStack{
                     Text("事前前チャットはこちら")
