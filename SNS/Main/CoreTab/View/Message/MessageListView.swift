@@ -47,6 +47,8 @@ struct MessageListView: View {
             }
             .background(.ultraThinMaterial)
             
+            SwitchingServiceView(chatRoomType: chatRoomType)
+        
             ZStack(alignment: .bottomTrailing){
                 TabView(selection: $viewModel.selection){
                     MessageListScrollView(
@@ -71,29 +73,56 @@ struct MessageListView: View {
                     }
                 }).tabViewStyle(PageTabViewStyle())
                     .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .never))
-                Button {
-                    HUD.flash(.label("🔄\(chatRoomType.chatMode == .mentor ? "購入者":"出品者")モードに切り替えました。"), delay: 1.0)
-                    switch chatRoomType.chatMode {
-                    case .mentor:
-                        self.chatRoomType.chatMode = .student
-                    case .student:
-                        self.chatRoomType.chatMode = .mentor
-                    }
-                } label: {
-                    VStack(spacing: .zero){
-                        Text(chatRoomType.chatMode == .mentor ? "出品者":"購入者")
-                            .fontWeight(.regular)
-                            .font(.system(size: 17))
-                        Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
-                            .resizable()
-                            .frame(width:55, height: 55)
-                            .scaledToFit().background(Color.white)
-                    }
-                }
-                .padding(.bottom, 32)
-                .padding(.trailing, 32)
             }
         }.navigationTitle(chatRoomType.chatMode == .mentor ? "出品者メッセージ":"購入者メッセージ").navigationBarTitleDisplayMode(.inline)
     }
 }
 
+
+struct SwitchingServiceView: View {
+    @StateObject var chatRoomType: ChatRoomType
+    var body: some View {
+        VStack {
+            HStack {
+                Button {
+                    chatRoomType.chatMode = .mentor
+                } label: {
+                    HStack {
+                        Circle()
+                            .fill()
+                            .frame(width: 16)
+                            .foregroundColor(chatRoomType.chatMode == .mentor ? .customBlue: .customLightGray)
+                        Text("サービス")
+                            .fontWeight(chatRoomType.chatMode == .mentor ? .medium : .light)
+                            .font(.system(size: 17))
+                            .foregroundColor(chatRoomType.chatMode == .mentor ? .black.opacity(0.8): .gray)
+                    }
+                    .padding(.leading, 40)
+                }
+                Spacer()
+                Button {
+                    chatRoomType.chatMode = .student
+                } label: {
+                    HStack {
+                        Circle()
+                            .fill()
+                            .frame(width: 16)
+                            .foregroundColor(chatRoomType.chatMode == .student ? .customBlue: .customLightGray)
+                        Text("リクエスト")
+                            .fontWeight(chatRoomType.chatMode == .student ? .medium : .light)
+                            .font(.system(size: 17))
+                            .foregroundColor(chatRoomType.chatMode == .student ? .black.opacity(0.8): .gray)
+                    }
+                    .padding(.trailing, 40)
+                }
+            }
+            CustomDivider()
+        }
+    }
+}
+
+struct SwitchingServiceView_previews: PreviewProvider {
+    static var previews: some View {
+        SwitchingServiceView(chatRoomType: .init(chatMode: .mentor, messageListStyle: .normalChat))
+    }
+}

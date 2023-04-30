@@ -18,4 +18,14 @@ class SuggestOnRequestViewModel: ObservableObject {
         self.requestData = requestData
     }
     
+    func makeSuggestion(){
+        SetToFirestore()
+            .registerSuggestionToRequest(
+                requestId: requestData.requestId,
+                requestMentorUid: User.shared.userID,
+                suggestBudget: budgeText,
+                suggestContents: appealText) {
+                    
+                }
+    }
 }

@@ -9,6 +9,10 @@ import Foundation
 import FirebaseAuth
 
 struct Authentication {
+    
+    
+    static let currentUser = Auth.auth().currentUser?.uid
+    
     func emailValidate(completion: @escaping()->()) {
         Auth.auth().currentUser?.sendEmailVerification { error in
             if let error = error {
@@ -39,8 +43,8 @@ struct Authentication {
                 isSuccessRegister(false)
                 return
             }
-            CallCloudFunctions().setFunctions(email: authResult?.user.email ?? "") { customerId in
-                SetToFirestore().registerUserInfoFirestore(uid: authResult!.user.uid, username: username, email: authResult!.user.email ?? "", customerId: customerId) {
+            CallCloudFunctions().setFunctions(email: (authResult?.user.email).orEmpty) { customerId in
+                SetToFirestore().registerUserInfoFirestore(uid: authResult!.user.uid, username: username, email: email, customerId: customerId) {
                     isSuccessRegister(true)
                 }
             }

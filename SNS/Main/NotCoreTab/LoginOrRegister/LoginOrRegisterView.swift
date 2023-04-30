@@ -15,11 +15,6 @@ struct LoginOrRegisterView: View {
                 .frame(width: UIScreen.main.bounds.width-150, height: 50)
                 .scaledToFit()
                 .padding(.vertical, 8)
-            Image(image.others.applicationImage.name)
-                .resizable()
-                .frame(width: UIScreen.main.bounds.width-200, height: 300)
-                .padding(.top, 16)
-            
            
             Spacer()
             NavigationLink {

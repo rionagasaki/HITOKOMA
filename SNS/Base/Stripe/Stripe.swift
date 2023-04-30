@@ -11,7 +11,7 @@ import FirebaseFunctions
 
 class MyAPIClient: NSObject, STPCustomerEphemeralKeyProvider {
     
-    private var baseURL = URL(string: "")!
+    private var baseURL = URL(string: "https://")!
     
     func createCustomerKey(withAPIVersion apiVersion: String, completion: @escaping STPJSONResponseCompletionBlock) {
         let url = baseURL.appendingPathComponent("")

@@ -41,7 +41,7 @@ public class SignInWithAppleObject: NSObject{
         request.requestedScopes = [.email, .fullName]
         let nonce = randomNonceString()
         currentNonce = nonce
-        request.nonce = sha256(currentNonce ?? "")
+        request.nonce = sha256(currentNonce.orEmpty)
         
         let authorizationController = ASAuthorizationController(authorizationRequests: [request])
         authorizationController.delegate = self
@@ -112,7 +112,7 @@ extension SignInWithAppleObject: ASAuthorizationControllerDelegate {
             let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
             Auth.auth().signIn(with: credential){ result, error in
                 guard error == nil else {
-                    print("error4\(error?.localizedDescription ?? "")")
+                    print("error4\((error?.localizedDescription).orEmpty)")
                     return
                 }
             }

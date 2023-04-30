@@ -53,12 +53,12 @@ struct SearchView:View {
                         }
                     } label: {
                         SearchResultCellView(
-                            lessonImageURLString: hit?.lessonImageURLString ?? "",
-                            lessonName: hit?.lessonName ?? "",
-                            bigCategory: hit?.bigCategory ?? "",
+                            lessonImageURLString: (hit?.lessonImageURLString).orEmpty,
+                            lessonName: (hit?.lessonName).orEmpty,
+                            bigCategory: (hit?.bigCategory).orEmpty,
                             mentorImageURLString: viewModel.mentorImageURLString,
-                            lessonContents: hit?.lessonContent ?? "",
-                            budget: hit?.budget ?? 0
+                            lessonContents: (hit?.lessonContent).orEmpty,
+                            budget: (hit?.budget).orEmptyNum
                         )
                         .onAppear{
                             FetchFromFirestore()

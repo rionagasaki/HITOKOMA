@@ -10,192 +10,57 @@ import FirebaseFirestore
 import PKHUD
 
 struct MakeLessonView: View {
-
+    
     @StateObject var viewModel = MakeLessonViewModel()
-    @State var showingImagePicker = false
-    @State var period: String = ""
-    @State var selectedDate = Date()
-    
-    var hourCategories = ["30分","60分","90分","120分","150分","180分"]
-    
+  
     var body: some View {
         VStack {
             ScrollView(.vertical, showsIndicators: false){
                 VStack(alignment: .leading){
-                    Text("Step. 1")
-                        .bold()
-                        .font(.system(size: 25))
-                        .foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
-                        .padding(.leading,10)
-                    Text("レッスンの基本情報を記述してください。")
-                        .bold()
-                        .padding(.leading,10)
-                    VStack{
-                        if viewModel.lessonImage == nil {
-                            Button {
-                                showingImagePicker = true
-                            } label: {
-                                ZStack{
-                                    Image("noImage")
-                                        .resizable()
-                                        .frame(width: 100, height:100)
-                                        .clipShape(Circle())
-                                }.frame(width: UIScreen.main.bounds.width, height:300)
-                                    .background(.white.opacity(0.1))
-                                    .background(.ultraThinMaterial)
-                                    .overlay(RoundedRectangle(cornerRadius: 0).stroke(.gray.opacity(0.6), lineWidth: 0.5))
-                                    .shadow(radius: 1)
-                            }
-                        }else{
-                            Button {
-                                showingImagePicker = true
-                            } label: {
-                                Image(uiImage: viewModel.lessonImage!)
-                                    .resizable().frame(width: UIScreen.main.bounds.width, height:300 )
-                                    .background(.white.opacity(0.1))
-                                    .background(.ultraThinMaterial)
-                                    .overlay(RoundedRectangle(cornerRadius: 0).stroke(.gray.opacity(0.6), lineWidth: 0.5))
-                                    .shadow(radius: 1)
-                            }
-                        }
+                    Group {
+                        Text("Step. 1")
+                            .bold()
+                            .font(.system(size: 25))
+                            .foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
+                        Text("レッスンの基本情報を記述してください。")
+                            .bold()
                     }
-                    .frame(width: UIScreen.main.bounds.width ,height: 300)
-                    HStack {
-                        HStack{
-                            Image(systemName: "book.closed.fill")
-                                .resizable()
-                                .foregroundColor(.orange)
-                                .frame(width:20, height:20)
-                                .padding(.leading,16)
-                            Text("カテゴリー")
-                        }
-                        Spacer()
-                        Menu {
-                            selectCategory(bigCategory: "英語", detailCategories: englishCategories)
-                            selectCategory(bigCategory: "IT", detailCategories: computerCategories)
-                            selectCategory(bigCategory: "法律", detailCategories: lawCategories)
-                            selectCategory(bigCategory: "ファイナンス", detailCategories: financeCategories)
-                            selectCategory(bigCategory: "投資", detailCategories: investmentCategories)
-                        } label: {
-                            VStack(spacing: 5){
-                                HStack{
-                                    Text(viewModel.lessonCategory != "" ? viewModel.lessonCategory :"カテゴリー")
-                                        .foregroundColor(viewModel.lessonCategory != "" ? .black: .gray)
-                                    Spacer()
-                                    Image(systemName: "chevron.down")
-                                        .foregroundColor(Color.customBlue)
-                                        .font(Font.system(size: 20, weight: .bold))
-                                }
-                                Rectangle()
-                                    .fill(Color.customBlue)
-                                    .frame(height: 2)
-                            }.padding(.vertical,16)
-                        }.padding(.trailing,16).frame(width:200)
+                    .padding(.leading, 16)
+                    
+                    MakeLessonFirstSectionView(viewModel: viewModel)
+                    
+                    Group {
+                        Text("Step. 2")
+                            .bold()
+                            .font(.system(size: 25))
+                            .foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
+                        Text("レッスンの値段、時間を教えてください。")
+                            .bold()
+                        
                     }
-                    TextField("レッスンタイトル", text: $viewModel.lessonName)
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width-30, height:50)
-                        .cornerRadius(10)
-                        .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2))
-                        .padding(.bottom, 10)
-                        .padding(.leading,10)
-                    
-                    Text("Step. 2")
-                        .bold()
-                        .font(.system(size: 25))
-                        .foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
-                        .padding(.leading,10)
-                        .padding(.top, 16)
-                    Text("レッスンの値段、時間を教えてください。")
-                        .bold()
-                        .padding(.leading,10)
-                    VStack{
-                        HStack{
-                            Image(systemName: "checkmark.square.fill")
-                                .resizable()
-                                .foregroundColor(.green)
-                                .frame(width:20, height:20)
-                            Text("予算")
-                            Spacer()
-                            TextField("予算", value: $viewModel.budget, formatter: NumberFormatter())
-                                .keyboardType(.numberPad)
-                                .padding(.all, 7)
-                                .frame(width:200)
-                                .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2))
-                            Text("円")
-                        }.padding(.horizontal,10)
+                    .padding(.leading, 16)
+                    MakeLessonSecondSectionView(viewModel: viewModel)
+                
+                    Button {
+                        viewModel.makeLesson()
+                    } label: {
+                        Text("作成する")
+                            .foregroundColor(.white)
+                            .font(.system(size: 17))
+                            .bold()
+                            .frame(width: UIScreen.main.bounds.width-40, height: 50)
+                            .background(Color.customBlue)
+                            .cornerRadius(10)
                     }
-                    HStack{
-                        Image(systemName: "timer").resizable().foregroundColor(.orange).frame(width:20, height:20)
-                        Text("時間")
-                        Spacer()
-                        Menu {
-                            ForEach(self.hourCategories, id: \.self) { hour in
-                                Button {
-                                    period = hour
-                                } label: {
-                                    Text(hour)
-                                }
-                            }
-                        } label: {
-                            VStack(spacing: 5){
-                                HStack{
-                                    Text(period != "" ? period :"時間")
-                                        .foregroundColor(.black)
-                                    Spacer()
-                                    Image(systemName: "chevron.down")
-                                        .foregroundColor(Color.customBlue)
-                                        .font(Font.system(size: 20, weight: .bold))
-                                }
-                                Rectangle()
-                                    .fill(Color.customBlue)
-                                    .frame(height: 2)
-                            }.padding(.vertical,16)
-                        }.frame(width:200)
-                    }.padding(.leading, 10)
-                        .padding(.trailing,20)
-                }.frame(width: UIScreen.main.bounds.width)
-                    .padding(.all,7)
-                    .background(.white.opacity(0.3))
-                    .background(.ultraThinMaterial)
-                    .padding(.top,10)
-                VStack(alignment: .leading){
-                    Text("Step. 3")
-                        .bold()
-                        .font(.system(size: 25))
-                        .foregroundColor(.init(uiColor: .darkGray).opacity(0.8))
-                        .padding(.top,16)
-                    
-                    Text("レッスンの詳細を記述してください。")
-                        .bold()
-                    
-                    TextEditor(text: $viewModel.lessonContent)
-                        .padding()
-                        .frame(width: UIScreen.main.bounds.width-30, height:500)
-                        .cornerRadius(10)
-                        .overlay(RoundedRectangle(cornerRadius: 3).stroke(Color.customLightGray, lineWidth: 2))
-                        .padding(.top, 10)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
-                Spacer()
-            }
-        }.navigationTitle("ひとこまを作成する")
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showingImagePicker) {
-            ImagePicker(sourceType: .photoLibrary ,selectedImage: $viewModel.lessonImage)
-        }
-        Button {
+            }.navigationTitle("レッスン内容入力")
+                .navigationBarTitleDisplayMode(.inline)
+                .sheet(isPresented: $viewModel.showingImagePicker) {
+                    ImagePicker(sourceType: .photoLibrary ,selectedImage: $viewModel.lessonImage)
+                }
             
-        } label: {
-            Text("作成する")
-                .foregroundColor(.white)
-                .font(.system(size: 17))
-                .bold()
-                .frame(width: UIScreen.main.bounds.width-40, height: 50)
-                .background(Color.customBlue)
-                .cornerRadius(10)
         }
-        .frame(width: UIScreen.main.bounds.width, height: 70)
-            .background(.ultraThinMaterial)
     }
     
     func selectCategory(bigCategory: String, detailCategories:[String]) -> some View {
@@ -218,5 +83,182 @@ struct MakeLessonView: View {
 struct MakeLessonView_Previews: PreviewProvider {
     static var previews: some View {
         MakeLessonView()
+    }
+}
+
+struct MakeLessonFirstSectionView: View {
+    
+    @StateObject var viewModel: MakeLessonViewModel
+    
+    var body: some View {
+        VStack {
+            Group {
+                CustomDividerWidthText(
+                    text: "カテゴリー選択",
+                    requiered: true)
+                .padding(.vertical,8)
+                Menu {
+                    selectCategory(
+                        bigCategory: "英語",
+                        detailCategories: englishCategories
+                    )
+                    selectCategory(
+                        bigCategory: "IT",
+                        detailCategories: computerCategories
+                    )
+                    selectCategory(
+                        bigCategory: "法律",
+                        detailCategories: lawCategories
+                    )
+                    selectCategory(
+                        bigCategory: "ファイナンス",
+                        detailCategories: financeCategories
+                    )
+                    selectCategory(
+                        bigCategory: "投資",
+                        detailCategories: investmentCategories
+                    )
+                } label: {
+                    Text(viewModel.lessonCategory != "" ? viewModel.lessonCategory :"カテゴリー")
+                        .foregroundColor(viewModel.lessonCategory == "" ? .gray: .black)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 16)
+                        .padding(.top,8)
+                        .padding(.bottom, 16)
+                    
+                }
+            }
+            
+            Group {
+                CustomDividerWidthText(
+                    text: "タイトル",
+                    requiered: true)
+                TextField("タイトル", text: $viewModel.lessonName)
+                    .frame(width: UIScreen.main.bounds.width-32, height:50)
+                    .padding(.vertical, 8)
+            }
+            Group {
+                CustomDividerWidthText(
+                    text: "イメージ",
+                    requiered: true)
+                Button {
+                    viewModel.showingImagePicker = true
+                } label: {
+                    if let lessonImage = viewModel.lessonImage {
+                        Image(uiImage: lessonImage)
+                            .resizable()
+                            .frame(width: 113, height: 70)
+                            .padding(.vertical, 16)
+                    } else {
+                        Rectangle()
+                            .fill()
+                            .frame(width: 113, height: 70)
+                            .foregroundColor(.customLightGray)
+                            .padding(.vertical, 16)
+                    }
+                }
+            }
+            
+            Group {
+                CustomDividerWidthText(
+                    text: "詳細",
+                    requiered: true)
+                
+                ZStack(alignment: .topLeading){
+                    TextEditor(text: $viewModel.lessonContent)
+                        .padding(.leading, 16)
+                        .padding(.top, 16)
+                        .frame(width: UIScreen.main.bounds.width, height:150)
+                        .cornerRadius(10)
+                    if viewModel.lessonContent == "" {
+                        Text("詳細")
+                            .foregroundColor(.customGray)
+                            .opacity(0.6)
+                            .padding(.top, 20)
+                            .padding(.leading, 20)
+                    }
+                }
+                CustomDivider()
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing){
+                VStack {
+                    Image(systemName: "square.and.pencil")
+                    Text("下書き")
+                        .fontWeight(.light)
+                        .font(.system(size: 12))
+                }
+            }
+        }
+    }
+    func selectCategory(bigCategory: String, detailCategories:[String]) -> some View {
+        Menu {
+            ForEach(detailCategories, id: \.self) { category in
+                Button {
+                    viewModel.lessonCategory = category
+                    viewModel.bigCategory = bigCategory
+                } label: {
+                    Text(category)
+                }
+            }
+        } label: {
+            Text(bigCategory)
+        }
+    }
+}
+
+struct MakeLessonSecondSectionView: View {
+    
+    @StateObject var viewModel: MakeLessonViewModel
+
+    var body: some View {
+        VStack{
+            Group {
+                CustomDividerWidthText(text: "タイプ", requiered: true)
+                    .padding(.vertical,8)
+                Toggle(isOn: $viewModel.isFree) {
+                    Text(viewModel.isFree ? "無料":"有料")
+                        .fontWeight(.light)
+                        .font(.system(size:15))
+                        
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                
+                CustomDividerWidthText(text: "料金", requiered: !viewModel.isFree)
+                    .padding(.vertical,8)
+                TextField("料金", value: $viewModel.budget, format: .number)
+                    .frame(width: UIScreen.main.bounds.width-32)
+                    .disabled(viewModel.isFree)
+                    .padding(.top,8)
+                    .padding(.bottom, 16)
+            }
+            CustomDividerWidthText(text: "日時", requiered: true)
+            
+            DatePicker("", selection: $viewModel.lessonDate)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.trailing, 16)
+                .padding(.vertical, 16)
+            CustomDividerWidthText(text: "時間", requiered: true)
+            Menu {
+                ForEach(viewModel.hourCategories, id: \.self) { hour in
+                    Button {
+                        viewModel.lessonPeriod = hour
+                    } label: {
+                        Text(hour)
+                            .fontWeight(.medium)
+                            .font(.system(size: 15))
+                    }
+                }
+            } label: {
+                Text(viewModel.lessonPeriod == "" ? "時間": viewModel.lessonPeriod)
+                    .foregroundColor(viewModel.lessonCategory == "" ? .gray: .black)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 16)
+                    .padding(.vertical, 16)
+            }
+            CustomDivider()
+        }
     }
 }

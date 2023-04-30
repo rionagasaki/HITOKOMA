@@ -21,7 +21,7 @@ struct SNSApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(AppState())
-                .environmentObject(User())
+                .environmentObject(User.shared)
                 .attachPartialSheetToRoot()
         }
     }

@@ -42,7 +42,7 @@ struct SuggestOnRequestView: View {
                 } label: {
                     Text("提案する")
                         .bold()
-                        .customButtonDesign()
+                        
                 }
             }
         }

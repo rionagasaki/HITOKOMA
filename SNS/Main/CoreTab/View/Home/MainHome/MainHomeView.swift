@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MainHomeView: View {
-
+    
     @StateObject private var viewModel = MainHomeViewModel()
     @State var opacity: Double = 0.5
     
@@ -27,6 +27,7 @@ struct MainHomeView: View {
                 }.onDisappear{
                     viewModel.invalidateTimer()
                 }
+                
                 Indicatorview(selection: viewModel.selection)
                 HStack{
                     Text("カテゴリー")
@@ -124,10 +125,10 @@ struct MainHomeView: View {
                                             }
                                         }.frame(height: 150)
                                             .onAppear{
-                                            withAnimation(.easeIn(duration: 1).repeatForever()){
-                                                opacity = 0.2
-                                            }
-                                        }.padding(.trailing, 5)
+                                                withAnimation(.easeIn(duration: 1).repeatForever()){
+                                                    opacity = 0.2
+                                                }
+                                            }.padding(.trailing, 5)
                                     }
                                 } else {
                                     ForEach(viewModel.lessonData) { lesson in
@@ -213,7 +214,7 @@ struct MainHomeView: View {
         }.allowsHitTesting(!viewModel.isRefreshing)
     }
     
-    private func makeHeader(headerTitle: String, contentImage: Image) -> some View{
+    private func makeHeader(headerTitle: String, contentImage: Image) -> some View {
         return contentImage
             .resizable()
             .frame(width: UIScreen.main.bounds.width-30,height:200)

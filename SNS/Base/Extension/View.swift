@@ -23,16 +23,41 @@ extension View {
 }
 
 extension View {
-
     func backgroundClearSheet() -> some View {
         background(BackgroundClearView())
     }
 }
 
 extension View {
+    func spotlight(enabled: Bool, title: String) -> some View {
+        return self
+    }
+    
     func loading(isRefreshing: Bool, safeAreaEdges: Edge.Set = []) -> some View {
         modifier(LoadingViewModifier(isRefreshing: isRefreshing, safeAreaEdges: safeAreaEdges))
     }
+}
+
+struct SpotlightView<Content: View>: View{
+    var content: Content
+    
+    var enabled: Bool
+    var title: String
+    
+    init(enabled: Bool, title: String ,@ViewBuilder content: @escaping () -> Content){
+        self.content = content()
+        self.enabled = enabled
+        self.title = title
+    }
+    
+    var body: some View {
+        Rectangle()
+            .fill(.clear)
+            .onAppear{
+               
+            }
+    }
+    
 }
 
 struct HalfModalSheetViewController<Sheet: View>: UIViewControllerRepresentable {

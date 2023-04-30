@@ -49,13 +49,9 @@ struct OneClassDetailView: View {
                             Text(lessonData.lessonName)
                                 .font(.system(size: 25))
                                 .fontWeight(.bold)
-                            Divider()
+                            CustomDivider()
                             NavigationLink {
-                                UserProfileView(
-                                    username: mentorUserInfo.username,
-                                    userProfileImageURL: mentorUserInfo.profileImage,
-                                    usersLessonData: [],
-                                    usersRequestData: [])
+                                UserProfileView()
                             } label: {
                                 HStack{
                                     WebImage(url: URL(string: mentorUserInfo.profileImage))
@@ -87,7 +83,7 @@ struct OneClassDetailView: View {
                             }
                             .padding(.leading,16)
                             
-                            Divider()
+                            CustomDivider()
                             PreLessonChatView(
                                 messageListData: MessageListData(
                                     lessonImage: lessonData.lessonImageURLString,
@@ -132,7 +128,7 @@ struct OneClassDetailView: View {
                 }
                 VStack(spacing: .zero){
                     GeometryReader { geometryProxy in
-                        Divider()
+                        CustomDivider()
                         HStack(alignment: .bottom){
                             DismissButtonView()
                                 .padding(.leading, 16)
@@ -146,60 +142,77 @@ struct OneClassDetailView: View {
                                     .background(.black)
                                     .cornerRadius(10)
                                     .onTapGesture {
-                                        viewModel.visiblePriceBubble = true
+                                        withAnimation {
+                                            viewModel.visiblePriceBubble = true
+                                        }
                                     }
                                     .padding(.leading,16)
                             }
                             Spacer()
-                            if user.purchasedLesson.contains(viewModel.lessonId) {
-                                VStack(spacing: .zero){
-                                    NavigationLink {
-                                        ChatView(
-                                            messageListData: MessageListData(
-                                                lessonImage: lessonData.lessonImageURLString,
+                            if viewModel.mentorUserInfo?.uid != Authentication.currentUser {
+                                if user.purchasedLesson.contains(viewModel.lessonId) {
+                                    VStack(spacing: .zero){
+                                        NavigationLink {
+                                            ChatView(
+                                                messageListData: MessageListData(
+                                                    lessonImage: lessonData.lessonImageURLString,
+                                                    lessonName: lessonData.lessonName,
+                                                    lessonContents: lessonData.lessonContent,
+                                                    lessonBudgets: (viewModel.lessonData?.budget).orEmptyNum,
+                                                    lessonID: viewModel.lessonId,
+                                                    senderIconImage: (viewModel.mentorUserInfo?.profileImage).orEmpty,
+                                                    senderName: (viewModel.mentorUserInfo?.username).orEmpty,
+                                                    senderUid: (viewModel.lessonData?.mentorUid).orEmpty,
+                                                    lastMessage: "",
+                                                    lastMessageDate: "",
+                                                    chatRoomData: viewModel.chatroomData), chatRoomType: chatRoomType).onAppear{
+                                                        chatRoomType.messageListStyle = .normalChat
+                                                        chatRoomType.chatMode = .student
+                                                    }
+                                        } label: {
+                                            Text("やり取りする")
+                                                .foregroundColor(.white)
+                                                .bold()
+                                                .frame(width: geometryProxy.size.width/3,height: 50)
+                                                .background(Color.customBlue)
+                                                .cornerRadius(10)
+                                                .padding(.trailing, 16)
+                                        }
+                                    }
+                                } else {
+                                    VStack(spacing: .zero){
+                                        NavigationLink {
+                                            PurchaseView(
+                                                lessonId: viewModel.lessonId,
+                                                amount: lessonData.budget,
+                                                lessonImageURLString: lessonData.lessonImageURLString,
                                                 lessonName: lessonData.lessonName,
-                                                lessonContents: lessonData.lessonContent,
-                                                lessonBudgets: viewModel.lessonData?.budget ?? 0,
-                                                lessonID: viewModel.lessonId,
-                                                senderIconImage: viewModel.mentorUserInfo?.profileImage ?? "",
-                                                senderName: viewModel.mentorUserInfo?.username ?? "",
-                                                senderUid: viewModel.lessonData?.mentorUid ?? "",
-                                                lastMessage: "",
-                                                lastMessageDate: "",
-                                                chatRoomData: viewModel.chatroomData), chatRoomType: chatRoomType).onAppear{
-                                                    chatRoomType.messageListStyle = .normalChat
-                                                    chatRoomType.chatMode = .student
-                                                }
-                                    } label: {
-                                        Text("やり取りする")
-                                            .foregroundColor(.white)
-                                            .bold()
-                                            .frame(width: geometryProxy.size.width/3,height: 50)
-                                            .background(Color.customBlue)
-                                            .cornerRadius(10)
-                                            .padding(.trailing, 16)
+                                                mentorIconImageURLString: mentorUserInfo.profileImage,
+                                                mentorName: mentorUserInfo.username)
+                                        } label: {
+                                            Text("購入画面へ")
+                                                .foregroundColor(.white)
+                                                .bold()
+                                                .frame(width:geometryProxy.size.width/3, height: 50)
+                                                .background(Color.customBlue)
+                                                .cornerRadius(10)
+                                                .padding(.trailing, 16)
+                                        }
                                     }
                                 }
                             } else {
-                                VStack(spacing: .zero){
-                                    NavigationLink {
-                                        PurchaseView(
-                                            lessonId: viewModel.lessonId,
-                                            amount: lessonData.budget,
-                                            lessonImageURLString: lessonData.lessonImageURLString,
-                                            lessonName: lessonData.lessonName,
-                                            mentorIconImageURLString: mentorUserInfo.profileImage,
-                                            mentorName: mentorUserInfo.username)
-                                    } label: {
-                                        Text("購入画面へ")
-                                            .foregroundColor(.white)
-                                            .bold()
-                                            .frame(width:geometryProxy.size.width/3, height: 50)
-                                            .background(Color.customBlue)
-                                            .cornerRadius(10)
-                                            .padding(.trailing, 16)
-                                    }
+                                NavigationLink {
+                                    GptLoginView()
+                                } label: {
+                                    Text("管理画面")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                        .frame(width: geometryProxy.size.width/3,height: 50)
+                                        .background(Color.customRed2)
+                                        .cornerRadius(10)
+                                        .padding(.trailing, 16)
                                 }
+
                             }
                         }
                         .padding(.top,20)
@@ -218,13 +231,14 @@ struct OneClassDetailView: View {
             }
         }.onAppear{
             UITabBar.appearance().isHidden = true
-        }.navigationBarHidden(true)
+        }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
 struct EvaluationView:View {
     var body: some View{
-        Divider()
+        CustomDivider()
         HStack{
             VStack(alignment: .leading){
                 Text("評価とレビュー")
@@ -245,7 +259,7 @@ struct EvaluationView:View {
             .padding(.leading, 16)
             Spacer()
         }
-        Divider()
+        CustomDivider()
     }
 }
 
@@ -298,7 +312,7 @@ struct LessonQuestionView: View {
     let mentorName: String
     var body: some View{
         VStack{
-            Divider()
+            CustomDivider()
             VStack {
                 VStack(alignment: .leading){
                     HStack{
@@ -359,5 +373,16 @@ struct LessonQuestionView: View {
                 self.lessonQuestions.append(result)
             }
         }
+    }
+}
+
+extension UINavigationController: UIGestureRecognizerDelegate {
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        interactivePopGestureRecognizer?.delegate = self
+    }
+
+    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        return viewControllers.count > 1
     }
 }

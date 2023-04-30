@@ -102,7 +102,7 @@ struct ChatView:View{
             SetToFirestore()
                 .snapShotMessage(
                     path: chatRoomType.messageListStyle == .normalChat ? "Chat":"BeforePurchaseChat",
-                    chatRoomId: messageListData.chatRoomData?.chatroomId ?? ""
+                    chatRoomId: (messageListData.chatRoomData?.chatroomId).orEmpty
                 ) { chat in
                 guard let uid = Auth.auth().currentUser?.uid else { return }
                 let message: Chat
@@ -200,7 +200,7 @@ struct ChatView:View{
                                     profileImage: sendImage
                                 ) { messageImage in
                                 let messageImageURLString = messageImage.absoluteString
-                                SetToFirestore().registerMessage(path: chatRoomType.messageListStyle == .normalChat ? "Chat":"BeforePurchaseChat", chatRoomId: messageListData.chatRoomData?.chatroomId ?? "", messageImageURLString: messageImageURLString, messageDate: dateFormat(date: Date()), messageType: .image){
+                                    SetToFirestore().registerMessage(path: chatRoomType.messageListStyle == .normalChat ? "Chat":"BeforePurchaseChat", chatRoomId: (messageListData.chatRoomData?.chatroomId).orEmpty, messageImageURLString: messageImageURLString, messageDate: dateFormat(date: Date()), messageType: .image){
                                     self.sendImage = nil
                                 }
                             }
@@ -208,7 +208,7 @@ struct ChatView:View{
                             SetToFirestore()
                                 .registerMessage(
                                     path: chatRoomType.messageListStyle == .normalChat ? "Chat":"BeforePurchaseChat",
-                                    chatRoomId: messageListData.chatRoomData?.chatroomId ?? "",
+                                    chatRoomId: (messageListData.chatRoomData?.chatroomId).orEmpty,
                                     messageText:messageText,
                                     messageDate: dateFormat(date: Date()),
                                     messageType: .text

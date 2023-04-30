@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-struct ManagementLessonView: View {
+struct GptLoginView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("console.log")
     }
 }
 
-struct ManagementLessonView_Previews: PreviewProvider {
+struct GptLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        ManagementLessonView()
+        GptLoginView()
     }
 }

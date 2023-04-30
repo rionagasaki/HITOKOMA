@@ -28,7 +28,9 @@ struct SettingNotificationView: View {
                     }.background(.white)
                 }
             }
-            DismissButtonView().padding(.leading, 40).padding(.bottom, 40)
+            DismissButtonView()
+                .padding(.leading, 40)
+                .padding(.bottom, 40)
         }.background(.ultraThinMaterial)
     }
 }

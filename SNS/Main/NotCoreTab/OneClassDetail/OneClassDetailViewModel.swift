@@ -12,12 +12,12 @@ class OneClassDetailViewModel: ObservableObject {
     @Published var chatroomData:ChatRoomData?
     @Published var lessonData: LessonData?
     @Published var mentorUserInfo: UserData?
+    
     @Published var underBarOffset: CGFloat = 100
     @Published var purchasedLabelOffset: CGFloat = -170
     @Published var visiblePriceBubble: Bool = false
-    
-    
     var lessonId: String
+    
     
     init(lessonId: String) {
         self.lessonId = lessonId

@@ -22,9 +22,9 @@ struct MakeQuestionView: View {
         VStack{
             LessonSummaryView(lessonImageURLString: lessonImageURLString, lessonName: lessonName, mentorIconImageURLString: mentorIconImageURLString, mentorName: mentorName)
             VStack(alignment: .leading, spacing: 0){
-                Divider()
+                CustomDivider()
                 Text("質問は他のユーザーに公開されます。").font(.caption).padding(.leading, 16).padding(.vertical, 16)
-                Divider()
+                CustomDivider()
                 HStack{
                     Image(systemName: "questionmark.square.fill").resizable().frame(width:20, height: 20)
                     Text("Question").bold().font(.system(size: 25)).foregroundColor(.init(uiColor: .darkGray).opacity(0.8))

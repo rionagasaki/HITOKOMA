@@ -6,47 +6,132 @@
 //
 
 import SwiftUI
+import PKHUD
+import SDWebImageSwiftUI
 
 class MemberInfoViewModel: ObservableObject {
-    @Published var usernameField:String = ""
-    @Published var genderField: Gender = .others
-    @Published var ageField: String = ""
+    let generations = ["10代", "20代", "30代", "40代", "50代", "60代", "未選択"]
+    let genders = [
+        Gender(gender: .man),
+        Gender(gender: .woman),
+        Gender(gender: .others)
+    ]
+    var currentHeaderImageURLString = User.shared.headerImage
+    var currentProfileImageURLString = User.shared.profileImage
+    
+    @Published var user: User?
+    
+    @Published var usernameField:String = User.shared.username
+    
+    @Published var settingImage: SettingImage?
+    @Published var headerImage: UIImage?
+    @Published var profileImage:UIImage?
+    
+    @Published var skills: [Skill] = (User.shared.skill?.skills ?? [Skill(skillName: "", skillYear: 0.0)])
+    
+    @Published var genderField: Gender = .init(gender: AllGender(rawValue: User.shared.gender) ?? AllGender(rawValue: "男性")!)
+    @Published var ageField: String = User.shared.generation
     @Published var instagramField: String = ""
-    @Published var careerField: String = ""
-    @Published var skillField: String = ""
-    @Published var introduceField: String = ""
+    @Published var careerField: String = User.shared.career
+    @Published var introduceField: String = User.shared.selfIntroduce
     @Published var displayTwitterAccount: String = ""
     @Published var displayFacebookAccount: String = ""
-    @Published var showImageModal: Bool = false
-    @Published var profileImageURLString: String = ""
-   //  @Published var skillBar: SkillExperienceYear = (SkillExperienceYear(rawValue: 0.0) ?? 0.0)
     
-//    var proficiencyOfSkill: String {
-//        switch skillBar {
-//        case .underQuarterYear:
-//            return "3ヶ月未満"
-//        case .underHalfyear:
-//            return "3ヶ月~半年"
-//        case .underOneyear:
-//            return "半年~1年"
-//        case .underOneyearAndHalfyear:
-//            return "1年~1年半"
-//        case .underTwoyear:
-//            return "1年半~2年"
-//        case .underTwoyearAndHalfyear:
-//            return "2年~2年半"
-//        case .underThreeyear:
-//            return "2年半~3年"
-//        case .overThreeyear:
-//            return "3年以上"
-//        }
-//    }
+    
+    var isEditIntroduceField: Bool {
+        introduceField != ""
+    }
+    
+    var isEditCareerField: Bool {
+        careerField != ""
+    }
+
+    
+    func updateHeaderImage(completion:@escaping () -> Void) {
+        if let headerImage = headerImage {
+            RegisterStorage()
+                .refisterImageToStorage(
+                    folderName: "UserProfile/Header",
+                    profileImage: headerImage) { headerImageURL in
+                        self.currentHeaderImageURLString = headerImageURL.absoluteString
+                        completion()
+                    }
+        } else {
+            completion()
+        }
+    }
+    func  updateProfileImage(completion:@escaping () -> Void) {
+        if let profileImage = profileImage {
+            RegisterStorage()
+                .refisterImageToStorage(
+                    folderName: "UserProfile",
+                    profileImage: profileImage) { profileImageURL in
+                        self.currentProfileImageURLString = profileImageURL.absoluteString
+                        completion()
+                    }
+        } else {
+            completion()
+        }
+    }
+    
+    
+    
+    func updateProfile() {
+        let skills = Skills(skills: skills)
+        updateHeaderImage {
+            self.updateProfileImage {
+                UpdateFirestore()
+                    .updateUserInfoFirestore(
+                        username: self.usernameField,
+                        gender: self.genderField.gender.rawValue,
+                        generation: self.ageField,
+                        singleIntroduction: self.introduceField,
+                        profileImageURL: self.currentProfileImageURLString,
+                        headerImageURL: self.currentHeaderImageURLString,
+                        career: self.careerField,
+                        skills: skills) {
+                            User.shared.username = self.usernameField
+                            User.shared.gender = self.genderField.gender.rawValue
+                            User.shared.headerImage = self.currentHeaderImageURLString
+                            User.shared.profileImage = self.currentProfileImageURLString
+                            User.shared.selfIntroduce = self.introduceField
+                            User.shared.career = self.careerField
+                            User.shared.generation = self.ageField
+                            User.shared.skill = Skills(skills: self.skills)
+                            HUD.show(.success)
+                            DispatchQueue.main.asyncAfter(deadline: .now()+1){
+                                HUD.hide()
+                            }
+                        }
+            }
+        }
+    }
 }
 
-enum Gender:String {
+enum AllGender: String, CaseIterable, Hashable, Identifiable {
     case man = "男性"
     case woman = "女性"
-    case others = "未選択"
+    case others = "その他"
+    
+    var id: String { rawValue }
+}
+
+struct Gender: Equatable ,Hashable {
+    let gender: AllGender
+    var color: Color {
+        switch gender {
+        case .man:
+            return Color.blue
+        case .woman:
+            return Color.customRed2
+        case .others:
+            return Color.yellow
+        }
+    }
+    
+    init(gender: AllGender) {
+        self.gender = gender
+    }
 }
 
 enum SkillExperienceYear: Double {

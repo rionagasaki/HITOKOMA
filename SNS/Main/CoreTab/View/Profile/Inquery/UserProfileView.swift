@@ -10,23 +10,32 @@ import SDWebImageSwiftUI
 
 struct UserProfileView: View {
     
-    let username: String
-    let userProfileImageURL: String
-    let usersLessonData: [LessonData]
-    let usersRequestData: [RequestData]
-    
+    @StateObject var viewModel = UserProfileViewModel()
     
     var body: some View {
-        ScrollView{
-            VStack(alignment: .leading, spacing: .zero){
-                UserBaseProfileView(userProfileImageURL: userProfileImageURL, username: username)
-                Divider().padding(.bottom, 10)
-                Text("ここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テキストここに紹介テO紹介テキスト").font(.caption).padding(.horizontal,16)
-                Divider().padding(.vertical, 10)
-                UserSubBaseProfileView()
-                Spacer()
+        ZStack(alignment: .bottomLeading) {
+            ScrollView{
+                VStack(alignment: .leading, spacing: .zero){
+                    UserBaseProfileView(userProfileImageURL: User.shared.profileImage, username: User.shared.username)
+                    
+                    CustomDivider()
+                        .padding(.bottom, 10)
+                    
+                    Text(User.shared.selfIntroduce)
+                        .font(.caption)
+                        .padding(.horizontal,16)
+                    
+                    CustomDivider()
+                        .padding(.vertical, 10)
+                    UserSubBaseProfileView(viewModel: viewModel)
+                    Spacer()
+                }
             }
+            DismissButtonView()
+                .padding(.bottom, 30)
+                .padding(.leading, 30)
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
@@ -36,12 +45,12 @@ struct UserBaseProfileView: View {
     
     var body: some View{
         VStack(alignment: .leading, spacing: .zero){
-            Image("ramen")
+            WebImage(url: URL(string: User.shared.headerImage))
                 .resizable()
                 .frame(width: UIScreen.main.bounds.width, height: 150)
             
             HStack{
-                WebImage(url: URL(string: userProfileImageURL))
+                WebImage(url: URL(string: User.shared.profileImage))
                     .resizable()
                     .frame(width: 70, height: 70)
                     .clipShape(Circle())
@@ -63,17 +72,30 @@ struct UserBaseProfileView: View {
                 }
                 .padding(.trailing, 16)
             }
-           
-            Text(username)
+            
+            Text(User.shared.username)
                 .bold()
                 .padding(.leading, 16)
                 .padding(.top, 5)
             
-            Text("20代/男性/千葉県")
+            Text("\(User.shared.generation)/\(User.shared.gender)/千葉県")
                 .foregroundColor(.init(uiColor: .lightGray))
                 .font(.caption)
                 .font(.system(size: 12))
                 .padding(.leading, 16)
+            
+            HStack(spacing: .zero){
+                Image(systemName: "link")
+                    .foregroundColor(.init(uiColor: .lightGray))
+                    .font(.caption)
+                    .font(.system(size: 12))
+                    .padding(.leading,16)
+                
+                Text("https://default.html")
+                    .foregroundColor(.init(uiColor: .lightGray))
+                    .font(.caption)
+                    .font(.system(size: 12))
+            }
             
             HStack{
                 Text("機密保持契約(NDA)")
@@ -91,28 +113,73 @@ struct UserBaseProfileView: View {
 }
 
 struct UserSubBaseProfileView: View {
+    
+    @StateObject var viewModel: UserProfileViewModel
+    
     var body: some View{
         Text("得意分野")
             .font(.system(size: 18))
             .bold()
             .padding(.leading, 16)
-        Divider()
+        VStack {
+            if let skills = User.shared.skill?.skills {
+                ForEach(skills) { skill in
+                    HStack {
+                        Text(skill.skillName)
+                            .fontWeight(.medium)
+                            .font(.system(size: 16))
+                            .padding(.leading, 32)
+                        Spacer()
+                        VisibleSkillBar()
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .padding(.trailing, 16)
+                    }
+                    .padding(.top, 16)
+                    
+                }
+            }
+        }
+        
+        CustomDivider()
             .padding(.vertical, 10)
         Text("経歴・資格等")
             .font(.system(size: 18))
             .bold()
             .padding(.leading, 16)
+            .padding(.top, 8)
         
-        Divider()
+        Text(User.shared.career)
+            .fontWeight(.regular)
+            .font(.system(size: 13))
+            .padding(.horizontal,32)
+            .padding(.top, 8)
+        
+        
+        CustomDivider()
             .padding(.vertical, 10)
-        Text("公開済みのレッスン")
-            .font(.system(size: 18))
-            .bold()
-            .padding(.leading, 16)
         
-        Divider()
-            .padding(.vertical, 10)
-        
+        VStack(alignment: .leading){
+            Text("公開済みのレッスン")
+                .font(.system(size: 18))
+                .bold()
+                .padding(.leading, 16)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(viewModel.usersLessons) { lesson in
+                        OneClassView(
+                            lessonImageURLString: lesson.lessonImageURLString,
+                            lessonName: lesson.lessonName,
+                            userIconURLString: User.shared.profileImage,
+                            lessonBudgets: lesson.budget)
+                    }
+                }
+                .padding(.horizontal, 16)
+            }
+            
+            CustomDivider()
+                .padding(.vertical, 10)
+            
+        }
         ScrollView(.horizontal){
             HStack{
                 
@@ -123,13 +190,17 @@ struct UserSubBaseProfileView: View {
             .bold()
             .padding(.leading, 16)
         
-        Divider()
+        CustomDivider()
             .padding(.vertical, 10)
     }
 }
 
-struct UserProfileView_Previews: PreviewProvider {
-    static var previews: some View {
-        UserProfileView(username: "", userProfileImageURL: "", usersLessonData: [], usersRequestData: [])
+struct UserSNSView: View {
+    var body: some View {
+        VStack {
+            HStack {
+                
+            }
+        }
     }
 }
