@@ -7,7 +7,12 @@
 
 import Foundation
 
-class User: ObservableObject{
+final class User: ObservableObject{
+    
+    static let shared: User = .init()
+    
+    private init() {}
+    
     @Published var userID: String = ""
     @Published var username: String = ""
     @Published var email: String = ""
@@ -15,6 +20,11 @@ class User: ObservableObject{
     @Published var customerId: String = ""
     @Published var purchasedLesson: [String] = []
     @Published var selfIntroduce: String = ""
+    @Published var gender: String = ""
+    @Published var generation: String = ""
+    @Published var career: String = ""
+    @Published var skill: Skills?
+    @Published var headerImage: String = ""
     @Published var schedule: String = ""
     
     func appendPurchaseLessons(lessonid: String){

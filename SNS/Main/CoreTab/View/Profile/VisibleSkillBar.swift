@@ -9,7 +9,14 @@ import SwiftUI
 
 struct VisibleSkillBar: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack(alignment: .leading) {
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width: 200, height: 10)
+                .foregroundColor(.customLightGray)
+            RoundedRectangle(cornerRadius: 10)
+                .frame(width:50, height: 10)
+                .foregroundColor(.customBlue)
+        }
     }
 }
 

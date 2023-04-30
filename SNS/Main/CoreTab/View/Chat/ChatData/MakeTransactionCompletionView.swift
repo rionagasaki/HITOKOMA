@@ -36,7 +36,7 @@ struct MakeTransactionCompletionView: View {
                 SetToFirestore()
                     .registerMessage(
                         path:"Chat",
-                        chatRoomId: messageListData.chatRoomData?.chatroomId ?? "" ,
+                        chatRoomId: (messageListData.chatRoomData?.chatroomId).orEmpty ,
                         messageText: messageListData.lastMessage,
                         messageDate: messageListData.lastMessageDate,
                         messageType: .finish) {

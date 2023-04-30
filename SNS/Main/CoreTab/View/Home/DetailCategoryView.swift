@@ -24,7 +24,7 @@ struct DetailCategoryView: View {
                         }
                         if selection == 0 {
                             searchableLessonData = lessonData
-                        }else {
+                        } else {
                             searchableLessonData = lessonData.filter({
                                 $0.category == detailCategory[selection].categoryName
                             })

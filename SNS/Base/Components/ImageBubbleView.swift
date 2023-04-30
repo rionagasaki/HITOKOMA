@@ -18,7 +18,7 @@ struct ImageBubbleView: View {
                 Button {
                     self.isPresentingFullImageView = true
                 } label: {
-                    WebImage(url: URL(string: chatData.massageImageURLString ?? "")).resizable()
+                    WebImage(url: URL(string: chatData.massageImageURLString.orEmpty)).resizable()
                         .placeholder(Image(systemName: "photo"))
                         .placeholder {
                                 Rectangle().foregroundColor(.gray)
@@ -29,7 +29,7 @@ struct ImageBubbleView: View {
                         .background(Color.black).cornerRadius(10)
                         .padding(.trailing, 16)
                 }.sheet(isPresented: self.$isPresentingFullImageView) {
-                    FullImageView(messageImageURLString: chatData.massageImageURLString ?? "")
+                    FullImageView(messageImageURLString: chatData.massageImageURLString.orEmpty)
                 }
             } else {
                 

@@ -8,18 +8,23 @@
 import SwiftUI
 
 struct ProfileView: View {
-    let username:String
-    let email: String
-    let profileImage: String
     @EnvironmentObject var appState:AppState
-    @EnvironmentObject var user: User
     @StateObject private var viewModel = ProfileViewModel()
     private let screenWidth = UIScreen.main.bounds.width
     
     private let baseSettings = [
+        
+       Setting(
+        settingName: "プロフィール",
+        settingImage: "person",
+        handler: AnyView(
+            UserProfileView()
+        )
+       ),
+       
         Setting(
-            settingName: "会員情報",
-            settingImage: "person",
+            settingName: "プロフィール編集",
+            settingImage: "gear",
             handler: AnyView(
                 MemberInfoView()
             )
@@ -67,7 +72,7 @@ struct ProfileView: View {
     
     private let buyerSettings = [
         Setting(
-            settingName: "リクエスト",
+            settingName: "リクエストする",
             settingImage: "hand.raised",
             handler: AnyView(
                 MakeRequestView()
@@ -144,8 +149,8 @@ struct ProfileView: View {
         ZStack{
             Form {
                 HeaderView(
-                    username: user.username,
-                    userProfileImage: user.profileImage
+                    username: User.shared.username ,
+                    userProfileImage: User.shared.profileImage
                 )
                 
                 Section {
@@ -239,12 +244,12 @@ struct ProfileView: View {
             .padding(.top,20)
         }
         .ignoresSafeArea()
-        .navigationBarHidden(true)
+        .navigationBarBackButtonHidden(true)
     }
 }
 
 struct SwiftUIView_Previews: PreviewProvider {
     static var previews: some View {
-       ProfileView(username: "", email: "", profileImage: "")
+       ProfileView()
     }
 }

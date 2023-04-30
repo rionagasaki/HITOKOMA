@@ -305,7 +305,7 @@ struct _R {
         var onboarding_third: RswiftResources.ImageResource { .init(name: "images/onboarding/onboarding_third", path: ["images", "onboarding"], bundle: bundle, locale: nil, onDemandResourceTags: nil) }
       }
 
-      /// This `_R.image.images.others` struct is generated, and contains static references to 6 otherss.
+      /// This `_R.image.images.others` struct is generated, and contains static references to 7 otherss.
       struct others {
         let bundle: Foundation.Bundle
 
@@ -314,6 +314,9 @@ struct _R {
 
         /// Image `images/others/applicationImage`.
         var applicationImage: RswiftResources.ImageResource { .init(name: "images/others/applicationImage", path: ["images", "others"], bundle: bundle, locale: nil, onDemandResourceTags: nil) }
+
+        /// Image `images/others/noHeaderImage`.
+        var noHeaderImage: RswiftResources.ImageResource { .init(name: "images/others/noHeaderImage", path: ["images", "others"], bundle: bundle, locale: nil, onDemandResourceTags: nil) }
 
         /// Image `images/others/noImage`.
         var noImage: RswiftResources.ImageResource { .init(name: "images/others/noImage", path: ["images", "others"], bundle: bundle, locale: nil, onDemandResourceTags: nil) }

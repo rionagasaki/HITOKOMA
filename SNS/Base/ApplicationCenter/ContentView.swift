@@ -37,7 +37,8 @@ struct ContentView: View {
                             selectedTab: $selectedTab,
                             navigationTitle: $navigationTitle
                         )
-                    }.navigationBarTitleDisplayMode(.inline)
+                    }
+                    .navigationBarTitleDisplayMode(.inline)
                 }.tag(Tab.home)
                 
                 NavigationView {
@@ -64,8 +65,7 @@ struct ContentView: View {
                         )
                     }.ignoresSafeArea(.keyboard, edges: .bottom)
                 }.tag(Tab.search)
-                
-                
+
                 NavigationView {
                     VStack{
                         MessageListView()
@@ -79,11 +79,7 @@ struct ContentView: View {
                 
                 NavigationView {
                     VStack{
-                        ProfileView(
-                            username: user.username,
-                            email: user.email,
-                            profileImage: user.profileImage
-                        )
+                        ProfileView()
                         CustomTabView(
                             selectedTab: $selectedTab,
                             navigationTitle: $navigationTitle
@@ -102,10 +98,15 @@ struct ContentView: View {
                 self.user.customerId = doc.customerId
                 self.user.profileImage = doc.profileImage
                 self.user.purchasedLesson =  doc.purchasedLessons
+                self.user.headerImage = doc.headerImage
+                self.user.selfIntroduce = doc.singleIntroduction
+                self.user.career = doc.career
+                self.user.gender = doc.gender
+                self.user.generation = doc.generation
+                self.user.skill = doc.skills
             }
         }
         .accentColor(.black)
-        .background(.ultraThinMaterial)
     }
 }
 

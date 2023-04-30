@@ -18,7 +18,7 @@ struct BubbleView: View {
                         .foregroundColor(Color.init(uiColor: .lightGray))
                         .font(.system(size: 10))
                     
-                    Text(chatData.messageText ?? "")
+                    Text(chatData.messageText.orEmpty)
                         .padding(.all,12)
                         .background(Color.customBlue)
                         .foregroundColor(.white)
@@ -31,7 +31,7 @@ struct BubbleView: View {
 //                    Circle()
 //                }.padding(.leading,20)
                 HStack(alignment: .bottom){
-                    Text(chatData.messageText ?? "")
+                    Text(chatData.messageText.orEmpty)
                         .padding(.all,12)
                         .background(.ultraThinMaterial)
                         .background(.ultraThinMaterial)

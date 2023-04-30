@@ -57,7 +57,9 @@ struct CustomScrollView: View {
                     .scaledToFit()
                     .frame(width:24.0, height: 24.0)
                     .foregroundColor(.black)
-            }.padding(.leading,16)
+            }
+            .spotlight(enabled: true, title: "メニューを閲覧できます。")
+            .padding(.leading,16)
             
             GeometryReader { geometryProxy in
                 ScrollViewReader { scrollProxy in

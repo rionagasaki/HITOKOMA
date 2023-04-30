@@ -7,13 +7,20 @@
 
 import SwiftUI
 
+import Foundation
+
+
+
 struct MessageListScrollView: View {
     @ObservedObject var chatRoomType: ChatRoomType
     let messageListDatas:[MessageListData]
+    let algoliaController = AlgoliaController()
+    
     var body: some View {
         ScrollView{
             VStack(spacing: .zero){
                 if messageListDatas.count == 0 {
+
                     Image(systemName: "bubble.left.and.exclamationmark.bubble.right")
                         .resizable()
                         .scaledToFit()
@@ -25,14 +32,31 @@ struct MessageListScrollView: View {
                         .fontWeight(.heavy)
                         .multilineTextAlignment(.center)
                         .font(.system(size: 15))
-                    
-                    Text("レッスンを探す・リクエストをする")
-                        .foregroundColor(.white)
-                        .bold()
-                        .frame(width: UIScreen.main.bounds.width-100, height: 40)
-                        .background(Color.customBlue)
-                        .cornerRadius(10)
-                        .padding(.top, 10)
+                    NavigationLink {
+                        SearchView(
+                            hitsController: algoliaController.hitsController,
+                            searchBoxController: algoliaController.searchBoxController,
+                            statsController: algoliaController.statsController,
+                            facetListController: algoliaController.facetListController,
+                            loadingController: algoliaController.loadingController
+                        )
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity
+                            
+                        )
+                        .onAppear{
+                            algoliaController.searcher.search()
+                        }
+                    } label: {
+                        Text("レッスンを探す・リクエストをする")
+                            .foregroundColor(.white)
+                            .bold()
+                            .frame(width: UIScreen.main.bounds.width-100, height: 40)
+                            .background(Color.customBlue)
+                            .cornerRadius(10)
+                            .padding(.top, 10)
+                    }
                 } else {
                     ForEach(messageListDatas) { messageList in
                         OneMessageListView(
@@ -45,4 +69,3 @@ struct MessageListScrollView: View {
         }
     }
 }
-

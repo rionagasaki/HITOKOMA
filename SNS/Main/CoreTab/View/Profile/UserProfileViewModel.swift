@@ -7,14 +7,19 @@
 
 import SwiftUI
 
-struct UserProfileViewModel: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+class UserProfileViewModel: ObservableObject {
+    @Published var usersLessons: [LessonData] = []
+    @Published var usersRequest: [RequestData] = []
 
-struct UserProfileViewModel_Previews: PreviewProvider {
-    static var previews: some View {
-        UserProfileViewModel()
+    init(){
+        FetchFromFirestore()
+            .fetchLessonInfoFromFirestore { lessonData in
+                self.usersLessons.append(lessonData)
+            }
+        FetchFromFirestore()
+            .fetchRequestInfoFromFirestore { requestData in
+                self.usersRequest.append(requestData)
+            }
     }
+    
 }

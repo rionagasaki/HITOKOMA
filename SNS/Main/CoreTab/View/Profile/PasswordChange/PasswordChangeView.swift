@@ -19,6 +19,7 @@ struct PasswordChangeView: View {
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.leading, 16)
+                        .padding(.top, 30)
                     
                     VStack{
                         Text("パスワードの変更")
@@ -91,6 +92,8 @@ struct PasswordChangeView: View {
                 .padding(.leading, 40)
                 .padding(.bottom, 40)
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .background(.ultraThinMaterial)
     }
 }

@@ -19,6 +19,7 @@ struct EmailChangeView: View {
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.leading, 16)
+                        .padding(.top, 30)
                     
                     VStack{
                         Text("メールアドレス変更")
@@ -66,7 +67,10 @@ struct EmailChangeView: View {
                 }
             }
             DismissButtonView().padding(.leading, 40).padding(.bottom, 40)
-        }.background(.ultraThinMaterial)
+        }
+        .navigationBarBackButtonHidden(true)
+        .navigationBarTitleDisplayMode(.large)
+        .background(.ultraThinMaterial)
     }
 }
 

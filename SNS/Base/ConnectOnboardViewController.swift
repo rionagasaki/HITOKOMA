@@ -39,7 +39,7 @@ class ConnectOnboardViewController: UIViewController {
     }()
     
     private let mainImage: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "teachBigin"))
+        let imageView = UIImageView(image: UIImage(named: image.others.teachBigin.name))
         imageView.sizeToFit()
         return imageView
     }()

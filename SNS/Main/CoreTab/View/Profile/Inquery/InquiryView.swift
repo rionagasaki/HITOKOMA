@@ -15,15 +15,15 @@ struct InquiryView: View {
                 InquiryHeaderView()
                     .padding(.top,10)
                 Section {
-                    TextField("長崎理応", text: $nameFields)
+                    TextField(User.shared.username, text: $nameFields)
                 } header: {
                     Text("お名前")
                         .foregroundColor(.black)
                 }
                 Section {
-                    TextField("naga_ri@icloud.com", text: $nameFields)
+                    TextField(User.shared.email, text: $nameFields)
                 } header: {
-                    Text("メールアドレス")
+                    Text("返信先メールアドレス")
                         .foregroundColor(Color.black)
                 }
                 Section {
@@ -66,10 +66,15 @@ struct InquiryHeaderView: View {
     var body: some View {
         VStack{
             Text("お問い合わせの前にご確認ください。").fontWeight(.light).font(.system(size: 14)).padding(.bottom,10)
-            Button {
-                print("ok")
+            NavigationLink {
+                HelpView()
             } label: {
-                Text("よくある質問").foregroundColor(Color.customBlue).font(.system(size: 16)).underline().padding(.bottom,10)
+                Text("よくある質問")
+                    .foregroundColor(Color.customBlue)
+                    .font(.system(size: 16))
+                    .underline()
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom,10)
             }
         }.frame(maxWidth: UIScreen.main.bounds.width, alignment: .center)
     }

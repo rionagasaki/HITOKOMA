@@ -18,7 +18,7 @@ class RegisterStorage{
         let userProfileRef = storage.reference().child(folderName).child(fileName)
         userProfileRef.putData(updateImage, metadata: nil) { metadata, error in
             if error != nil {
-                print(error ?? "")
+                print((error?.localizedDescription).orEmpty)
                 return
             }
             guard metadata != nil else {
